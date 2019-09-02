@@ -4,33 +4,42 @@ using UnityEngine;
 
 public class CameraMovement : MonoBehaviour
 {
-    private bool locked;
-    public bool preHit;
-    public bool postHit;
+    private GameObject cue;
+
+    private bool isAiming;
+    private bool followCueBall;
+    private bool followHitBall;
+    private bool showMultipleBalls;
+
+    public GameObject Cue
+    {
+        set { cue = value; }
+    }
+
+    public bool IsAiming
+    {
+        get { return isAiming; }
+        set { isAiming = value; }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-        locked = true;
-        preHit = true;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (postHit)
+        if (isAiming)
         {
-            
+            Aim();
         }
-        
     }
 
-    public void MoveWithPoolCue(Transform poolCue)
+    private void Aim()
     {
-        if (locked && preHit)
-        {
-            transform.position = poolCue.position + new Vector3(0.0f, poolCue.gameObject.GetComponent<MeshRenderer>().bounds.extents.y * 2.0f, 0.0f);
-            transform.LookAt(poolCue.gameObject.GetComponent<PoolCue>().targetBall.transform);
-        }
+        transform.position = cue.transform.position + new Vector3(0.0f, 1.5f, 0.0f);
+        transform.LookAt(cue.GetComponent<PoolCue>().CueBall.transform);
     }
 }

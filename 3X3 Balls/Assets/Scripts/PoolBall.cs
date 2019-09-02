@@ -13,14 +13,14 @@ public class PoolBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (GameInfo.instance.PostHit)
+        {
+            ForceStop();
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void ForceStop()
     {
-        if (collision.gameObject.CompareTag("Ball"))
-        {
-            GetComponent<Rigidbody>().AddForce(GetComponent<Rigidbody>().velocity * -1.0f);
-        }
+        
     }
 }

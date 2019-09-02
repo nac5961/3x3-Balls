@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class PoolCue : MonoBehaviour
 {
-
-    public GameObject targetBall;
-    public Camera view;
-
     public float hitAngle;
     public float rotationSpeed;
 
+    private GameObject cueBall;
+
     private float boundsY;
 
-    private Vector3 middleOfScreen;
-    private Vector3 startVector;
+    public GameObject CueBall
+    {
+        get { return cueBall; }
+        set { cueBall = value; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -22,16 +23,27 @@ public class PoolCue : MonoBehaviour
         transform.rotation = Quaternion.identity;
         boundsY = GetComponent<MeshRenderer>().bounds.extents.y;
 
-
-        //middleOfScreen = new Vector3(Screen.width / 2, Screen.height / 2, 0.0f);
-        //startVector = middleOfScreen - new Vector3(Screen.width / 2, 0.0f, 0.0f);
+        AlignWithBall();
     }
 
     // Update is called once per frame
     void Update()
     {
-        RotateByKey();
+        if (GameInfo.instance.Reset)
+        {
+            GameInfo.instance.Reset = false;
+            AlignWithBall();
+        }
 
+        RotateByKey();
+        HitBall();
+        if (GameInfo.instance.FirstHit)
+        {
+            MoveCueBall();
+            //MoveWithBall();
+        }
+
+        //Debug
         if (Input.GetKeyDown(KeyCode.P))
         {
             AlignWithBall();
@@ -51,7 +63,11 @@ public class PoolCue : MonoBehaviour
     /// </summary>
     private void AlignWithBall()
     {
-        Bounds ballBounds = targetBall.GetComponent<MeshRenderer>().bounds;
+        Camera.main.GetComponent<CameraMovement>().IsAiming = true;
+
+        transform.parent = cueBall.transform;
+
+        Bounds ballBounds = cueBall.GetComponent<MeshRenderer>().bounds;
 
         //Note: This works based on the assumption that the pivot point is at the center of the pool cue.
         float xOffset = boundsY + ballBounds.extents.x;
@@ -59,8 +75,30 @@ public class PoolCue : MonoBehaviour
         float zOffset = 0.0f;
 
         //Reset position and angle
-        transform.position = targetBall.transform.position + new Vector3(-xOffset, yOffset, zOffset);
+        transform.position = cueBall.transform.position + new Vector3(-xOffset, yOffset, zOffset);
         transform.rotation = Quaternion.Euler(0.0f, 0.0f, hitAngle);
+    }
+
+    private void MoveWithBall()
+    {
+        
+    }
+
+    private void MoveCueBall()
+    {
+        float moveSpeed = 3.0f;
+
+        //Move left
+        if (Input.GetKey(KeyCode.A))
+        {
+            cueBall.transform.position += new Vector3(-moveSpeed * Time.deltaTime, 0.0f, 0.0f);
+        }
+
+        //Move right
+        else if (Input.GetKey(KeyCode.D))
+        {
+            cueBall.transform.position += new Vector3(moveSpeed * Time.deltaTime, 0.0f, 0.0f);
+        }
     }
 
     /// <summary>
@@ -71,15 +109,13 @@ public class PoolCue : MonoBehaviour
         //Rotate left
         if (Input.GetKey(KeyCode.LeftArrow))
         {
-            transform.RotateAround(targetBall.transform.position, Vector3.up, rotationSpeed * Time.deltaTime);
-            view.GetComponent<CameraMovement>().MoveWithPoolCue(transform);
+            transform.RotateAround(cueBall.transform.position, Vector3.up, rotationSpeed * Time.deltaTime);
         }
 
         //Rotate right
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            transform.RotateAround(targetBall.transform.position, Vector3.up, -rotationSpeed * Time.deltaTime);
-            view.GetComponent<CameraMovement>().MoveWithPoolCue(transform);
+            transform.RotateAround(cueBall.transform.position, Vector3.up, -rotationSpeed * Time.deltaTime);
         }
     }
 
@@ -88,24 +124,26 @@ public class PoolCue : MonoBehaviour
     /// </summary>
     private void RotateByMouse()
     {
-        //Vector3 mousePos = GetMousePosition();
-        //Vector3 toMouse = mousePos - middleOfScreen;
-
-        ////Get angle from start vector to mouse vector
-        //float angle = Mathf.Atan2(toMouse.y - startVector.y, toMouse.x - startVector.x) * Mathf.Rad2Deg * -2.0f;
-
-
-        //transform.LookAt(targetBall.transform.position, Vector3.up);
-        ////transform.rotation = new v
-
-        //Debug.Log(angle);
+        
     }
 
-    private void OnMouseUp()
+    private void HitBall()
     {
-        Vector3 force = targetBall.transform.position - transform.position;
-        force = new Vector3(force.x, 0.0f, force.z) * 400.0f;
-        targetBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
-    }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (GameInfo.instance.FirstHit)
+            {
+                GameInfo.instance.FirstHit = false;
+                cueBall.GetComponent<Rigidbody>().useGravity = true;
+            }
 
+            Vector3 force = cueBall.transform.position - transform.position;
+            force = new Vector3(force.x, 0.0f, force.z) * 300.0f;
+            cueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
+            Camera.main.GetComponent<CameraMovement>().IsAiming = false;
+            GameInfo.instance.PostHit = true;
+
+            transform.parent = null;
+        }
+    }
 }
