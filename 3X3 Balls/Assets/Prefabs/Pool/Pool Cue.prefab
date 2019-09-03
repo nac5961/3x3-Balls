@@ -106,4 +106,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitAngle: 75
-  rotationSpeed: 120
+  rotationSpeed: 30
+  hitMeterSpeed: 1

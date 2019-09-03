@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PoolCue : MonoBehaviour
 {
     public float hitAngle;
     public float rotationSpeed;
+    public float hitMeterSpeed;
 
     private GameObject cueBall;
+    private GameObject hitMeter;
+    private float hitMeterPerecent;
 
     private float boundsY;
 
@@ -15,6 +19,12 @@ public class PoolCue : MonoBehaviour
     {
         get { return cueBall; }
         set { cueBall = value; }
+    }
+
+    public GameObject HitMeter
+    {
+        get { return hitMeter; }
+        set { hitMeter = value; }
     }
 
     // Start is called before the first frame update
@@ -35,12 +45,15 @@ public class PoolCue : MonoBehaviour
             AlignWithBall();
         }
 
-        RotateByKey();
-        HitBall();
+        if (!GameInfo.instance.PostHit)
+        {
+            RotateByKey();
+            HitBall();
+        }
+        
         if (GameInfo.instance.FirstHit)
         {
             MoveCueBall();
-            //MoveWithBall();
         }
 
         //Debug
@@ -129,21 +142,52 @@ public class PoolCue : MonoBehaviour
 
     private void HitBall()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (GameInfo.instance.PreHit)
         {
-            if (GameInfo.instance.FirstHit)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                GameInfo.instance.FirstHit = false;
-                cueBall.GetComponent<Rigidbody>().useGravity = true;
+                GameInfo.instance.PreHit = false;
+                hitMeter.SetActive(true);
+                hitMeterPerecent = 0.0f;
+                hitMeterSpeed = Mathf.Abs(hitMeterSpeed);
+                hitMeter.GetComponent<Image>().fillAmount = 0;
             }
+        }
+        else
+        {
 
-            Vector3 force = cueBall.transform.position - transform.position;
-            force = new Vector3(force.x, 0.0f, force.z) * 300.0f;
-            cueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
-            Camera.main.GetComponent<CameraMovement>().IsAiming = false;
-            GameInfo.instance.PostHit = true;
+            if (!GameInfo.instance.PostHit)
+            {
+                hitMeterPerecent += hitMeterSpeed * Time.deltaTime;
+                hitMeterPerecent = Mathf.Clamp(hitMeterPerecent, 0.0f, 1.0f);
+                hitMeter.GetComponent<Image>().fillAmount = hitMeterPerecent;
 
-            transform.parent = null;
+                if (hitMeterPerecent >= 1.0f || hitMeterPerecent <= 0.0f)
+                {
+                    hitMeterSpeed = -hitMeterSpeed;
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    if (GameInfo.instance.FirstHit)
+                    {
+                        GameInfo.instance.FirstHit = false;
+                        cueBall.GetComponent<Rigidbody>().useGravity = true;
+                    }
+
+                    float currForce = 300.0f;
+                    currForce *= hitMeter.GetComponent<Image>().fillAmount;
+
+                    Vector3 force = cueBall.transform.position - transform.position;
+                    force = new Vector3(force.x, 0.0f, force.z) * currForce;
+                    cueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
+                    Camera.main.GetComponent<CameraMovement>().IsAiming = false;
+                    GameInfo.instance.PostHit = true;
+
+                    transform.parent = null;
+                    hitMeter.SetActive(false);
+                }
+            }
         }
     }
 }

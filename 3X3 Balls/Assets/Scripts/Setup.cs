@@ -14,6 +14,8 @@ public class Setup : MonoBehaviour
     public GameObject firstHitLeftBorder;
     public GameObject firstHitRightBorder;
 
+    public GameObject hitMeterUI;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -49,11 +51,12 @@ public class Setup : MonoBehaviour
         //Cue
         GameObject cueInstance = Instantiate(cue);
         cueInstance.GetComponent<PoolCue>().CueBall = cueBallInstance;
+        cueInstance.GetComponent<PoolCue>().HitMeter = hitMeterUI;
 
         //Camera
         Camera.main.GetComponent<CameraMovement>().Cue = cueInstance;
 
-        //Game Info
+        //Game Info Script
         List<GameObject> balls = new List<GameObject>();
         for (int i = 0; i < rackBallsInstance.transform.childCount; i++)
         {
@@ -61,6 +64,10 @@ public class Setup : MonoBehaviour
         }
         balls.Add(cueBallInstance);
         GameInfo.instance.Balls = balls.ToArray();
+
+        //Preview Lines Script
+        GetComponent<PreviewLines>().Cue = cueInstance;
+        GetComponent<PreviewLines>().CueBall = cueBallInstance;
     }
 
     /// <summary>

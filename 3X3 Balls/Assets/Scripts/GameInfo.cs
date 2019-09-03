@@ -85,6 +85,9 @@ public class GameInfo : MonoBehaviour
         gameover = false;
 
         firstHit = true;
+        preHit = true;
+        postHit = false;
+        reset = false;
     }
 
     // Update is called once per frame
@@ -109,6 +112,7 @@ public class GameInfo : MonoBehaviour
                 else if (i == balls.Length - 1)
                 {
                     reset = true;
+                    preHit = true;
                     postHit = false;
                     Debug.Log("All Stopped");
                 }
