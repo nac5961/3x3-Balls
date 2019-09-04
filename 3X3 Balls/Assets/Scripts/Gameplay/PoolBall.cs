@@ -13,14 +13,6 @@ public class PoolBall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameInfo.instance.PostHit)
-        {
-            ForceStop();
-        }
-    }
-
-    private void ForceStop()
-    {
         
     }
 }

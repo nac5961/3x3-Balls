@@ -8,14 +8,7 @@ public class PreviewLines : MonoBehaviour
     public float firstPreviewDistance;
     public float secondPreviewDistance;
 
-    private GameObject cue;
     private GameObject cueBall;
-
-    public GameObject Cue
-    {
-        get { return cue; }
-        set { cue = value; }
-    }
 
     public GameObject CueBall
     {
@@ -42,12 +35,12 @@ public class PreviewLines : MonoBehaviour
         float secondDistance = secondPreviewDistance;
 
         //Get aim direction
-        if (!GameInfo.instance.PostHit)
+        if (GameInfo.instance.IsAiming)
         {
-            Vector3 toCueBall = cueBall.transform.position - cue.transform.position;
+            Vector3 toCueBall = cueBall.transform.position - GameInfo.instance.Cue.transform.position;
             toCueBall = new Vector3(toCueBall.x, 0.0f, toCueBall.z).normalized;
 
-            //Check if the preview line will hit something to limit its length
+            //Check if the first preview line will hit something to limit its length
             RaycastHit hitInfo;
             if (Physics.SphereCast(cueBall.transform.position, cueBall.GetComponent<SphereCollider>().radius, toCueBall, out hitInfo, firstPreviewDistance))
             {
@@ -61,13 +54,19 @@ public class PreviewLines : MonoBehaviour
                     toOtherBall = new Vector3(toOtherBall.x, 0.0f, toOtherBall.z).normalized;
 
                     RaycastHit hitInfo2;
-                    if (Physics.Raycast(hitInfo.point, toOtherBall, out hitInfo2, secondPreviewDistance))
+                    if (Physics.SphereCast(hitInfo.point, hitInfo.transform.GetComponent<SphereCollider>().radius, toOtherBall, out hitInfo2, secondPreviewDistance))
                     {
                         //Limit the length
-                        //secondDistance = hitInfo2.distance;
+                        //Make sure the raycast is not hitting the ball that is being raycasted from
+                        //This may happen since hitInfo.point is the origin and not the ball itself (hitInfo.transform.position)
+                        if (hitInfo2.transform.gameObject != hitInfo.transform.gameObject)
+                        {
+                            secondDistance = hitInfo2.distance;
+                        }
                     }
 
                     //Draw second preview line
+                    //hitInfo.point may be more accurate than hitInfo.transform.position
                     materials[1].SetPass(0);
                     GL.Begin(GL.LINES);
                     GL.Vertex(hitInfo.point);

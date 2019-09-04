@@ -8,6 +8,7 @@ TagManager:
   - Striped
   - Solid
   - Cue Ball
+  - Cue
   layers:
   - Default
   - TransparentFX

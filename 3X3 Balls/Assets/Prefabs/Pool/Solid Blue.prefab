@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4959670093413090779}
   - component: {fileID: 6717125589807423623}
   - component: {fileID: 1805341972529560411}
+  - component: {fileID: 5286311954693768296}
   m_Layer: 0
   m_Name: Solid Blue
   m_TagString: Solid
@@ -108,3 +109,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5286311954693768296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8248221066018334855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7c0293d7119f4cb04995a46f219af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

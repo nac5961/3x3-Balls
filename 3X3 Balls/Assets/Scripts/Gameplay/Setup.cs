@@ -14,8 +14,6 @@ public class Setup : MonoBehaviour
     public GameObject firstHitLeftBorder;
     public GameObject firstHitRightBorder;
 
-    public GameObject hitMeterUI;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -40,8 +38,8 @@ public class Setup : MonoBehaviour
         //Cue Ball
         GameObject cueBallInstance = Instantiate(cueBall, cueBallSpawn.transform.position, Quaternion.identity);
         MoveAboveSurface(cueBallInstance, cueBallInstance.GetComponent<SphereCollider>());
-        cueBallInstance.GetComponent<CueBall>().FarLeft = firstHitLeftBorder.transform.position;
-        cueBallInstance.GetComponent<CueBall>().FarRight = firstHitRightBorder.transform.position;
+        cueBallInstance.GetComponent<CueBall>().FirstHitLeftPos = firstHitLeftBorder.transform.position;
+        cueBallInstance.GetComponent<CueBall>().FirstHitRightPos = firstHitRightBorder.transform.position;
 
         //Temporarily disable gravity until first hit
         //to avoid collision problems with the sides of the table
@@ -51,10 +49,9 @@ public class Setup : MonoBehaviour
         //Cue
         GameObject cueInstance = Instantiate(cue);
         cueInstance.GetComponent<PoolCue>().CueBall = cueBallInstance;
-        cueInstance.GetComponent<PoolCue>().HitMeter = hitMeterUI;
 
         //Camera
-        Camera.main.GetComponent<CameraMovement>().Cue = cueInstance;
+        Camera.main.GetComponent<CameraMovement>().CueBall = cueBallInstance;
 
         //Game Info Script
         List<GameObject> balls = new List<GameObject>();
@@ -64,9 +61,9 @@ public class Setup : MonoBehaviour
         }
         balls.Add(cueBallInstance);
         GameInfo.instance.Balls = balls.ToArray();
+        GameInfo.instance.Cue = cueInstance;
 
         //Preview Lines Script
-        GetComponent<PreviewLines>().Cue = cueInstance;
         GetComponent<PreviewLines>().CueBall = cueBallInstance;
     }
 

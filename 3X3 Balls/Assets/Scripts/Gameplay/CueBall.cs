@@ -6,20 +6,20 @@ public class CueBall : MonoBehaviour
 {
     public float moveSpeed;
 
-    private Vector3 farLeft;
-    private Vector3 farRight;
+    private Vector3 firstHitLeftPos;
+    private Vector3 firstHitRightPos;
     private float percent;
 
-    public Vector3 FarLeft
+    public Vector3 FirstHitLeftPos
     {
-        get { return farLeft; }
-        set { farLeft = value; }
+        get { return firstHitLeftPos; }
+        set { firstHitLeftPos = value; }
     }
 
-    public Vector3 FarRight
+    public Vector3 FirstHitRightPos
     {
-        get { return farRight; }
-        set { farRight = value; }
+        get { return firstHitRightPos; }
+        set { firstHitRightPos = value; }
     }
 
     // Start is called before the first frame update
@@ -29,7 +29,7 @@ public class CueBall : MonoBehaviour
 
         //Ensure the ball starts at the initialized percent
         // * This will override the spawn position *
-        Vector3 newPosition = Vector3.Lerp(farLeft, farRight, percent);
+        Vector3 newPosition = Vector3.Lerp(firstHitLeftPos, firstHitRightPos, percent);
         transform.position = new Vector3(newPosition.x, transform.position.y, newPosition.z);
     }
 
@@ -61,7 +61,8 @@ public class CueBall : MonoBehaviour
 
         percent = Mathf.Clamp(percent, 0.0f, 1.0f);
 
-        Vector3 newPosition = Vector3.Lerp(farLeft, farRight, percent);
+        Vector3 newPosition = Vector3.Lerp(firstHitLeftPos, firstHitRightPos, percent);
         transform.position = new Vector3(newPosition.x, transform.position.y, newPosition.z);
+        Camera.main.GetComponent<CameraMovement>().Aim();
     }
 }

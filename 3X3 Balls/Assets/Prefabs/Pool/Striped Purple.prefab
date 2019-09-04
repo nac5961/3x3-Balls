@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3707272205962203471}
   - component: {fileID: 3071085386867553299}
   - component: {fileID: 4598448721748303887}
+  - component: {fileID: 8800984948658421551}
   m_Layer: 0
   m_Name: Striped Purple
   m_TagString: Striped
@@ -108,3 +109,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &8800984948658421551
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 419178474664688659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7c0293d7119f4cb04995a46f219af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

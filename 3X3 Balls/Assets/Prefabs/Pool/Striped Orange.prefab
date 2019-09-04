@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1999103351893214660}
   - component: {fileID: 167321921192403096}
   - component: {fileID: 7575687205846979116}
+  - component: {fileID: 5417986565841959061}
   m_Layer: 0
   m_Name: Striped Orange
   m_TagString: Striped
@@ -108,3 +109,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5417986565841959061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3251006430610581656}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10a7c0293d7119f4cb04995a46f219af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
