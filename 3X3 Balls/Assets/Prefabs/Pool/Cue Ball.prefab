@@ -13,9 +13,11 @@ GameObject:
   - component: {fileID: 5893676624229803606}
   - component: {fileID: 2680210914926409025}
   - component: {fileID: 8521495773983566025}
+  - component: {fileID: 1362601562784031964}
+  - component: {fileID: 1649016491799724804}
   m_Layer: 0
   m_Name: Cue Ball
-  m_TagString: Untagged
+  m_TagString: Cue Ball
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,3 +110,33 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1362601562784031964
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1133491906790310239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6513d592e11e186419bc5bc8d4f8bb73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deadzone: -50
+--- !u!114 &1649016491799724804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1133491906790310239}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 008b6763123ccef43bcfdd6381339ed6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  materials:
+  - {fileID: 2100000, guid: 6c4b23a5b28bf634798d78c0616e0105, type: 2}
+  - {fileID: 2100000, guid: a711385d906e82f40998e2c3b11afa7d, type: 2}
+  firstPreviewDistance: 10
+  secondPreviewDistance: 3
