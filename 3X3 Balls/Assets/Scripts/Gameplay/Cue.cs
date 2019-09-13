@@ -115,5 +115,30 @@ public class Cue : MonoBehaviour
             force = new Vector3(force.x, 0.0f, force.z) * power;
             activeCueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
         }
+
+        //SHOWCASE
+        else if (SceneInfo.instance.IsTakingShot && Input.GetKeyDown(KeyCode.R))
+        {
+            SceneInfo.instance.IsAiming = false;
+            SceneInfo.instance.IsTakingShot = false;
+
+            float power = 250.0f;
+
+            Vector3 force = activeCueBall.transform.position - transform.position;
+            force = new Vector3(force.x, 0.0f, force.z) * power;
+            activeCueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
+        }
+
+        else if (SceneInfo.instance.IsTakingShot && Input.GetKeyDown(KeyCode.T))
+        {
+            SceneInfo.instance.IsAiming = false;
+            SceneInfo.instance.IsTakingShot = false;
+
+            float power = maxForce;
+
+            Vector3 force = activeCueBall.transform.position - transform.position;
+            force = new Vector3(force.x, 0.0f, force.z) * power;
+            activeCueBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
+        }
     }
 }
