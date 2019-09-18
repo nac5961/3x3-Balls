@@ -12,8 +12,10 @@ public class CourseSetup : MonoBehaviour
 
     public GameObject solidBallsSpawn;
     public GameObject stripedBallsSpawn;
+    public GameObject eightBallSpawn;
     public GameObject solidBalls;
     public GameObject stripedBalls;
+    public GameObject eightBall;
 
     // Start is called before the first frame update
     void Start()
@@ -30,32 +32,36 @@ public class CourseSetup : MonoBehaviour
     private void SetupCourse()
     {
         //Solid Balls
-        GameObject solids = Instantiate(solidBalls, solidBallsSpawn.transform.position, Quaternion.identity);
-        for (int i = 0; i < solids.transform.childCount; i++)
-        {
-            if (GameInfo.instance.CapturedBalls.Contains(solids.transform.GetChild(i).name))
-            {
-                Destroy(solids.transform.GetChild(i).gameObject);
-            }
-            else
-            {
-                solids.transform.GetChild(i).GetComponent<Ball>().RespawnPos = solidBallsSpawn.transform.position;
-            }
-        }
+        //GameObject solids = Instantiate(solidBalls, solidBallsSpawn.transform.position, Quaternion.identity);
+        //for (int i = 0; i < solids.transform.childCount; i++)
+        //{
+        //    if (GameInfo.instance.CapturedBalls.Contains(solids.transform.GetChild(i).name))
+        //    {
+        //        Destroy(solids.transform.GetChild(i).gameObject);
+        //    }
+        //    else
+        //    {
+        //        solids.transform.GetChild(i).GetComponent<Ball>().RespawnPos = solidBallsSpawn.transform.position;
+        //    }
+        //}
 
         //Striped Balls
-        GameObject stripes = Instantiate(stripedBalls, stripedBallsSpawn.transform.position, Quaternion.identity);
-        for (int i = 0; i < stripes.transform.childCount; i++)
-        {
-            if (GameInfo.instance.CapturedBalls.Contains(stripes.transform.GetChild(i).name))
-            {
-                Destroy(stripes.transform.GetChild(i).gameObject);
-            }
-            else
-            {
-                stripes.transform.GetChild(i).GetComponent<Ball>().RespawnPos = stripedBallsSpawn.transform.position;
-            }
-        }
+        //GameObject stripes = Instantiate(stripedBalls, stripedBallsSpawn.transform.position, Quaternion.identity);
+        //for (int i = 0; i < stripes.transform.childCount; i++)
+        //{
+        //    if (GameInfo.instance.CapturedBalls.Contains(stripes.transform.GetChild(i).name))
+        //    {
+        //        Destroy(stripes.transform.GetChild(i).gameObject);
+        //    }
+        //    else
+        //    {
+        //        stripes.transform.GetChild(i).GetComponent<Ball>().RespawnPos = stripedBallsSpawn.transform.position;
+        //    }
+        //}
+
+        //Eight Ball
+        GameObject eightB = Instantiate(eightBall, eightBallSpawn.transform.position, Quaternion.identity);
+        eightB.GetComponent<Ball>().RespawnPos = eightBallSpawn.transform.position;
 
         //Cue Balls
         GameObject p1Ball = Instantiate(cueBall, p1Spawn.transform.position, Quaternion.identity);

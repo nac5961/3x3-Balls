@@ -9,6 +9,7 @@ TagManager:
   - Solid
   - Cue Ball
   - Cue
+  - Ground
   layers:
   - Default
   - TransparentFX

@@ -29,6 +29,8 @@ public class CueBall : MonoBehaviour
     void Update()
     {
         Respawn(false);
+        MoveLeftOrRight();
+        Jump();
     }
 
     public void Respawn(bool forced)
@@ -46,6 +48,38 @@ public class CueBall : MonoBehaviour
                 transform.position = respawnPos;
                 GetComponent<Rigidbody>().velocity = Vector3.zero;
                 GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            }
+        }
+    }
+
+    private void MoveLeftOrRight()
+    {
+        if (!SceneInfo.instance.IsAiming && !SceneInfo.instance.IsTurnOver)
+        {
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                GetComponent<Rigidbody>().AddTorque(transform.right * -3.0f);
+                Debug.Log("turning left");
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                GetComponent<Rigidbody>().AddTorque(transform.right * 3.0f);
+                Debug.Log("turning right");
+            }
+        }
+    }
+
+    private void Jump()
+    {
+        if (!SceneInfo.instance.IsAiming && !SceneInfo.instance.IsTurnOver)
+        {
+            if (Physics.Raycast(transform.position, -Vector3.up, 1.0f) && GetComponent<Rigidbody>().velocity.y == 0)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    GetComponent<Rigidbody>().AddForce(transform.up * 200.0f);
+                    Debug.Log("jumped");
+                }
             }
         }
     }
