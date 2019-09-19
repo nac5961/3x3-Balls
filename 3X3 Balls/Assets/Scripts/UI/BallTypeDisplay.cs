@@ -6,8 +6,6 @@ using TMPro;
 public class BallTypeDisplay : MonoBehaviour
 {
     public GameObject panel;
-    public GameObject p1Text;
-    public GameObject p2Text;
     public float displayDuration;
 
     private bool beginDisplay;
@@ -32,7 +30,6 @@ public class BallTypeDisplay : MonoBehaviour
             if (beginDisplay)
             {
                 beginDisplay = false;
-                SetBallType();
             }
             if (displayDuration > 0.0f)
             {
@@ -61,11 +58,5 @@ public class BallTypeDisplay : MonoBehaviour
         {
             panel.SetActive(false);
         }
-    }
-
-    private void SetBallType()
-    {
-        p1Text.GetComponent<TextMeshProUGUI>().text = GameInfo.instance.P1Type.ToString();
-        p2Text.GetComponent<TextMeshProUGUI>().text = GameInfo.instance.P2Type.ToString();
     }
 }

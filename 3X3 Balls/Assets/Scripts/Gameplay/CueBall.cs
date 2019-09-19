@@ -29,8 +29,8 @@ public class CueBall : MonoBehaviour
     void Update()
     {
         Respawn(false);
-        MoveLeftOrRight();
-        Jump();
+        //MoveLeftOrRight();
+        //Jump();
     }
 
     public void Respawn(bool forced)
@@ -86,7 +86,7 @@ public class CueBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Pool Collider")
+        if (other.gameObject.CompareTag("Pool Collider"))
         {
             onPoolTable = true;
         }
@@ -94,9 +94,24 @@ public class CueBall : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name == "Pool Collider")
+        if (other.gameObject.CompareTag("Pool Collider"))
         {
             onPoolTable = false;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            Respawn(true);
+        }
+        else if (collision.gameObject.CompareTag("Hole"))
+        {
+            if (!SceneInfo.instance.IsRoundOver)
+            {
+                Respawn(true);
+            }
         }
     }
 }

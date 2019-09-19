@@ -10,6 +10,8 @@ TagManager:
   - Cue Ball
   - Cue
   - Ground
+  - Hole
+  - Pool Collider
   layers:
   - Default
   - TransparentFX
