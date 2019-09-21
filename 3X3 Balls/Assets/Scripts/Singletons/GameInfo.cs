@@ -95,8 +95,11 @@ public class GameInfo : MonoBehaviour
         }
         else
         {
-            p1Type = BallType.Striped;
-            p2Type = BallType.Solid;
+            //p1Type = BallType.Striped;
+            //p2Type = BallType.Solid;
+
+            p1Type = BallType.Solid;
+            p2Type = BallType.Striped;
         }
     }
 }

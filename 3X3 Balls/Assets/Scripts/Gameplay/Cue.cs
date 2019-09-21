@@ -14,6 +14,7 @@ public class Cue : MonoBehaviour
     private AimDisplay aimUI;
     private float boundsY;
 
+
     public GameObject P1CueBall
     {
         set { p1CueBall = value; }
@@ -41,57 +42,85 @@ public class Cue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneInfo.instance.IsAiming && !SceneInfo.instance.DisableControls)
-        {
-            RotateByKey();
-            HitBall();
-        }
+        AlignWithBall();
+        //if (SceneInfo.instance.IsAiming && !SceneInfo.instance.DisableControls)
+        //{
+        //    RotateByKey();
+        //    HitBall();
+        //}
     }
 
-    /// <summary>
-    /// Aligns the pool cue with the ball based on the size of the cue and the ball
-    /// </summary>
+    private void MoveWithCamera()
+    {
+        transform.position = Camera.main.transform.position;
+    }
+
+    private void RotateWithCamera()
+    {
+        Vector3 rot = Camera.main.GetComponent<ThirdPersonCamera>().Rotation;
+        transform.LookAt(activeCueBall.transform);
+    }
+
     public void AlignWithBall()
     {
-        SceneInfo.instance.IsAiming = true;
+        transform.rotation = Quaternion.identity;
 
+        SceneInfo.instance.IsAiming = true;
         activeCueBall = SceneInfo.instance.Turn == GameInfo.instance.P1Type ? p1CueBall : p2CueBall;
 
         Bounds ballBounds = activeCueBall.GetComponent<MeshRenderer>().bounds;
 
-        //Note: This works based on the assumption that the pivot point is at the center of the pool cue.
-        float xOffset = boundsY + ballBounds.extents.x;
-        float yOffset = ballBounds.extents.y;
-        float zOffset = 0.0f;
+        Vector3 toBall = activeCueBall.transform.position - Camera.main.transform.position;
+        toBall = new Vector3(toBall.x, 0.0f, toBall.z);
+        transform.position = activeCueBall.transform.position - toBall.normalized;
 
-        //Reset position and angle
-        transform.position = activeCueBall.transform.position + new Vector3(-xOffset, yOffset, zOffset);
-        transform.rotation = Quaternion.Euler(0.0f, 0.0f, hitAngle);
-
-        Camera.main.GetComponent<CameraMovement>().Aim();
+        transform.RotateAround(transform.position, Camera.main.transform.right, -80.0f);
+        
     }
+
+
+    /// <summary>
+    /// Aligns the pool cue with the ball based on the size of the cue and the ball
+    /// </summary>
+    //public void AlignWithBall()
+    //{
+    //    SceneInfo.instance.IsAiming = true;
+
+    //    activeCueBall = SceneInfo.instance.Turn == GameInfo.instance.P1Type ? p1CueBall : p2CueBall;
+
+    //    Bounds ballBounds = activeCueBall.GetComponent<MeshRenderer>().bounds;
+
+    //    //Note: This works based on the assumption that the pivot point is at the center of the pool cue.
+    //    float xOffset = boundsY + ballBounds.extents.x;
+    //    float yOffset = ballBounds.extents.y;
+    //    float zOffset = 0.0f;
+
+    //    //Reset position and angle
+    //    transform.position = activeCueBall.transform.position + new Vector3(-xOffset, yOffset, zOffset);
+    //    transform.rotation = Quaternion.Euler(0.0f, 0.0f, hitAngle);
+    //}
 
     /// <summary>
     /// Rotates the pool cue with keyboard controls
     /// </summary>
     private void RotateByKey()
     {
-        if (!SceneInfo.instance.IsTakingShot)
-        {
-            //Rotate left
-            if (Input.GetKey(KeyCode.LeftArrow))
-            {
-                transform.RotateAround(activeCueBall.transform.position, Vector3.up, -rotationSpeed * Time.deltaTime);
-                Camera.main.GetComponent<CameraMovement>().Aim();
-            }
+        transform.rotation = Camera.main.transform.rotation;
 
-            //Rotate right
-            else if (Input.GetKey(KeyCode.RightArrow))
-            {
-                transform.RotateAround(activeCueBall.transform.position, Vector3.up, rotationSpeed * Time.deltaTime);
-                Camera.main.GetComponent<CameraMovement>().Aim();
-            }
-        }
+        //if (!SceneInfo.instance.IsTakingShot)
+        //{
+        //    //Rotate left
+        //    if (Input.GetKey(KeyCode.LeftArrow))
+        //    {
+        //        transform.RotateAround(activeCueBall.transform.position, Vector3.up, -rotationSpeed * Time.deltaTime);
+        //    }
+
+        //    //Rotate right
+        //    else if (Input.GetKey(KeyCode.RightArrow))
+        //    {
+        //        transform.RotateAround(activeCueBall.transform.position, Vector3.up, rotationSpeed * Time.deltaTime);
+        //    }
+        //}
     }
 
     private void HitBall()

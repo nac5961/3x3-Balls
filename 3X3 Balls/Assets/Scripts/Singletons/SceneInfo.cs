@@ -94,7 +94,8 @@ public class SceneInfo : MonoBehaviour
         }
         else
         {
-            turn = BallType.Striped;
+            //turn = BallType.Striped;
+            turn = BallType.Solid;
         }
     }
 

@@ -83,7 +83,8 @@ public class CourseSetup : MonoBehaviour
         p2Ball.GetComponent<CueBall>().RespawnPos = p2Spawn.transform.position;
 
         //Camera
-        Camera.main.GetComponent<CameraMovement>().CueScript = poolCue.GetComponent<Cue>();
+        Camera.main.gameObject.AddComponent<ThirdPersonCamera>();
+        Camera.main.GetComponent<ThirdPersonCamera>().Target = p1Ball.transform;
 
         //Canvas
         GameObject.Find("Canvas").GetComponent<FadeScreen>().CueScript = poolCue.GetComponent<Cue>();
