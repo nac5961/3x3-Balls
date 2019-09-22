@@ -28,15 +28,9 @@ public class ThirdPersonCamera : MonoBehaviour
     private bool isColliding;
     private Vector3[] clipPoints;
 
-
     public Transform Target
     {
         set { target = value; }
-    }
-
-    public Vector3 Rotation
-    {
-        get { return new Vector3(xRot, yRot, 0.0f); }
     }
 
 
@@ -44,7 +38,6 @@ public class ThirdPersonCamera : MonoBehaviour
     void Start()
     {
         //Position
-        SceneInfo.instance.SetActiveBall();
         target = SceneInfo.instance.ActiveBall.transform;
         distance = -4.0f;
         adjDistance = distance;
@@ -69,20 +62,26 @@ public class ThirdPersonCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneInfo.instance.IsAiming && !SceneInfo.instance.IsTakingShot)
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
-            RotateAroundTarget();
+            if (!SceneInfo.instance.IsTakingShot)
+            {
+                RotateAroundTarget();
+            }
+
+            Zoom();
         }
-        
-        Zoom();
     }
 
     void FixedUpdate()
     {
-        FollowTarget();
-        LookAtTarget();
-        SetClipPoints();
-        SetAdjustedDistance();
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
+        {
+            FollowTarget();
+            LookAtTarget();
+            SetClipPoints();
+            SetAdjustedDistance();
+        }
     }
 
     /// <summary>

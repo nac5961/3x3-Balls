@@ -14,10 +14,14 @@ public class SceneInfo : MonoBehaviour
     private List<int> turns;
     private int currTurn;
 
+    private bool gameStart;
+    private bool paused;
+
     private bool isAiming;
     private bool isTakingShot;
+    private bool isHit;
     private bool isTurnOver;
-    private bool isRoundOver;
+    private bool isLevelOver;
 
     private bool disableControls;
 
@@ -28,11 +32,22 @@ public class SceneInfo : MonoBehaviour
     }
     public List<GameObject> Balls
     {
+        get { return balls; }
         set { balls = value; }
     }
     public GameObject ActiveBall
     {
         get { return activeBall; }
+    }
+    public bool GameStart
+    {
+        get { return gameStart; }
+        set { gameStart = value; }
+    }
+    public bool Paused
+    {
+        get { return paused; }
+        set { paused = value; }
     }
     public bool IsAiming
     {
@@ -46,16 +61,22 @@ public class SceneInfo : MonoBehaviour
         set { isTakingShot = value; }
     }
 
+    public bool IsHit
+    {
+        get { return isHit; }
+        set { isHit = value; }
+    }
+
     public bool IsTurnOver
     {
         get { return isTurnOver; }
         set { isTurnOver = value; }
     }
 
-    public bool IsRoundOver
+    public bool IsLevelOver
     {
-        get { return isRoundOver; }
-        set { isRoundOver = value; }
+        get { return isLevelOver; }
+        set { isLevelOver = value; }
     }
 
     public bool DisableControls
@@ -74,32 +95,43 @@ public class SceneInfo : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
 
-    // Start is called before the first frame update
-    void Start()
-    {
+        //Initialize in Awake() so that other scripts can access these variables on Start()
+        balls = new List<GameObject>();
+
         scores = new List<int>();
         turns = new List<int>();
         currTurn = 0;
 
-        isAiming = true; //make false
+        gameStart = false;
+        paused = false;
+
+        isAiming = false;
         isTakingShot = false;
         isTurnOver = false;
-        isRoundOver = false;
+        isLevelOver = false;
 
-        disableControls = true;
+        disableControls = false;
 
         InitializeScores();
         AssignTurns();
     }
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (!isAiming)
+        if (gameStart && !paused)
         {
-            EndTurn();
+            if (isHit)
+            {
+                EndTurn();
+            }
         }
     }
 
@@ -175,6 +207,7 @@ public class SceneInfo : MonoBehaviour
             //All balls stopped
             if (i == balls.Count - 1)
             {
+                isHit = false;
                 isTurnOver = true;
 
                 //TEMPORARY
@@ -186,6 +219,7 @@ public class SceneInfo : MonoBehaviour
                 }
 
                 isTurnOver = false;
+                isAiming = true;
                 SetActiveBall();
                 Camera.main.GetComponent<ThirdPersonCamera>().Target = activeBall.transform;
                 GameObject.Find("Canvas").GetComponent<TurnDisplay>().StartDisplay();

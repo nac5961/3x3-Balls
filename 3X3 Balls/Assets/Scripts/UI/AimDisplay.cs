@@ -60,8 +60,6 @@ public class AimDisplay : MonoBehaviour
         {
             powerMeter.SetActive(true);
 
-            //Reset values to animate from beginning
-            animationSpeed = Mathf.Abs(animationSpeed);
             powerMeter.GetComponent<Image>().fillAmount = 0.0f;
         }
     }
@@ -71,6 +69,8 @@ public class AimDisplay : MonoBehaviour
         if (powerMeter.activeSelf)
         {
             powerMeter.SetActive(false);
+
+            powerMeter.GetComponent<Image>().fillAmount = 0.0f;
         }
     }
 
@@ -80,11 +80,11 @@ public class AimDisplay : MonoBehaviour
 
         float percent = img.fillAmount;
 
-        if (Input.GetAxis("Vertical") > 0.0f)
+        if (Input.GetButton("Increase Power"))
         {
             percent += animationSpeed * Time.deltaTime;
         }
-        else if (Input.GetAxis("Vertical") < 0.0f)
+        else if (Input.GetButton("Decrease Power"))
         {
             percent -= animationSpeed * Time.deltaTime;
         }

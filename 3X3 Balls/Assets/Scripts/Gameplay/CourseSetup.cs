@@ -31,38 +31,45 @@ public class CourseSetup : MonoBehaviour
         GameObject eightBall = Instantiate(eightBallPrefab, eightBallSpawn.transform.position, Quaternion.identity);
 
         //Cue Balls aka Players
-        GameObject p1Ball = Instantiate(cueBallPrefab, p1Spawn.transform.position, Quaternion.identity);
-        GameObject p2Ball = Instantiate(cueBallPrefab, p2Spawn.transform.position, Quaternion.identity);
-        MoveAboveSurface(p1Ball, p1Ball.GetComponent<SphereCollider>());
-        MoveAboveSurface(p2Ball, p2Ball.GetComponent<SphereCollider>());
+        GameObject[] spawns = { p1Spawn, p2Spawn };
+
+        for (int i = 0; i < GameInfo.instance.Players; i++)
+        {
+            GameObject playerBall = Instantiate(cueBallPrefab, spawns[i].transform.position, Quaternion.identity);
+            MoveAboveSurface(playerBall, playerBall.GetComponent<SphereCollider>());
+
+            SceneInfo.instance.Balls.Add(playerBall);
+        }
 
         //Cue
         GameObject cue = Instantiate(cuePrefab);
 
-        //Camera
-        Camera.main.gameObject.AddComponent<ThirdPersonCamera>();
+        //Scene Manager
+        SceneInfo.instance.Balls.Add(eightBall); //add last so we can index the player balls 
+        SceneInfo.instance.Cue = cue;
+        SceneInfo.instance.SetActiveBall();
 
         //Canvas
         //GameObject.Find("Canvas").GetComponent<FadeScreen>().CueScript = poolCue.GetComponent<Cue>();
 
-        //Scene Manager
-        List<GameObject> balls = new List<GameObject>();
-        balls.Add(p1Ball);
-        balls.Add(p2Ball);
-        balls.Add(eightBall);
-        SceneInfo.instance.Balls = balls;
-        SceneInfo.instance.Cue = cue;
+        //Camera
+        Camera.main.gameObject.AddComponent<ThirdPersonCamera>();
+
+        //TEMPORARY
+        SceneInfo.instance.GameStart = true;
+        SceneInfo.instance.IsAiming = true;
     }
 
     /// <summary>
     /// Moves a gameobject above a flat surface when spawned.
-    /// * Make sure the gameobject is spawned above the surface's collider *
+    /// * Make sure the spawn point is above the surface's collider *
     /// </summary>
     private void MoveAboveSurface(GameObject item, Collider collider)
     {
         RaycastHit hitInfo;
-        Physics.Raycast(item.transform.position, Vector3.down, out hitInfo);
-
-        item.transform.position = new Vector3(item.transform.position.x, hitInfo.point.y + collider.bounds.extents.y, item.transform.position.z);
+        if (Physics.Raycast(item.transform.position, Vector3.down, out hitInfo))
+        {
+            item.transform.position = new Vector3(item.transform.position.x, hitInfo.point.y + collider.bounds.extents.y, item.transform.position.z);
+        }
     }
 }

@@ -7,6 +7,7 @@ public class PreviewLine : MonoBehaviour
     public Material[] materials;
     public float firstPreviewDistance;
     public float secondPreviewDistance;
+    public LayerMask mask;
 
     // Start is called before the first frame update
     void Start()
@@ -23,61 +24,57 @@ public class PreviewLine : MonoBehaviour
 
     private void OnRenderObject()
     {
-        if (gameObject == SceneInfo.instance.ActiveBall)
+        if (SceneInfo.instance.GameStart && SceneInfo.instance.IsAiming && gameObject == SceneInfo.instance.ActiveBall)
         {
             float firstDistance = firstPreviewDistance;
             float secondDistance = secondPreviewDistance;
 
             GameObject cue = SceneInfo.instance.Cue;
 
-            //Get aim direction
-            if (SceneInfo.instance.IsAiming)
+            Vector3 toCueBall = transform.position - cue.transform.position;
+            toCueBall = new Vector3(toCueBall.x, 0.0f, toCueBall.z).normalized;
+
+            //Check if the first preview line will hit something to limit its length
+            RaycastHit hitInfo;
+            if (Physics.SphereCast(transform.position, GetComponent<SphereCollider>().radius, toCueBall, out hitInfo, firstPreviewDistance, mask))
             {
-                Vector3 toCueBall = transform.position - cue.transform.position;
-                toCueBall = new Vector3(toCueBall.x, 0.0f, toCueBall.z).normalized;
+                //Limit the length
+                firstDistance = hitInfo.distance;
 
-                //Check if the first preview line will hit something to limit its length
-                RaycastHit hitInfo;
-                if (Physics.SphereCast(transform.position, GetComponent<SphereCollider>().radius, toCueBall, out hitInfo, firstPreviewDistance))
+                //Another ball is hit, show second preview line
+                if (hitInfo.transform.CompareTag("Cue Ball") || hitInfo.transform.CompareTag("Eight Ball"))
                 {
-                    //Limit the length
-                    firstDistance = hitInfo.distance;
+                    Vector3 toOtherBall = hitInfo.transform.position - hitInfo.point;
+                    toOtherBall = new Vector3(toOtherBall.x, 0.0f, toOtherBall.z).normalized;
 
-                    //Another ball is hit, show second preview line
-                    if (hitInfo.transform.CompareTag("Solid") || hitInfo.transform.CompareTag("Striped") || hitInfo.transform.CompareTag("Ball"))
+                    RaycastHit hitInfo2;
+                    if (Physics.SphereCast(hitInfo.point, hitInfo.transform.GetComponent<SphereCollider>().radius, toOtherBall, out hitInfo2, secondPreviewDistance, mask))
                     {
-                        Vector3 toOtherBall = hitInfo.transform.position - hitInfo.point;
-                        toOtherBall = new Vector3(toOtherBall.x, 0.0f, toOtherBall.z).normalized;
-
-                        RaycastHit hitInfo2;
-                        if (Physics.SphereCast(hitInfo.point, hitInfo.transform.GetComponent<SphereCollider>().radius, toOtherBall, out hitInfo2, secondPreviewDistance))
+                        //Limit the length
+                        //Make sure the raycast is not hitting the ball that is being raycasted from
+                        //This may happen since hitInfo.point is the origin and not the ball itself (hitInfo.transform.position)
+                        if (hitInfo2.transform.gameObject != hitInfo.transform.gameObject)
                         {
-                            //Limit the length
-                            //Make sure the raycast is not hitting the ball that is being raycasted from
-                            //This may happen since hitInfo.point is the origin and not the ball itself (hitInfo.transform.position)
-                            if (hitInfo2.transform.gameObject != hitInfo.transform.gameObject)
-                            {
-                                secondDistance = hitInfo2.distance;
-                            }
+                            secondDistance = hitInfo2.distance;
                         }
-
-                        //Draw second preview line
-                        //hitInfo.point may be more accurate than hitInfo.transform.position
-                        materials[1].SetPass(0);
-                        GL.Begin(GL.LINES);
-                        GL.Vertex(hitInfo.point);
-                        GL.Vertex(hitInfo.point + (toOtherBall * secondDistance));
-                        GL.End();
                     }
-                }
 
-                //Draw first preview line
-                materials[0].SetPass(0);
-                GL.Begin(GL.LINES);
-                GL.Vertex(transform.position);
-                GL.Vertex(transform.position + (toCueBall * firstDistance));
-                GL.End();
+                    //Draw second preview line
+                    //hitInfo.point may be more accurate than hitInfo.transform.position
+                    materials[1].SetPass(0);
+                    GL.Begin(GL.LINES);
+                    GL.Vertex(hitInfo.point);
+                    GL.Vertex(hitInfo.point + (toOtherBall * secondDistance));
+                    GL.End();
+                }
             }
+
+            //Draw first preview line
+            materials[0].SetPass(0);
+            GL.Begin(GL.LINES);
+            GL.Vertex(transform.position);
+            GL.Vertex(transform.position + (toCueBall * firstDistance));
+            GL.End();
         }
     }
 }

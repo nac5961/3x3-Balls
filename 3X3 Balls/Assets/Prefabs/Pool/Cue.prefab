@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 3898335088228325880}
   - component: {fileID: 5423087824742474702}
   - component: {fileID: 1764888578125373239}
-  - component: {fileID: 7013905907354270728}
   - component: {fileID: 5986209295684695477}
   m_Layer: 8
-  m_Name: PoolCue
+  m_Name: Cue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -79,20 +78,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!136 &7013905907354270728
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 18844268514552811}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  m_Radius: 0.001843369
-  m_Height: 0.096072845
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.048036423, z: 0}
 --- !u!114 &5986209295684695477
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -105,6 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88cc0c2ef7f83e6439de3793d989f21a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitAngle: 45
-  rotationSpeed: 40
-  maxForce: 300
+  hitAngle: -80
+  maxForce: 2000
+  distance: 1.2
+  animationSpeed: 10

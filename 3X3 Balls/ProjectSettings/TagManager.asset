@@ -5,12 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ball
-  - Striped
-  - Solid
   - Cue Ball
   - Cue
   - Ground
   - Hole
+  - Eight Ball
   - Pool Collider
   layers:
   - Default
@@ -22,7 +21,7 @@ TagManager:
   - 
   - 
   - IgnoreCam
-  - 
+  - IgnorePreviewLine
   - 
   - 
   - 

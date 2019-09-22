@@ -38,9 +38,6 @@ public class GameInfo : MonoBehaviour
     {
         //Default players
         SetPlayers(2);
-
-        //REMOVE
-        SetupGame();
     }
 
     // Update is called once per frame
@@ -65,5 +62,13 @@ public class GameInfo : MonoBehaviour
     {
         level = 1;
         fastestPlayer = -1;
+    }
+
+    /// <summary>
+    /// TEMPORARY METHOD for loading the first level 
+    /// </summary>
+    public void LoadLevel()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("NewMockup");
     }
 }
