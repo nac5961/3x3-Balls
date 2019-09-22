@@ -8,19 +8,6 @@ public class PreviewLine : MonoBehaviour
     public float firstPreviewDistance;
     public float secondPreviewDistance;
 
-    private BallType player;
-    private GameObject cue;
-
-    public GameObject Cue
-    {
-        set { cue = value; }
-    }
-
-    public BallType Player
-    {
-        set { player = value; }
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -36,10 +23,12 @@ public class PreviewLine : MonoBehaviour
 
     private void OnRenderObject()
     {
-        if (player == SceneInfo.instance.Turn)
+        if (gameObject == SceneInfo.instance.ActiveBall)
         {
             float firstDistance = firstPreviewDistance;
             float secondDistance = secondPreviewDistance;
+
+            GameObject cue = SceneInfo.instance.Cue;
 
             //Get aim direction
             if (SceneInfo.instance.IsAiming)

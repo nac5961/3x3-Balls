@@ -44,17 +44,19 @@ public class ThirdPersonCamera : MonoBehaviour
     void Start()
     {
         //Position
-        distance = -8.0f;
+        SceneInfo.instance.SetActiveBall();
+        target = SceneInfo.instance.ActiveBall.transform;
+        distance = -4.0f;
         adjDistance = distance;
         maxDistance = -2.0f;
         minDistance = -15.0f;
-        zoomSpeed = 60.0f;
+        zoomSpeed = 400.0f;
         smoothTime = 0.05f;
 
         //Rotation
-        xRot = 0.0f;
-        yRot = 0.0f;
-        maxXRot = -25.0f; //Change to 25.0f or similar to allow camera to get close to target
+        xRot = -18.0f; //Sets start rotation
+        yRot = 0.0f; //Sets start rotation
+        maxXRot = -18.0f; //Change to 25.0f or similar to allow camera to get close to target
         minXRot = -85.0f;
         rotationSpeed = 60.0f;
 
@@ -126,7 +128,7 @@ public class ThirdPersonCamera : MonoBehaviour
     private void RotateAroundTarget()
     {
         xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
-        yRot += -Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime;
+        yRot += Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime;
 
         xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
     }

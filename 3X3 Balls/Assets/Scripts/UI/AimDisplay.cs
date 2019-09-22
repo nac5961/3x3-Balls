@@ -79,15 +79,19 @@ public class AimDisplay : MonoBehaviour
         Image img = powerMeter.GetComponent<Image>();
 
         float percent = img.fillAmount;
-        percent += animationSpeed * Time.deltaTime;
+
+        if (Input.GetAxis("Vertical") > 0.0f)
+        {
+            percent += animationSpeed * Time.deltaTime;
+        }
+        else if (Input.GetAxis("Vertical") < 0.0f)
+        {
+            percent -= animationSpeed * Time.deltaTime;
+        }
+
         percent = Mathf.Clamp(percent, 0.0f, 1.0f);
 
         img.fillAmount = percent;
-
-        if (percent >= 1.0f || percent <= 0.0f)
-        {
-            animationSpeed = -animationSpeed;
-        }
     }
 
     public float GetFillAmount()

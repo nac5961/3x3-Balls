@@ -2,56 +2,21 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum BallType
-{
-    Solid,
-    Striped
-}
-
 public class GameInfo : MonoBehaviour
 {
     public static GameInfo instance;
 
-    private BallType p1Type;
-    private BallType p2Type;
+    private int level;
+    private int players;
+    private int fastestPlayer;
 
-    private int currLevel;
-    private int[] levels;
-    private List<string> capturedBalls;
-
-    private bool isFirstCourse = true;
-
-    public BallType P1Type
+    public int Players
     {
-        get { return p1Type; }
+        get { return players; }
     }
-
-    public BallType P2Type
+    public int FastestPlayer
     {
-        get { return p2Type; }
-    }
-
-    public int CurrLevel
-    {
-        get { return currLevel; }
-        set { currLevel = value; }
-    }
-
-    public int[] Levels
-    {
-        get { return levels; }
-    }
-
-    public List<string> CapturedBalls
-    {
-        get { return capturedBalls; }
-        set { capturedBalls = value; }
-    }
-
-    public bool IsFirstCourse
-    {
-        get { return isFirstCourse; }
-        set { isFirstCourse = value; }
+        get { return fastestPlayer; }
     }
 
     private void Awake()
@@ -71,11 +36,11 @@ public class GameInfo : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currLevel = 0;
-        levels = new int[] { 1, 2, 3 };
-        capturedBalls = new List<string>();
+        //Default players
+        SetPlayers(2);
 
-        AssignBallType();
+        //REMOVE
+        SetupGame();
     }
 
     // Update is called once per frame
@@ -84,22 +49,21 @@ public class GameInfo : MonoBehaviour
         
     }
 
-    private void AssignBallType()
+    /// <summary>
+    /// Sets the number of players.
+    /// </summary>
+    /// <param name="num">number of players</param>
+    public void SetPlayers(int num)
     {
-        float rand = Random.Range(0.0f, 1.0f);
+        players = num;
+    }
 
-        if (rand <= 0.5f)
-        {
-            p1Type = BallType.Solid;
-            p2Type = BallType.Striped;
-        }
-        else
-        {
-            //p1Type = BallType.Striped;
-            //p2Type = BallType.Solid;
-
-            p1Type = BallType.Solid;
-            p2Type = BallType.Striped;
-        }
+    /// <summary>
+    /// Sets the variables to their default values to start the game.
+    /// </summary>
+    public void SetupGame()
+    {
+        level = 1;
+        fastestPlayer = -1;
     }
 }

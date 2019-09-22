@@ -18241,12 +18241,8 @@ GameObject:
   - component: {fileID: 1402674829}
   - component: {fileID: 1402674828}
   - component: {fileID: 1402674832}
-  - component: {fileID: 1402674834}
   - component: {fileID: 1402674833}
   - component: {fileID: 1402674836}
-  - component: {fileID: 1402674837}
-  - component: {fileID: 1402674835}
-  - component: {fileID: 1402674838}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -18363,34 +18359,6 @@ MonoBehaviour:
   panel: {fileID: 1408947265}
   text: {fileID: 1613977915}
   displayDuration: 1
---- !u!114 &1402674834
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1402674827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e41861849b1e6b24ea936122fa6c4cca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 1826932804}
-  displayDuration: 1
---- !u!114 &1402674835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1402674827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67764a55399956f46b8983a09df09dcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 141318222}
-  fadeSpeed: 0.4
 --- !u!114 &1402674836
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18406,35 +18374,6 @@ MonoBehaviour:
   panel: {fileID: 1647693331}
   powerMeter: {fileID: 851082307}
   animationSpeed: 1
---- !u!114 &1402674837
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1402674827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7464a5b2a72c2a4d9dd4eebd0ee3883, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 2010330536}
-  text: {fileID: 861054568}
-  displayDuration: 5
---- !u!114 &1402674838
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1402674827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f510fbe66a18b8499040a939d295251, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  panel: {fileID: 141318222}
-  fadeSpeed: 0.4
 --- !u!1001 &1407827651
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25530,14 +25469,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   p1Spawn: {fileID: 1918132079}
   p2Spawn: {fileID: 173801204}
-  cue: {fileID: 18844268514552811, guid: 7fe322a2307e47b4baa1927d0fa17e68, type: 3}
-  cueBall: {fileID: 1133491906790310239, guid: a4d79a2350085b449bbec324fac7439c, type: 3}
-  solidBallsSpawn: {fileID: 0}
-  stripedBallsSpawn: {fileID: 0}
+  cuePrefab: {fileID: 18844268514552811, guid: 7fe322a2307e47b4baa1927d0fa17e68, type: 3}
+  cueBallPrefab: {fileID: 1133491906790310239, guid: a4d79a2350085b449bbec324fac7439c,
+    type: 3}
   eightBallSpawn: {fileID: 775326319}
-  solidBalls: {fileID: 0}
-  stripedBalls: {fileID: 0}
-  eightBall: {fileID: 7391789941207013686, guid: 7d6674a0797e8b7429e7939db0daffea,
+  eightBallPrefab: {fileID: 7391789941207013686, guid: 7d6674a0797e8b7429e7939db0daffea,
     type: 3}
 --- !u!4 &2075726840
 Transform:

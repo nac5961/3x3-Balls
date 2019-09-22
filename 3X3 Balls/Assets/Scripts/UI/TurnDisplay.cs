@@ -15,10 +15,8 @@ public class TurnDisplay : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (!GameInfo.instance.IsFirstCourse)
-        {
-            StartDisplay();
-        }
+        //TEMPORARY
+        StartDisplay();
     }
 
     // Update is called once per frame
@@ -70,13 +68,7 @@ public class TurnDisplay : MonoBehaviour
 
     private void SetTurn()
     {
-        if (SceneInfo.instance.Turn == GameInfo.instance.P1Type)
-        {
-            text.GetComponent<TextMeshProUGUI>().text = "Player 1's Turn";
-        }
-        else
-        {
-            text.GetComponent<TextMeshProUGUI>().text = "Player 2's Turn";
-        }
+        int player = SceneInfo.instance.GetCurrentPlayer() + 1;
+        text.GetComponent<TextMeshProUGUI>().text = "Player " + player + "'s Turn";
     }
 }
