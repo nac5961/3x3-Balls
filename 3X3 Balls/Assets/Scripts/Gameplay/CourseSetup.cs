@@ -49,6 +49,7 @@ public class CourseSetup : MonoBehaviour
         SceneInfo.instance.Cue = cue;
         SceneInfo.instance.SetActiveBall();
         SceneInfo.instance.TargetBall = eightBall;
+        SceneInfo.instance.TargetBallMaterial = eightBall.GetComponent<Renderer>().material;
 
         //Canvas
         //GameObject.Find("Canvas").GetComponent<FadeScreen>().CueScript = poolCue.GetComponent<Cue>();

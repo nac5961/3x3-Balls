@@ -8,12 +8,17 @@ public class Ball : MonoBehaviour
 
     private bool updatePos;
     protected bool needsToRespawn;
+    private float waitTime = 2.0f;
+    private float timer = 0.0f;
+
+    private bool scored;
 
     // Start is called before the first frame update
     void Start()
     {
         prevPos = transform.position;
         needsToRespawn = false;
+        scored = false;
     }
 
     // Update is called once per frame
@@ -25,15 +30,26 @@ public class Ball : MonoBehaviour
             {
                 UpdatePrevPos();
             }
-            //if (SceneInfo.instance.IsTurnOver)
-            //{
-            //    if (needsToRespawn)
-            //    {
-            //        Respawn();
-            //    }
+            if (SceneInfo.instance.IsTurnOver)
+            {
+                timer = 0.0f;
+            }
+        }
+    }
 
-            //    UpdatePrevPos();
-            //}
+    void FixedUpdate()
+    {
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
+        {
+            if (SceneInfo.instance.IsHit)
+            {
+                timer += Time.deltaTime;
+
+                if (timer >= waitTime)
+                {
+                    StopMoving();
+                }              
+            }
         }
     }
 
@@ -46,18 +62,53 @@ public class Ball : MonoBehaviour
     {
         transform.position = prevPos;
 
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.Sleep();
+
         needsToRespawn = false;
+    }
+
+    private void StopMoving()
+    {
+        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+
+        if (rb.velocity.magnitude != 0)
+        {
+            if (rb.velocity.magnitude <= 0.1f)
+            {
+                rb.velocity = Vector3.zero;
+                rb.angularVelocity = Vector3.zero;
+                rb.Sleep();
+                Debug.Log("stop");
+            }
+            else if (rb.velocity.magnitude <= 1.0f)
+            {
+                Debug.Log("slowing");
+                rb.velocity *= 0.9f;
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("Hole") && gameObject != SceneInfo.instance.TargetBall))
         {
-            Respawn();
+            if (!scored)
+            {
+                Respawn();
+            }
+            
             //needsToRespawn = true;
         }
         else if (collision.gameObject.CompareTag("Hole") && gameObject == SceneInfo.instance.TargetBall)
         {
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+            gameObject.GetComponent<Rigidbody>().Sleep();
+
+            scored = true;
             SceneInfo.instance.SwitchTargetBall();
         }
     }

@@ -6,16 +6,11 @@ public class GameInfo : MonoBehaviour
 {
     public static GameInfo instance;
 
-    public Material targetMaterial;
-
     private int level;
+    private int totalLevels;
     private int players;
     private int fastestPlayer;
 
-    public Material TargetMaterial
-    {
-        get { return targetMaterial; }
-    }
     public int Players
     {
         get { return players; }

@@ -10,6 +10,7 @@ public class SceneInfo : MonoBehaviour
     private List<GameObject> balls;
     private GameObject activeBall;
     private GameObject targetBall;
+    private Material targetBallMaterial;
 
     private List<int> scores;
     private List<int> turns;
@@ -23,6 +24,7 @@ public class SceneInfo : MonoBehaviour
     private bool isHit;
     private bool isTurnOver;
     private bool isLevelOver;
+    private bool isGameOver;
 
     private bool disableControls;
 
@@ -44,6 +46,10 @@ public class SceneInfo : MonoBehaviour
     {
         get { return targetBall; }
         set { targetBall = value; }
+    }
+    public Material TargetBallMaterial
+    {
+        set { targetBallMaterial = value; }
     }
     public bool GameStart
     {
@@ -114,8 +120,10 @@ public class SceneInfo : MonoBehaviour
 
         isAiming = false;
         isTakingShot = false;
+        isHit = false;
         isTurnOver = false;
         isLevelOver = false;
+        isGameOver = false;
 
         disableControls = false;
 
@@ -190,7 +198,7 @@ public class SceneInfo : MonoBehaviour
     {
         GameObject oldTarget = targetBall;
         targetBall = activeBall;
-        targetBall.GetComponent<Renderer>().material = GameInfo.instance.TargetMaterial;
+        targetBall.GetComponent<Renderer>().material = targetBallMaterial;
 
         //Remove the player who scored since they already finished the course
         turns.RemoveAt(currTurn);
@@ -233,7 +241,7 @@ public class SceneInfo : MonoBehaviour
                 isTurnOver = true;
 
                 //TEMPORARY
-                scores[turns[currTurn]]++;
+                //scores[turns[currTurn]]++;
                 currTurn++;
 
                 if (currTurn >= turns.Count)

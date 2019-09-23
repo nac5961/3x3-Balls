@@ -62,7 +62,6 @@ public class ThirdPersonCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("x: " + xRot + " y: " + yRot + " d: " + distance);
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
             if (!SceneInfo.instance.IsTakingShot)
