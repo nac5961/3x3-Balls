@@ -48,6 +48,7 @@ public class CourseSetup : MonoBehaviour
         SceneInfo.instance.Balls.Add(eightBall); //add last so we can index the player balls 
         SceneInfo.instance.Cue = cue;
         SceneInfo.instance.SetActiveBall();
+        SceneInfo.instance.TargetBall = eightBall;
 
         //Canvas
         //GameObject.Find("Canvas").GetComponent<FadeScreen>().CueScript = poolCue.GetComponent<Cue>();

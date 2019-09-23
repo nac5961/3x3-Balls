@@ -9,6 +9,7 @@ public class SceneInfo : MonoBehaviour
     private GameObject cue;
     private List<GameObject> balls;
     private GameObject activeBall;
+    private GameObject targetBall;
 
     private List<int> scores;
     private List<int> turns;
@@ -38,6 +39,11 @@ public class SceneInfo : MonoBehaviour
     public GameObject ActiveBall
     {
         get { return activeBall; }
+    }
+    public GameObject TargetBall
+    {
+        get { return targetBall; }
+        set { targetBall = value; }
     }
     public bool GameStart
     {
@@ -178,6 +184,22 @@ public class SceneInfo : MonoBehaviour
     }
 
     /// <summary>
+    /// Switches the ball that players need to score to the player's ball who scored last.
+    /// </summary>
+    public void SwitchTargetBall()
+    {
+        GameObject oldTarget = targetBall;
+        targetBall = activeBall;
+        targetBall.GetComponent<Renderer>().material = GameInfo.instance.TargetMaterial;
+
+        //Remove the player who scored since they already finished the course
+        turns.RemoveAt(currTurn);
+
+        //Remove the ball scored
+        balls.Remove(oldTarget);
+    }
+
+    /// <summary>
     /// Sets the active ball based on which player's turn it is.
     /// </summary>
     public void SetActiveBall()
@@ -211,9 +233,10 @@ public class SceneInfo : MonoBehaviour
                 isTurnOver = true;
 
                 //TEMPORARY
+                scores[turns[currTurn]]++;
                 currTurn++;
 
-                if (currTurn >= GameInfo.instance.Players)
+                if (currTurn >= turns.Count)
                 {
                     currTurn = 0;
                 }

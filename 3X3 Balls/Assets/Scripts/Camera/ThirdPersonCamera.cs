@@ -39,7 +39,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         //Position
         target = SceneInfo.instance.ActiveBall.transform;
-        distance = -4.0f;
+        distance = -11.0f;
         adjDistance = distance;
         maxDistance = -2.0f;
         minDistance = -15.0f;
@@ -47,8 +47,8 @@ public class ThirdPersonCamera : MonoBehaviour
         smoothTime = 0.05f;
 
         //Rotation
-        xRot = -18.0f; //Sets start rotation
-        yRot = 0.0f; //Sets start rotation
+        xRot = -25.0f; //Sets start rotation
+        yRot = -87.0f; //Sets start rotation
         maxXRot = -18.0f; //Change to 25.0f or similar to allow camera to get close to target
         minXRot = -85.0f;
         rotationSpeed = 60.0f;
@@ -62,6 +62,7 @@ public class ThirdPersonCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Debug.Log("x: " + xRot + " y: " + yRot + " d: " + distance);
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
             if (!SceneInfo.instance.IsTakingShot)
@@ -69,7 +70,7 @@ public class ThirdPersonCamera : MonoBehaviour
                 RotateAroundTarget();
             }
 
-            Zoom();
+            //Zoom();
         }
     }
 
@@ -80,7 +81,7 @@ public class ThirdPersonCamera : MonoBehaviour
             FollowTarget();
             LookAtTarget();
             SetClipPoints();
-            SetAdjustedDistance();
+            //SetAdjustedDistance();
         }
     }
 
@@ -126,7 +127,7 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     private void RotateAroundTarget()
     {
-        xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
+        //xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
         yRot += Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime;
 
         xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
