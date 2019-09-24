@@ -36,7 +36,7 @@ public class PreviewLine : MonoBehaviour
 
             //Check if the first preview line will hit something to limit its length
             RaycastHit hitInfo;
-            if (Physics.SphereCast(transform.position, GetComponent<SphereCollider>().radius, toCueBall, out hitInfo, firstPreviewDistance, mask))
+            if (Physics.SphereCast(transform.position, GetComponent<SphereCollider>().radius * 0.85f, toCueBall, out hitInfo, firstPreviewDistance, mask))
             {
                 //Limit the length
                 firstDistance = hitInfo.distance;
@@ -48,7 +48,7 @@ public class PreviewLine : MonoBehaviour
                     toOtherBall = new Vector3(toOtherBall.x, 0.0f, toOtherBall.z).normalized;
 
                     RaycastHit hitInfo2;
-                    if (Physics.SphereCast(hitInfo.point, hitInfo.transform.GetComponent<SphereCollider>().radius, toOtherBall, out hitInfo2, secondPreviewDistance, mask))
+                    if (Physics.SphereCast(hitInfo.point, hitInfo.transform.GetComponent<SphereCollider>().radius * 0.85f, toOtherBall, out hitInfo2, secondPreviewDistance, mask))
                     {
                         //Limit the length
                         //Make sure the raycast is not hitting the ball that is being raycasted from

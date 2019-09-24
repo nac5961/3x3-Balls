@@ -1,16 +1,39 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum Courses
+{
+    Forest
+}
 
 public class GameInfo : MonoBehaviour
 {
     public static GameInfo instance;
 
+    private List<List<int>> playerScores;
+
+    private string course;
     private int level;
     private int totalLevels;
     private int players;
     private int fastestPlayer;
 
+    public List<List<int>> PlayerScores
+    {
+        get { return playerScores; }
+        set { playerScores = value; }
+    }
+    public int Level
+    {
+        get { return level; }
+        set { level = value; }
+    }
+    public int TotalLevels
+    {
+        get { return totalLevels; }
+    }
     public int Players
     {
         get { return players; }
@@ -18,6 +41,7 @@ public class GameInfo : MonoBehaviour
     public int FastestPlayer
     {
         get { return fastestPlayer; }
+        set { fastestPlayer = value; }
     }
 
     private void Awake()
@@ -59,17 +83,38 @@ public class GameInfo : MonoBehaviour
     /// <summary>
     /// Sets the variables to their default values to start the game.
     /// </summary>
-    public void SetupGame()
+    /// <param name="numLevels">number of levels being played</param>
+    /// <param name="course">series of courses to play</param>
+    public void SetupGame(int numLevels, Courses course)
     {
+        this.course = course.ToString();
         level = 1;
+        totalLevels = numLevels;
         fastestPlayer = -1;
+
+        playerScores = new List<List<int>>();
+
+        for (int i = 0; i < players; i++)
+        {
+            playerScores.Add(new List<int>());
+        }
     }
 
     /// <summary>
-    /// TEMPORARY METHOD for loading the first level 
+    /// Loads the current level.
     /// </summary>
     public void LoadLevel()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("NewMockup");
+        string levelName = course + " " + level;
+
+        SceneManager.LoadScene(levelName);
+    }
+
+    /// <summary>
+    /// Loads the main menu.
+    /// </summary>
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
     }
 }

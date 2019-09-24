@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    public Vector3 prevPos;
+    private Vector3 prevPos;
 
     private bool updatePos;
     protected bool needsToRespawn;
     private float waitTime = 2.0f;
     private float timer = 0.0f;
 
-    private bool scored;
+    private bool isScored;
+
+    public bool IsScored
+    {
+        get { return isScored; }
+    }
 
     // Start is called before the first frame update
     void Start()

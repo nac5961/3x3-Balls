@@ -11,7 +11,7 @@ public class Cue : MonoBehaviour
     public float maxForce;
 
     //UI
-    private AimDisplay aimUI;
+    private ShotUI shotUI;
 
     //Animation
     public float distance;
@@ -26,7 +26,7 @@ public class Cue : MonoBehaviour
     void Start()
     {
         //UI
-        aimUI = GameObject.Find("Canvas").GetComponent<AimDisplay>();
+        shotUI = GameObject.Find("Canvas").GetComponent<ShotUI>();
 
         //Animation
         animationTime = 0.0f;
@@ -43,7 +43,18 @@ public class Cue : MonoBehaviour
                 AlignWithBall();
             }
 
-            if ((!SceneInfo.instance.DisableControls && SceneInfo.instance.IsAiming) || (!SceneInfo.instance.DisableControls && isAnimatingHit))
+            if ((!SceneInfo.instance.DisableControls && SceneInfo.instance.IsAiming) || isAnimatingHit)
+            {
+                ProcessHitInput();
+            }
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
+        {
+            if (isAnimatingHit)
             {
                 HitBall();
             }
@@ -86,30 +97,20 @@ public class Cue : MonoBehaviour
     }
 
     /// <summary>
-    /// Handles input for hitting the ball and animates the cue during a hit.
+    /// Processes input for hitting the ball and animates the cue.
     /// </summary>
-    private void HitBall()
+    private void ProcessHitInput()
     {
+        //Animation
         if (isAnimatingHit)
         {
             animationTime += animationSpeed * Time.deltaTime;
             animationTime = Mathf.Clamp(animationTime, 0.0f, 1.0f);
 
             transform.position = Vector3.Lerp(startPos, minPos, animationTime);
-
-            //Hit ball
-            if (animationTime >= 1.0f)
-            {
-                isAnimatingHit = false;
-
-                float power = maxForce * aimUI.GetFillAmount();
-                Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
-                force = new Vector3(force.x, 0.0f, force.z).normalized * power;
-                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force, ForceMode.Force);
-
-                SceneInfo.instance.IsHit = true;
-            }
         }
+
+        //Input
         else
         {
             //Start taking shot
@@ -117,12 +118,17 @@ public class Cue : MonoBehaviour
             {
                 SceneInfo.instance.IsTakingShot = true;
                 FindAnimationPoints();
+
+                UIGameInfo.instance.DisplayShotUI();
             }
 
             //Stop taking shot
             else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Cancel"))
             {
                 SceneInfo.instance.IsTakingShot = false;
+
+                UIGameInfo.instance.HideShotUI(false);
+                shotUI.ResetPowerMeter();
             }
 
             //Take shot
@@ -134,13 +140,36 @@ public class Cue : MonoBehaviour
                 startPos = transform.position;
                 animationTime = 0.0f;
                 isAnimatingHit = true;
+
+                UIGameInfo.instance.HideShotUI(true);
+                shotUI.ResetPowerMeter();
             }
 
             //Move according to the power
             if (SceneInfo.instance.IsTakingShot)
             {
-                transform.position = Vector3.Lerp(minPos, maxPos, aimUI.GetFillAmount());
+                transform.position = Vector3.Lerp(minPos, maxPos, shotUI.GetFillAmount());
             }
+        }
+    }
+
+    /// <summary>
+    /// Applies the necessary force to the gameobject.
+    /// </summary>
+    private void HitBall()
+    {
+        //Finished animating
+        if (animationTime >= 1.0f)
+        {
+            isAnimatingHit = false;
+
+            float power = maxForce * shotUI.GetFillAmount();
+            Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
+            force = new Vector3(force.x, 0.0f, force.z).normalized * power;
+            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
+
+            SceneInfo.instance.IsHit = true;
+            SceneInfo.instance.UpdatePlayerScore();
         }
     }
 }

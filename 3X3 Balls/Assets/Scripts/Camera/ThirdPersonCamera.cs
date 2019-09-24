@@ -41,7 +41,7 @@ public class ThirdPersonCamera : MonoBehaviour
         target = SceneInfo.instance.ActiveBall.transform;
         distance = -11.0f;
         adjDistance = distance;
-        maxDistance = -2.0f;
+        maxDistance = -11.0f;
         minDistance = -15.0f;
         zoomSpeed = 400.0f;
         smoothTime = 0.05f;
@@ -49,8 +49,8 @@ public class ThirdPersonCamera : MonoBehaviour
         //Rotation
         xRot = -25.0f; //Sets start rotation
         yRot = -87.0f; //Sets start rotation
-        maxXRot = -18.0f; //Change to 25.0f or similar to allow camera to get close to target
-        minXRot = -85.0f;
+        maxXRot = -25.0f; //Change to 25.0f or similar to allow camera to get close to target
+        minXRot = -50.0f;
         rotationSpeed = 60.0f;
 
         //Collision
@@ -79,7 +79,8 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             FollowTarget();
             LookAtTarget();
-            SetClipPoints();
+
+            //SetClipPoints();
             //SetAdjustedDistance();
         }
     }
@@ -94,14 +95,14 @@ public class ThirdPersonCamera : MonoBehaviour
 
         //Calculate the offset to place the camera (taking into account rotation
         //and distance)
-        desiredPos = Quaternion.Euler(xRot, yRot, 0) * -Vector3.forward * distance;
+        desiredPos = Quaternion.Euler(xRot, yRot, 0.0f) * -Vector3.forward * distance;
         desiredPos += target.position;
 
         if (isColliding)
         {
             //Calculate the adjusted offset to place the camera (taking into account rotation
             //and the adjusted distance)
-            adjDesiredPos = Quaternion.Euler(xRot, yRot, 0) * Vector3.forward * adjDistance;
+            adjDesiredPos = Quaternion.Euler(xRot, yRot, 0.0f) * Vector3.forward * adjDistance;
             adjDesiredPos += target.position;
 
             transform.position = Vector3.SmoothDamp(transform.position, adjDesiredPos, ref velocity, smoothTime * Time.deltaTime);
@@ -129,7 +130,7 @@ public class ThirdPersonCamera : MonoBehaviour
         //xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
         yRot += Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime;
 
-        xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
+        //xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
     }
 
     /// <summary>
@@ -137,7 +138,7 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     private void LookAtTarget()
     {
-        //Note: This works better than transform.LookAt()
+        //Note: This is smoother than transform.LookAt()
         Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 1.0f);
     }

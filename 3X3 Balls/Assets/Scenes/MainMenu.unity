@@ -197,8 +197,9 @@ GameObject:
   - component: {fileID: 143502226}
   - component: {fileID: 143502228}
   - component: {fileID: 143502227}
+  - component: {fileID: 143502229}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Level Selection Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -261,6 +262,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143502225}
   m_CullTransparentMesh: 0
+--- !u!114 &143502229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143502225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e42ae1776dfde7e40a45b4dfab83406c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forestLevelButton: {fileID: 880567268}
 --- !u!1 &624448125
 GameObject:
   m_ObjectHideFlags: 0
@@ -389,7 +403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78ee6d49dd0a9fd49b4d0af1f14bfbb6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetMaterial: {fileID: 2100000, guid: 95067dba363dfa648b24daf8b07a8713, type: 2}
 --- !u!4 &676507630
 Transform:
   m_ObjectHideFlags: 0
@@ -568,29 +581,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 880567269}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 676507629}
-        m_MethodName: SetupGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 676507629}
-        m_MethodName: LoadLevel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &880567269
