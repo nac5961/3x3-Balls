@@ -26,7 +26,7 @@ public class Cue : MonoBehaviour
     void Start()
     {
         //UI
-        shotUI = GameObject.Find("Canvas").GetComponent<ShotUI>();
+        shotUI = UIGameInfo.instance.ShotUI.GetComponent<ShotUI>();
 
         //Animation
         animationTime = 0.0f;
@@ -128,7 +128,6 @@ public class Cue : MonoBehaviour
                 SceneInfo.instance.IsTakingShot = false;
 
                 UIGameInfo.instance.HideShotUI(false);
-                shotUI.ResetPowerMeter();
             }
 
             //Take shot
@@ -142,7 +141,6 @@ public class Cue : MonoBehaviour
                 isAnimatingHit = true;
 
                 UIGameInfo.instance.HideShotUI(true);
-                shotUI.ResetPowerMeter();
             }
 
             //Move according to the power

@@ -13,13 +13,16 @@ public class TurnUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        timer = duration; //Set to duration so the Turn UI is not automatically triggered
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        DisplayUI();
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
+        {
+            DisplayUI();
+        }
     }
 
     /// <summary>

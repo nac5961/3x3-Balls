@@ -10,6 +10,12 @@ public class UIGameInfo : MonoBehaviour
     public GameObject shotUI;
     public GameObject turnUI;
     public GameObject levelOverUI;
+    public GameObject pauseUI;
+
+    public GameObject ShotUI
+    {
+        get { return shotUI; }
+    }
 
     void Awake()
     {
@@ -60,10 +66,20 @@ public class UIGameInfo : MonoBehaviour
     }
 
     /// <summary>
+    /// Displays the UI for aiming.
+    /// </summary>
+    public void DisplayAimUI()
+    {
+        DisplayUI(aimUI);
+    }
+
+    /// <summary>
     /// Displays the UI for taking a shot.
     /// </summary>
     public void DisplayShotUI()
     {
+        shotUI.GetComponent<ShotUI>().ResetPowerMeter();
+
         HideUI(aimUI);
         DisplayUI(shotUI);
     }
@@ -110,5 +126,21 @@ public class UIGameInfo : MonoBehaviour
         levelOverUI.GetComponent<LevelOverUI>().SetupScores();
 
         DisplayUI(levelOverUI);
+    }
+
+    /// <summary>
+    /// Displays the UI for when the game is paused.
+    /// </summary>
+    public void DisplayPauseUI()
+    {
+        DisplayUI(pauseUI);
+    }
+
+    /// <summary>
+    /// Hides the UI for when the game is paused.
+    /// </summary>
+    public void HidePauseUI()
+    {
+        HideUI(pauseUI);
     }
 }

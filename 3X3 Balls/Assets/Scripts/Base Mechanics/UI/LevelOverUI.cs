@@ -30,7 +30,8 @@ public class LevelOverUI : MonoBehaviour
         {
             nextLevelButton.gameObject.SetActive(false);
 
-            mainMenuButton.transform.position = new Vector3(0.0f, mainMenuButton.transform.position.y, mainMenuButton.transform.position.z);
+            RectTransform mmButonRect = mainMenuButton.GetComponent<RectTransform>();
+            mmButonRect.anchoredPosition = new Vector2(0.0f, mmButonRect.anchoredPosition.y);
         }
     }
 
@@ -56,6 +57,13 @@ public class LevelOverUI : MonoBehaviour
     /// </summary>
     public void SetupScores()
     {
+        //Store scores
+        for (int i = 0; i < SceneInfo.instance.Scores.Count; i++)
+        {
+            GameInfo.instance.PlayerScores[i].Add(SceneInfo.instance.Scores[i]);
+        }
+
+        //Display scores
         for (int i = 0; i < GameInfo.instance.PlayerScores.Count; i++)
         {
             
