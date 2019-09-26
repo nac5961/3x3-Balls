@@ -131,18 +131,23 @@ public class Ball : MonoBehaviour
 
         if (!rb.IsSleeping())
         {
-            //Velocity is low enough to forefully stop movement
-            if (rb.velocity.magnitude <= 0.1f)
+            //Check the y velocity to make sure the ball isn't bouncing.
+            //This prevents the ball from stopping in midair.
+            if (rb.velocity.y == 0.0f)
             {
-                rb.velocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.Sleep(); //Make sure to have the rigidbody sleep. Rigidbody may not detect that it is done moving with just a zeroed out velocity.
-            }
+                //Velocity is low enough to forefully stop movement
+                if (rb.velocity.magnitude <= 0.1f)
+                {
+                    rb.velocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
+                    rb.Sleep(); //Make sure to have the rigidbody sleep. Rigidbody may not detect that it is done moving with just a zeroed out velocity.
+                }
 
-            //Slow down the velocity
-            else if (rb.velocity.magnitude <= 1.0f)
-            {
-                rb.velocity *= deceleration;
+                //Slow down the velocity
+                else if (rb.velocity.magnitude <= 1.0f)
+                {
+                    rb.velocity *= deceleration;
+                }
             }
         }
     }
