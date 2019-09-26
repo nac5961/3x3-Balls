@@ -14,6 +14,10 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
+    public Vector3 PrevPos
+    {
+        get { return prevPos; }
+    }
     public bool IsScored
     {
         get { return isScored; }

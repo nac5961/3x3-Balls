@@ -282,6 +282,7 @@ public class SceneInfo : MonoBehaviour
         {
             targetBall = activeBall;
             targetBall.GetComponent<Renderer>().material = targetBallMaterial;
+            targetBall.AddComponent<EightBall>();
         }
     }
 

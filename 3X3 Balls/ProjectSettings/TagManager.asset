@@ -11,6 +11,7 @@ TagManager:
   - Hole
   - Eight Ball
   - Pool Collider
+  - Hole Area
   layers:
   - Default
   - TransparentFX

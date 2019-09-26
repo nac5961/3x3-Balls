@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5484281035823213864}
   - component: {fileID: 2264323706606006432}
   - component: {fileID: -5429838704503101749}
+  - component: {fileID: 7743762781197756245}
   m_Layer: 0
   m_Name: Eight Ball
   m_TagString: Eight Ball
@@ -122,3 +123,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deceleration: 0.9
+--- !u!114 &7743762781197756245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391789941207013686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b134b1e9a99bc2e4abe196b559ada96d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
