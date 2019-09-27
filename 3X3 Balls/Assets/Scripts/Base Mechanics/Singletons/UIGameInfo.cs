@@ -6,8 +6,10 @@ public class UIGameInfo : MonoBehaviour
 {
     public static UIGameInfo instance;
 
+    public GameObject generalUI;
     public GameObject aimUI;
     public GameObject shotUI;
+    public GameObject hitUI;
     public GameObject turnUI;
     public GameObject levelOverUI;
     public GameObject pauseUI;
@@ -70,7 +72,9 @@ public class UIGameInfo : MonoBehaviour
     /// </summary>
     public void DisplayAimUI()
     {
+        HideUI(hitUI);
         DisplayUI(aimUI);
+        DisplayUI(generalUI);
     }
 
     /// <summary>
@@ -97,6 +101,10 @@ public class UIGameInfo : MonoBehaviour
         {
             DisplayUI(aimUI);
         }
+        else
+        {
+            DisplayUI(hitUI);
+        }
     }
 
     /// <summary>
@@ -106,6 +114,8 @@ public class UIGameInfo : MonoBehaviour
     {
         turnUI.GetComponent<TurnUI>().SetupUI();
 
+        HideUI(generalUI);
+        HideUI(hitUI);
         DisplayUI(turnUI);
     }
 
@@ -115,6 +125,7 @@ public class UIGameInfo : MonoBehaviour
     public void HideTurnUI()
     {
         HideUI(turnUI);
+        DisplayUI(generalUI);
         DisplayUI(aimUI);
     }
 
@@ -125,6 +136,8 @@ public class UIGameInfo : MonoBehaviour
     {
         levelOverUI.GetComponent<LevelOverUI>().SetupScores();
 
+        HideUI(generalUI);
+        HideUI(hitUI);
         DisplayUI(levelOverUI);
     }
 
