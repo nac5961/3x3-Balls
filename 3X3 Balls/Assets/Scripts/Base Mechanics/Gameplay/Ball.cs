@@ -4,19 +4,30 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    //Rigidbody
     public float deceleration;
 
+    //Spawning
+    private Vector3 eightBallSpawn;
     private Vector3 prevPos;
+    private bool inBounds;
+
+    //Scoring
     private bool isScored;
 
+    //Pausing (Rigidbody)
     private bool wasPaused;
     private bool wasMoving;
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
-    public Vector3 PrevPos
+    public Vector3 EightBallSpawn
     {
-        get { return prevPos; }
+        set { eightBallSpawn = value; }
+    }
+    public bool InBounds
+    {
+        get { return inBounds; }
     }
     public bool IsScored
     {
@@ -71,7 +82,7 @@ public class Ball : MonoBehaviour
     /// <summary>
     /// Stops the ball from moving on pause.
     /// </summary>
-    public void PauseBall()
+    private void PauseBall()
     {
         wasPaused = true;
 
@@ -88,7 +99,7 @@ public class Ball : MonoBehaviour
     /// <summary>
     /// Continues ball movement when the game is resumed.
     /// </summary>
-    public void ResumeBall()
+    private void ResumeBall()
     {
         wasPaused = false;
 
@@ -114,16 +125,33 @@ public class Ball : MonoBehaviour
     /// <summary>
     /// Sets the ball's position to its last saved previous position and stops its movement.
     /// </summary>
-    private void Respawn()
+    public void Respawn()
     {
-        transform.position = prevPos;
+        Vector3 respawnPos = prevPos;
+
+        //If somehow a player scores without landing on the area that
+        //the eight ball is spawned in, then we need to make sure that
+        //it respawns at that area, instead of at its previous position.
+        if (gameObject == SceneInfo.instance.TargetBall)
+        {
+            RaycastHit hitInfo;
+            if (Physics.Raycast(respawnPos, Vector3.down, out hitInfo))
+            {
+                if (!hitInfo.transform.CompareTag("Hole Area"))
+                {
+                    respawnPos = eightBallSpawn;
+                }
+            }
+        }
+
+        //Respawn slightly above ground to have the ball drop when respawned
+        transform.position = respawnPos + new Vector3(0.0f, 3.0f, 0.0f);
 
         //Forcefully stop the ball when respawned, otherwise it will continue moving
         //with the same velocity.
         Rigidbody rb = gameObject.GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
-        rb.Sleep(); //Make sure to have the rigidbody sleep. Rigidbody may not detect that it is done moving with just a zeroed out velocity.
     }
 
     /// <summary>
@@ -158,6 +186,11 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.CompareTag("Hole Area"))
+        {
+            inBounds = true;
+        }
+
         if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("Hole") && gameObject != SceneInfo.instance.TargetBall))
         {
             if (!isScored)
@@ -193,6 +226,14 @@ public class Ball : MonoBehaviour
                     Respawn();
                 }
             }
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Hole Area"))
+        {
+            inBounds = false;
         }
     }
 }

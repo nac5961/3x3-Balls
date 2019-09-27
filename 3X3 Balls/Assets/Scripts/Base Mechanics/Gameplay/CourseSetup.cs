@@ -36,12 +36,14 @@ public class CourseSetup : MonoBehaviour
         //Eight Ball
         GameObject eightBall = Instantiate(eightBallPrefab, eightBallSpawn.transform.position, Quaternion.identity);
         MoveAboveSurface(eightBall, eightBall.GetComponent<SphereCollider>());
+        eightBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
 
         //Cue Balls aka Players
         for (int i = 0; i < GameInfo.instance.Players; i++)
         {
             GameObject playerBall = Instantiate(cueBallPrefab, playerSpawns[i].transform.position, Quaternion.identity);
             MoveAboveSurface(playerBall, playerBall.GetComponent<SphereCollider>());
+            playerBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
 
             SceneInfo.instance.Balls.Add(playerBall);
         }

@@ -282,7 +282,6 @@ public class SceneInfo : MonoBehaviour
         {
             targetBall = activeBall;
             targetBall.GetComponent<Renderer>().material = targetBallMaterial;
-            targetBall.AddComponent<EightBall>();
         }
     }
 
@@ -384,9 +383,17 @@ public class SceneInfo : MonoBehaviour
             //Update all balls' previous positions
             for (int i = 0; i < balls.Count; i++)
             {
-                if (!balls[i].GetComponent<Ball>().IsScored)
+                Ball ball = balls[i].GetComponent<Ball>();
+
+                if (!ball.IsScored)
                 {
-                    balls[i].GetComponent<Ball>().UpdatePrevPos();
+                    //Respawn target ball if it was knocked out of the area it spawns in
+                    if (ball.gameObject == targetBall && !ball.InBounds)
+                    {
+                        ball.Respawn();
+                    }
+
+                    ball.UpdatePrevPos();
                 }
             }
 
