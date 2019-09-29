@@ -363,6 +363,8 @@ public class SceneInfo : MonoBehaviour
             isTurnOver = false;
             isAiming = true;
 
+            int prevPlayer = turns[currTurn];
+
             //Set the current player
             for (int i = 0; i < GameInfo.instance.Players; i++)
             {
@@ -399,6 +401,7 @@ public class SceneInfo : MonoBehaviour
 
             SetActiveBall();
             Camera.main.GetComponent<ThirdPersonCamera>().Target = activeBall.transform;
+            Camera.main.GetComponent<ThirdPersonCamera>().UpdatePlayerRotations(prevPlayer, turns[currTurn]);
 
             //If more than one player is still playing, show the player's turn
             if (GameInfo.instance.Players > 1 && finishedPlayers.Count < GameInfo.instance.Players - 1)

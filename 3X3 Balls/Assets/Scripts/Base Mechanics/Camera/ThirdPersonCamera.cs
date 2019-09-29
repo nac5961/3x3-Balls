@@ -28,6 +28,9 @@ public class ThirdPersonCamera : MonoBehaviour
     private bool isColliding;
     private Vector3[] clipPoints;
 
+    //Player
+    private List<float> playerRotations;
+
     public Transform Target
     {
         set { target = value; }
@@ -48,7 +51,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
         //Rotation
         xRot = -25.0f; //Sets start rotation
-        yRot = -87.0f; //Sets start rotation
+        yRot = -88.0f; //Sets start rotation
         maxXRot = -25.0f; //Change to 25.0f or similar to allow camera to get close to target
         minXRot = -50.0f;
         rotationSpeed = 60.0f;
@@ -57,6 +60,13 @@ public class ThirdPersonCamera : MonoBehaviour
         mask =~ LayerMask.GetMask("IgnoreCam");
         isColliding = false;
         clipPoints = new Vector3[5];
+
+        //Player
+        playerRotations = new List<float>();
+        for (int i = 0; i < GameInfo.instance.Players; i++)
+        {
+            playerRotations.Add(yRot);
+        }
     }
 
     // Update is called once per frame
@@ -83,6 +93,22 @@ public class ThirdPersonCamera : MonoBehaviour
             //SetClipPoints();
             //SetAdjustedDistance();
         }
+    }
+
+    /// <summary>
+    /// Keeps track of the previous player's rotation and sets the rotation
+    /// to the next player's rotation.
+    /// </summary>
+    /// <param name="prevPlayer">previous player's number (Player 1, 2, 3, etc)</param>
+    /// <param name="nextPlayer">next player's number (Player 1, 2, 3, etc)</param>
+    public void UpdatePlayerRotations(int prevPlayer, int nextPlayer)
+    {
+        //Save previous player's rotation
+        playerRotations[prevPlayer] = yRot;
+
+        //Set rotation to next player's rotation
+        yRot = playerRotations[nextPlayer];
+
     }
 
     /// <summary>
