@@ -167,6 +167,7 @@ public class Cue : MonoBehaviour
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
             SceneInfo.instance.UpdatePlayerScore();
+            UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
 
             //No Power - Immediately end turn
             if (power == 0.0f)

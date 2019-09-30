@@ -14,6 +14,10 @@ public class UIGameInfo : MonoBehaviour
     public GameObject levelOverUI;
     public GameObject pauseUI;
 
+    public GameObject GeneralUI
+    {
+        get { return generalUI; }
+    }
     public GameObject ShotUI
     {
         get { return shotUI; }

@@ -33,7 +33,8 @@ public class TurnUI : MonoBehaviour
         timer = 0.0f;
         SceneInfo.instance.DisableControls = true;
 
-        text.GetComponent<TextMeshProUGUI>().text = "Player " + SceneInfo.instance.GetCurrentPlayer() + "'s Turn";
+        int player = SceneInfo.instance.GetCurrentPlayer() + 1;
+        text.GetComponent<TextMeshProUGUI>().text = "Player " + player + "'s Turn";
     }
 
     /// <summary>

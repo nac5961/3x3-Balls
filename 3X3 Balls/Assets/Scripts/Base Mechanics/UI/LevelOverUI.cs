@@ -9,6 +9,9 @@ public class LevelOverUI : MonoBehaviour
     public Button nextLevelButton;
     public Button mainMenuButton;
 
+    public GameObject p1Score;
+    public GameObject p2Score;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +60,9 @@ public class LevelOverUI : MonoBehaviour
     /// </summary>
     public void SetupScores()
     {
+        string p1 = "Player 1 - ";
+        string p2 = "Player 2 - ";
+
         //Store scores
         for (int i = 0; i < SceneInfo.instance.Scores.Count; i++)
         {
@@ -66,7 +72,23 @@ public class LevelOverUI : MonoBehaviour
         //Display scores
         for (int i = 0; i < GameInfo.instance.PlayerScores.Count; i++)
         {
-            
+            for (int j = 0; j < GameInfo.instance.PlayerScores[i].Count; j++)
+            {
+                //Player 1
+                if (i == 0)
+                {
+                    p1 += GameInfo.instance.PlayerScores[i][j] + " ";
+                }
+
+                //Player 2
+                else if (i == 1)
+                {
+                    p2 += GameInfo.instance.PlayerScores[i][j] + " ";
+                }
+            }
         }
+
+        p1Score.GetComponent<TextMeshProUGUI>().text = p1 + "Strokes";
+        p2Score.GetComponent<TextMeshProUGUI>().text = p2 + "Strokes";
     }
 }

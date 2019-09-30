@@ -152,7 +152,10 @@ public class SceneInfo : MonoBehaviour
         {
             if (!disableControls)
             {
-                PauseGame();
+                if (Input.GetButtonDown("Pause"))
+                {
+                    PauseGame();
+                }
             }
 
             if (!paused)
@@ -240,32 +243,29 @@ public class SceneInfo : MonoBehaviour
     /// <summary>
     /// Pauses the game.
     /// </summary>
-    private void PauseGame()
+    public void PauseGame()
     {
-        if (Input.GetButtonDown("Pause"))
+        paused = !paused;
+
+        if (paused)
         {
-            paused = !paused;
-
-            if (paused)
+            UIGameInfo.instance.DisplayPauseUI();
+        }
+        else
+        {
+            //Only wait to check balls if a ball was moving beforehand.
+            // **Need this check so the turn can end if players spam the pause button.**
+            for (int i = 0; i < balls.Count; i++)
             {
-                UIGameInfo.instance.DisplayPauseUI();
-            }
-            else
-            {
-                //Only wait to check balls if a ball was moving beforehand.
-                // **Need this check so the turn can end if players spam the pause button.**
-                for (int i = 0; i < balls.Count; i++)
+                if (!balls[i].GetComponent<Ball>().IsScored && balls[i].GetComponent<Ball>().WasMoving)
                 {
-                    if (!balls[i].GetComponent<Ball>().IsScored && balls[i].GetComponent<Ball>().WasMoving)
-                    {
-                        //Need to wait a few seconds again before checking a balls velocity after it is resumed; Bug where velocity might be 0 on resume even though ball is moving.
-                        timer = 0.0f;
-                        break;
-                    }
+                    //Need to wait a few seconds again before checking a balls velocity after it is resumed; Bug where velocity might be 0 on resume even though ball is moving.
+                    timer = 0.0f;
+                    break;
                 }
-
-                UIGameInfo.instance.HidePauseUI();
             }
+
+            UIGameInfo.instance.HidePauseUI();
         }
     }
 
@@ -313,7 +313,7 @@ public class SceneInfo : MonoBehaviour
     /// <returns></returns>
     public int GetCurrentPlayer()
     {
-        return turns[currTurn] + 1;
+        return turns[currTurn];
     }
 
     /// <summary>
@@ -412,6 +412,9 @@ public class SceneInfo : MonoBehaviour
             //If more than one player is still playing, show the player's turn
             if (GameInfo.instance.Players > 1 && finishedPlayers.Count < GameInfo.instance.Players - 1)
             {
+                //Set stroke count to next player's stroke count
+                UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
+
                 UIGameInfo.instance.DisplayTurnUI();
             }
 
