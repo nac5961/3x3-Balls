@@ -282,6 +282,12 @@ public class SceneInfo : MonoBehaviour
         {
             targetBall = activeBall;
             targetBall.GetComponent<Renderer>().material = targetBallMaterial;
+
+            //Save the fastest player
+            if (finishedPlayers.Count == 1)
+            {
+                GameInfo.instance.FastestPlayer = turns[currTurn];
+            }
         }
     }
 

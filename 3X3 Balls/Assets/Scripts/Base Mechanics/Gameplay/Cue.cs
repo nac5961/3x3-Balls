@@ -166,8 +166,19 @@ public class Cue : MonoBehaviour
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
-            SceneInfo.instance.IsHit = true;
             SceneInfo.instance.UpdatePlayerScore();
+
+            //No Power - Immediately end turn
+            if (power == 0.0f)
+            {
+                SceneInfo.instance.IsTurnOver = true;
+            }
+
+            //Power - Continue hit
+            else
+            {
+                SceneInfo.instance.IsHit = true;
+            }
         }
     }
 }
