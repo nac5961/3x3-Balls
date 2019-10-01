@@ -132,7 +132,7 @@ public class SceneInfo : MonoBehaviour
         disableControls = false;
 
         endTurnWaitTime = 2.0f;
-        nextTurnWaitTime = 0.4f;
+        nextTurnWaitTime = 0.0f;
         timer = 0.0f;
 
         InitializeScores();

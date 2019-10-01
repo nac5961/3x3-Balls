@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4099571444349599295}
   - component: {fileID: 5484281035823213864}
   - component: {fileID: 2264323706606006432}
+  - component: {fileID: -3500571334227615876}
   - component: {fileID: -5429838704503101749}
   m_Layer: 0
   m_Name: Eight Ball
@@ -109,6 +110,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!75 &-3500571334227615876
+ConstantForce:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7391789941207013686}
+  m_Enabled: 1
+  m_Force: {x: 0, y: -11, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
+  m_Torque: {x: 0, y: 0, z: 0}
+  m_RelativeTorque: {x: 0, y: 0, z: 0}
 --- !u!114 &-5429838704503101749
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -121,4 +134,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2903210c01b40a34db8b4a57f722b10b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deceleration: 0.9
+  deceleration: 0.96

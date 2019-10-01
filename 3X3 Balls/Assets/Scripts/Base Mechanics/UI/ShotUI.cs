@@ -7,11 +7,12 @@ public class ShotUI : MonoBehaviour
 {
     public GameObject powerMeter;
     public float fillSpeed;
+    public float minFill;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        powerMeter.GetComponent<Image>().fillAmount = minFill;
     }
 
     // Update is called once per frame
@@ -35,18 +36,14 @@ public class ShotUI : MonoBehaviour
 
         float percent = img.fillAmount;
 
-        if (Input.GetButton("Increase Power"))
-        {
-            percent += fillSpeed * Time.deltaTime;
-        }
-        else if (Input.GetButton("Decrease Power"))
-        {
-            percent -= fillSpeed * Time.deltaTime;
-        }
-
-        percent = Mathf.Clamp(percent, 0.0f, 1.0f);
-
+        percent += fillSpeed * Time.deltaTime;
+        percent = Mathf.Clamp(percent, minFill, 1.0f);
         img.fillAmount = percent;
+
+        if (percent == 1.0f || percent == minFill)
+        {
+            fillSpeed = -fillSpeed;
+        }
     }
 
     /// <summary>
@@ -55,6 +52,7 @@ public class ShotUI : MonoBehaviour
     public void ResetPowerMeter()
     {
         powerMeter.GetComponent<Image>().fillAmount = 0.0f;
+        fillSpeed = Mathf.Abs(fillSpeed);
     }
 
     /// <summary>
