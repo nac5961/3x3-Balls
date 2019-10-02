@@ -122,4 +122,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deceleration: 0.97
-  bounceLimit: 3
+  ballBounceLimit: 0.25
+  floorBounceLimit: 9

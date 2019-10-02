@@ -6,7 +6,8 @@ public class Ball : MonoBehaviour
 {
     //Rigidbody
     public float deceleration;
-    public float bounceLimit;
+    public float ballBounceLimit;
+    public float floorBounceLimit;
 
     //Spawning
     private Vector3 eightBallSpawn;
@@ -187,16 +188,16 @@ public class Ball : MonoBehaviour
         //Limit how high the ball bounces off of certain objects
         if (collision.gameObject.CompareTag("Cue Ball") || collision.gameObject.CompareTag("Eight Ball") || collision.gameObject.CompareTag("Wall"))
         {
-            if (rb.velocity.y > bounceLimit)
+            if (rb.velocity.y > ballBounceLimit)
             {
-                rb.velocity = new Vector3(rb.velocity.x, bounceLimit, rb.velocity.z);
+                rb.velocity = new Vector3(rb.velocity.x, ballBounceLimit, rb.velocity.z);
             }
         }
         else if (collision.gameObject.CompareTag("Floor"))
         {
-            if (rb.velocity.y > bounceLimit * 3.0f)
+            if (rb.velocity.y > floorBounceLimit)
             {
-                rb.velocity = new Vector3(rb.velocity.x, bounceLimit * 3.0f, rb.velocity.z);
+                rb.velocity = new Vector3(rb.velocity.x, floorBounceLimit, rb.velocity.z);
             }
         }
 
