@@ -21,7 +21,7 @@ public class PauseUI : MonoBehaviour
     /// </summary>
     public void ResumeGame()
     {
-        SceneInfo.instance.PauseGame();
+        SceneInfo.instance.TogglePause();
     }
 
     /// <summary>

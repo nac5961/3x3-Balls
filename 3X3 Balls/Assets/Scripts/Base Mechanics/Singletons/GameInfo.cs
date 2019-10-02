@@ -101,7 +101,7 @@ public class GameInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// Loads the current level.
+    /// Loads the specified level.
     /// </summary>
     public void LoadLevel()
     {
@@ -115,6 +115,6 @@ public class GameInfo : MonoBehaviour
     /// </summary>
     public void LoadMainMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Main Menu");
     }
 }

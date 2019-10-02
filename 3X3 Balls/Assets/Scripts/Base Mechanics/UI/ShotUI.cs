@@ -22,15 +22,15 @@ public class ShotUI : MonoBehaviour
         {
             if (SceneInfo.instance.IsTakingShot)
             {
-                ProcessPowerInput();
+                AnimatePowerMeter();
             }
         }
     }
 
     /// <summary>
-    /// Processes input for moving the power meter.
+    /// Fills and unfills the power meter.
     /// </summary>
-    private void ProcessPowerInput()
+    private void AnimatePowerMeter()
     {
         Image img = powerMeter.GetComponent<Image>();
 
@@ -40,18 +40,19 @@ public class ShotUI : MonoBehaviour
         percent = Mathf.Clamp(percent, minFill, 1.0f);
         img.fillAmount = percent;
 
-        if (percent == 1.0f || percent == minFill)
+        //Reverse
+        if (percent == minFill || percent == 1.0f)
         {
             fillSpeed = -fillSpeed;
         }
     }
 
     /// <summary>
-    /// Sets the fill amount back to 0.
+    /// Resets the properties in the power meter animation.
     /// </summary>
     public void ResetPowerMeter()
     {
-        powerMeter.GetComponent<Image>().fillAmount = 0.0f;
+        powerMeter.GetComponent<Image>().fillAmount = minFill;
         fillSpeed = Mathf.Abs(fillSpeed);
     }
 

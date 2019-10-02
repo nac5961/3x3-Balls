@@ -99,8 +99,8 @@ public class ThirdPersonCamera : MonoBehaviour
     /// Keeps track of the previous player's rotation and sets the rotation
     /// to the next player's rotation.
     /// </summary>
-    /// <param name="prevPlayer">previous player's number (Player 1, 2, 3, etc)</param>
-    /// <param name="nextPlayer">next player's number (Player 1, 2, 3, etc)</param>
+    /// <param name="prevPlayer">previous player's number (Player 0, 1, 2, etc); Note: Player 1 is Player 0</param>
+    /// <param name="nextPlayer">next player's number (Player 0, 1, 2, etc); Note: Player 1 is Player 0</param>
     public void UpdatePlayerRotations(int prevPlayer, int nextPlayer)
     {
         //Save previous player's rotation

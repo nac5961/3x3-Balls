@@ -31,7 +31,7 @@ public class SceneInfo : MonoBehaviour
     private bool disableControls;
 
     //Rigidbody
-    private float endTurnWaitTime; //Need to wait a few seconds before checking a balls velocity after it is hit; Bug where velocity might be 0 on hit even though ball is moving.
+    private float endTurnWaitTime; //Need to wait a few seconds before checking if a ball is moving after it is hit; Bug where it is flagged as not moving on hit even though ball is moving.
     private float nextTurnWaitTime;
     private float timer;
 
@@ -65,12 +65,10 @@ public class SceneInfo : MonoBehaviour
     public bool GameStart
     {
         get { return gameStart; }
-        set { gameStart = value; }
     }
     public bool Paused
     {
         get { return paused; }
-        set { paused = value; }
     }
     public bool IsAiming
     {
@@ -88,12 +86,6 @@ public class SceneInfo : MonoBehaviour
     {
         get { return isHit; }
         set { isHit = value; }
-    }
-
-    public bool IsTurnOver
-    {
-        get { return isTurnOver; }
-        set { isTurnOver = value; }
     }
 
     public bool DisableControls
@@ -116,10 +108,10 @@ public class SceneInfo : MonoBehaviour
         //Initialize in Awake() so that other scripts can access these variables on Start()
         balls = new List<GameObject>();
 
+        finishedPlayers = new List<int>();
         scores = new List<int>();
         turns = new List<int>();
         currTurn = 0;
-        finishedPlayers = new List<int>();
 
         gameStart = false;
         paused = false;
@@ -132,7 +124,7 @@ public class SceneInfo : MonoBehaviour
         disableControls = false;
 
         endTurnWaitTime = 2.0f;
-        nextTurnWaitTime = 0.0f;
+        nextTurnWaitTime = 0.4f;
         timer = 0.0f;
 
         InitializeScores();
@@ -154,7 +146,7 @@ public class SceneInfo : MonoBehaviour
             {
                 if (Input.GetButtonDown("Pause"))
                 {
-                    PauseGame();
+                    TogglePause();
                 }
             }
 
@@ -173,7 +165,14 @@ public class SceneInfo : MonoBehaviour
                 }
                 else if (isTurnOver)
                 {
-                    StartNextTurn();
+                    if (timer < nextTurnWaitTime)
+                    {
+                        timer += Time.deltaTime;
+                    }
+                    else
+                    {
+                        StartNextTurn();
+                    }
                 }
             }
         }
@@ -241,9 +240,9 @@ public class SceneInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// Pauses the game.
+    /// Pauses and resumes the game.
     /// </summary>
-    public void PauseGame()
+    public void TogglePause()
     {
         paused = !paused;
 
@@ -257,9 +256,13 @@ public class SceneInfo : MonoBehaviour
             // **Need this check so the turn can end if players spam the pause button.**
             for (int i = 0; i < balls.Count; i++)
             {
-                if (!balls[i].GetComponent<Ball>().IsScored && balls[i].GetComponent<Ball>().WasMoving)
+                //Skip over balls that have been scored already (balls that have been hit into holes)
+                if (balls[i].GetComponent<Ball>().IsScored)
+                    continue;
+
+                //Need to wait a few seconds again before checking if a ball is moving after it is resumed; Bug where it is flagged as not moving on hit even though ball is moving.
+                if (balls[i].GetComponent<Ball>().WasMoving)
                 {
-                    //Need to wait a few seconds again before checking a balls velocity after it is resumed; Bug where velocity might be 0 on resume even though ball is moving.
                     timer = 0.0f;
                     break;
                 }
@@ -275,7 +278,7 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     public void SwitchTargetBall()
     {
-        finishedPlayers.Add(turns[currTurn]);
+        finishedPlayers.Add(GetCurrentPlayer());
 
         //Only make a new target ball if there are players still playing
         if (finishedPlayers.Count < GameInfo.instance.Players)
@@ -286,7 +289,7 @@ public class SceneInfo : MonoBehaviour
             //Save the fastest player
             if (finishedPlayers.Count == 1)
             {
-                GameInfo.instance.FastestPlayer = turns[currTurn];
+                GameInfo.instance.FastestPlayer = GetCurrentPlayer();
             }
         }
     }
@@ -296,7 +299,7 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     public void SetActiveBall()
     {
-        activeBall = balls[turns[currTurn]];
+        activeBall = balls[GetCurrentPlayer()];
     }
 
     /// <summary>
@@ -304,7 +307,7 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     public void UpdatePlayerScore()
     {
-        scores[turns[currTurn]]++;
+        scores[GetCurrentPlayer()]++;
     }
 
     /// <summary>
@@ -327,9 +330,7 @@ public class SceneInfo : MonoBehaviour
         {
             //Skip over balls that have been scored already (balls that have been hit into holes)
             if (balls[i].GetComponent<Ball>().IsScored)
-            {
                 continue;
-            }
 
             //Balls still moving
             if (!balls[i].GetComponent<Rigidbody>().IsSleeping())
@@ -359,70 +360,62 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     private void StartNextTurn()
     {
-        if (timer < nextTurnWaitTime)
+        timer = 0.0f;
+        isTurnOver = false;
+        isAiming = true;
+
+        int prevPlayer = GetCurrentPlayer();
+
+        //Set the next player
+        for (int i = 0; i < GameInfo.instance.Players; i++)
         {
-            timer += Time.deltaTime;
+            currTurn++;
+
+            if (currTurn >= GameInfo.instance.Players)
+            {
+                currTurn = 0;
+            }
+
+            //Only stay on the player if they did not already finish
+            if (!finishedPlayers.Contains(GetCurrentPlayer()))
+                break;
         }
+
+        //Update all balls' previous positions
+        for (int i = 0; i < balls.Count; i++)
+        {
+            Ball ball = balls[i].GetComponent<Ball>();
+
+            if (!ball.IsScored)
+            {
+                //Respawn target ball if it was knocked out of the scoring area
+                if (ball.gameObject == targetBall && !ball.InBounds)
+                {
+                    ball.Respawn();
+                }
+
+                ball.UpdatePrevPos();
+            }
+        }
+
+        //Setup camera
+        SetActiveBall();
+        Camera.main.GetComponent<ThirdPersonCamera>().Target = activeBall.transform;
+        Camera.main.GetComponent<ThirdPersonCamera>().UpdatePlayerRotations(prevPlayer, GetCurrentPlayer());
+
+        //If more than one player is still playing, show the player's turn
+        if (finishedPlayers.Count < GameInfo.instance.Players - 1)
+        {
+            //Set stroke count to next player's stroke count
+            UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
+
+            UIGameInfo.instance.DisplayTurnUI();
+        }
+
+        //Otherwise skip the turn display
         else
         {
-            timer = 0.0f;
-            isTurnOver = false;
-            isAiming = true;
-
-            int prevPlayer = turns[currTurn];
-
-            //Set the current player
-            for (int i = 0; i < GameInfo.instance.Players; i++)
-            {
-                currTurn++;
-
-                if (currTurn >= GameInfo.instance.Players)
-                {
-                    currTurn = 0;
-                }
-
-                //Only stay on the current player if the player did not already finish
-                if (!finishedPlayers.Contains(turns[currTurn]))
-                {
-                    break;
-                }
-            }
-
-            //Update all balls' previous positions
-            for (int i = 0; i < balls.Count; i++)
-            {
-                Ball ball = balls[i].GetComponent<Ball>();
-
-                if (!ball.IsScored)
-                {
-                    //Respawn target ball if it was knocked out of the area it spawns in
-                    if (ball.gameObject == targetBall && !ball.InBounds)
-                    {
-                        ball.Respawn();
-                    }
-
-                    ball.UpdatePrevPos();
-                }
-            }
-
-            SetActiveBall();
-            Camera.main.GetComponent<ThirdPersonCamera>().Target = activeBall.transform;
-            Camera.main.GetComponent<ThirdPersonCamera>().UpdatePlayerRotations(prevPlayer, turns[currTurn]);
-
-            //If more than one player is still playing, show the player's turn
-            if (GameInfo.instance.Players > 1 && finishedPlayers.Count < GameInfo.instance.Players - 1)
-            {
-                //Set stroke count to next player's stroke count
-                UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
-
-                UIGameInfo.instance.DisplayTurnUI();
-            }
-
-            //Otherwise skip the turn display
-            else
-            {
-                UIGameInfo.instance.DisplayAimUI();
-            }
+            UIGameInfo.instance.DisplayAimUI();
         }
     }
 }

@@ -91,6 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitAngle: -80
-  maxForce: 2100
+  maxForce: 2000
+  marginOfError: 0.015
   distance: 1.2
   animationSpeed: 10

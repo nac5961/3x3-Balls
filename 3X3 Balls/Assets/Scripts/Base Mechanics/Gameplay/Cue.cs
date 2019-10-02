@@ -11,6 +11,7 @@ public class Cue : MonoBehaviour
     public float maxForce;
 
     //UI
+    public float marginOfError;
     private ShotUI shotUI;
 
     //Animation
@@ -140,7 +141,27 @@ public class Cue : MonoBehaviour
                 animationTime = 0.0f;
                 isAnimatingHit = true;
 
-                UIGameInfo.instance.HideShotUI(true);
+                if (shotUI.GetFillAmount() >= 1.0f - marginOfError)
+                {
+                    UIGameInfo.instance.HideShotUI(true, true);
+                }
+                else
+                {
+                    UIGameInfo.instance.HideShotUI(true);
+                }
+            }
+
+            //SHOWCASE (DELETE ME)
+            else if (SceneInfo.instance.IsTakingShot && Input.GetKeyDown(KeyCode.K))
+            {
+                SceneInfo.instance.IsAiming = false;
+                SceneInfo.instance.IsTakingShot = false;
+
+                startPos = transform.position;
+                animationTime = 0.0f;
+                isAnimatingHit = true;
+
+                UIGameInfo.instance.HideShotUI(true, true);
             }
 
             //Move according to the power
@@ -152,7 +173,7 @@ public class Cue : MonoBehaviour
     }
 
     /// <summary>
-    /// Applies the necessary force to the gameobject.
+    /// Applies the necessary force to the ball.
     /// </summary>
     private void HitBall()
     {
@@ -161,25 +182,31 @@ public class Cue : MonoBehaviour
         {
             isAnimatingHit = false;
 
-            float power = maxForce * shotUI.GetFillAmount();
+            float fillAmount = shotUI.GetFillAmount();
+
+            //Apply bonus if at max
+            if (fillAmount >= 1.0f - marginOfError)
+            {
+                fillAmount = 1.2f;
+            }
+
+            //SHOWCASE (DELETE ME)
+            if (Input.GetKey(KeyCode.K))
+            {
+                fillAmount = 1.2f;
+            }
+
+            //Apply force
+            float power = maxForce * fillAmount;
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
+            //Update stroke count
             SceneInfo.instance.UpdatePlayerScore();
             UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
 
-            //No Power - Immediately end turn
-            if (power == 0.0f)
-            {
-                SceneInfo.instance.IsTurnOver = true;
-            }
-
-            //Power - Continue hit
-            else
-            {
-                SceneInfo.instance.IsHit = true;
-            }
+            SceneInfo.instance.IsHit = true;
         }
     }
 }

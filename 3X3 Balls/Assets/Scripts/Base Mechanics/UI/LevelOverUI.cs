@@ -88,7 +88,7 @@ public class LevelOverUI : MonoBehaviour
             }
         }
 
-        p1Score.GetComponent<TextMeshProUGUI>().text = p1 + "Strokes";
-        p2Score.GetComponent<TextMeshProUGUI>().text = p2 + "Strokes";
+        p1Score.GetComponent<TextMeshProUGUI>().text = p1;
+        p2Score.GetComponent<TextMeshProUGUI>().text = p2;
     }
 }

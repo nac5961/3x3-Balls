@@ -53,10 +53,7 @@ public class UIGameInfo : MonoBehaviour
     /// <param name="ui">the UI to display</param>
     private void DisplayUI(GameObject ui)
     {
-        if (!ui.activeSelf)
-        {
-            ui.SetActive(true);
-        }
+        ui.SetActive(true);
     }
 
     /// <summary>
@@ -65,10 +62,7 @@ public class UIGameInfo : MonoBehaviour
     /// <param name="ui">the UI to hide</param>
     private void HideUI(GameObject ui)
     {
-        if (ui.activeSelf)
-        {
-            ui.SetActive(false);
-        }
+        ui.SetActive(false);
     }
 
     /// <summary>
@@ -78,7 +72,6 @@ public class UIGameInfo : MonoBehaviour
     {
         HideUI(hitUI);
         DisplayUI(aimUI);
-        DisplayUI(generalUI);
     }
 
     /// <summary>
@@ -94,20 +87,25 @@ public class UIGameInfo : MonoBehaviour
 
     /// <summary>
     /// Hides the UI for taking a shot.
-    /// Will display the UI for aiming if the shot was cancelled.
     /// </summary>
     /// <param name="tookShot">if the player hit the ball</param>
-    public void HideShotUI(bool tookShot)
+    /// <param name="maxHit">if the player hit the ball with maximum force</param>
+    public void HideShotUI(bool tookShot, bool maxHit = false)
     {
         HideUI(shotUI);
 
-        if (!tookShot)
+        if (tookShot)
         {
-            DisplayUI(aimUI);
+            if (maxHit)
+            {
+                hitUI.GetComponent<HitUI>().SetupMaxHitUI();
+            }
+
+            DisplayUI(hitUI);
         }
         else
         {
-            DisplayUI(hitUI);
+            DisplayUI(aimUI);
         }
     }
 
