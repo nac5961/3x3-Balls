@@ -174,7 +174,7 @@ public class Ball : MonoBehaviour
             }
 
             //Slow down the velocity
-            else if (rb.velocity.magnitude <= 1.0f)
+            else if (rb.velocity.magnitude <= 0.5f)
             {
                 rb.velocity *= deceleration;
             }
