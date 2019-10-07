@@ -179,33 +179,64 @@ public class SceneInfo : MonoBehaviour
     }
 
     /// <summary>
-    /// Assigns player turns randomly while making the player who won the previous
-    /// round go last.
+    /// Assigns player turns based on their score.
     /// </summary>
     private void AssignTurns()
     {
-        int fastestPlayer = GameInfo.instance.FastestPlayer;
+        List<KeyValuePair<int, int>> players = new List<KeyValuePair<int, int>>(); //holds player (key) and their total (value)
+        List<int> totals = new List<int>();
 
-        //Get list of players
-        List<int> players = new List<int>();
-        for (int i = 0; i < GameInfo.instance.Players; i++)
+        for (int i = 0; i < GameInfo.instance.PlayerScores.Count; i++)
         {
-            players.Add(i);
+            int total = 0;
+
+            for (int j = 0; j < GameInfo.instance.PlayerScores[i].Count; j++)
+            {
+                //Only consider the scores up to the current level that we're at.
+                // **Without this, we will be considering all of the 0 scores on levels that were not played.**
+                if (j == GameInfo.instance.Level)
+                    break;
+
+                total += GameInfo.instance.PlayerScores[i][j];
+            }
+
+            players.Add(new KeyValuePair<int, int>(i, total));
+            totals.Add(total);
         }
 
-        //Assign turns randomly
-        for (int i = 0; i < GameInfo.instance.Players; i++)
+        //On first level so randomly choose player turn
+        if (GameInfo.instance.Level == 1)
         {
-            int rand = Random.Range(0, players.Count);
+            for (int i = 0; i < GameInfo.instance.Players; i++)
+            {
+                int rand = Random.Range(0, players.Count);
 
-            turns.Add(players[rand]);
-            players.RemoveAt(rand);
+                //Add player and remove them to not count them again
+                turns.Add(players[rand].Key);
+                players.RemoveAt(rand);
+            }
         }
 
-        //Make the fastest player go last
-        if (turns.Remove(fastestPlayer))
+        //Players have scores so order turns by scores
+        else
         {
-            turns.Add(fastestPlayer);
+            //Order from least to greatest
+            totals.Sort();
+
+            //Make highest scores (players in last) go first and lowest scores (players in first) go last
+            for (int i = totals.Count - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < GameInfo.instance.Players; j++)
+                {
+                    if (players[j].Value == totals[i])
+                    {
+                        //Add player and remove them to not count them again
+                        turns.Add(players[j].Key);
+                        players.RemoveAt(j);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -285,12 +316,6 @@ public class SceneInfo : MonoBehaviour
         {
             targetBall = activeBall;
             targetBall.GetComponent<Renderer>().material = targetBallMaterial;
-
-            //Save the fastest player
-            if (finishedPlayers.Count == 1)
-            {
-                GameInfo.instance.FastestPlayer = GetCurrentPlayer();
-            }
         }
     }
 

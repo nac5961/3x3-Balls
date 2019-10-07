@@ -62,11 +62,13 @@ public class LevelOverUI : MonoBehaviour
     {
         string p1 = "Player 1 - ";
         string p2 = "Player 2 - ";
+        int p1Total = 0;
+        int p2Total = 0;
 
         //Store scores
         for (int i = 0; i < SceneInfo.instance.Scores.Count; i++)
         {
-            GameInfo.instance.PlayerScores[i].Add(SceneInfo.instance.Scores[i]);
+            GameInfo.instance.PlayerScores[i][GameInfo.instance.Level - 1] = SceneInfo.instance.Scores[i];
         }
 
         //Display scores
@@ -78,17 +80,19 @@ public class LevelOverUI : MonoBehaviour
                 if (i == 0)
                 {
                     p1 += GameInfo.instance.PlayerScores[i][j] + " ";
+                    p1Total += GameInfo.instance.PlayerScores[i][j];
                 }
 
                 //Player 2
                 else if (i == 1)
                 {
                     p2 += GameInfo.instance.PlayerScores[i][j] + " ";
+                    p2Total += GameInfo.instance.PlayerScores[i][j];
                 }
             }
         }
 
-        p1Score.GetComponent<TextMeshProUGUI>().text = p1;
-        p2Score.GetComponent<TextMeshProUGUI>().text = p2;
+        p1Score.GetComponent<TextMeshProUGUI>().text = p1 + "Total: " + p1Total.ToString();
+        p2Score.GetComponent<TextMeshProUGUI>().text = p2 + "Total: " + p2Total.ToString();
     }
 }

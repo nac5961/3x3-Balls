@@ -18,7 +18,6 @@ public class GameInfo : MonoBehaviour
     private int level;
     private int totalLevels;
     private int players;
-    private int fastestPlayer;
 
     public List<List<int>> PlayerScores
     {
@@ -37,11 +36,6 @@ public class GameInfo : MonoBehaviour
     public int Players
     {
         get { return players; }
-    }
-    public int FastestPlayer
-    {
-        get { return fastestPlayer; }
-        set { fastestPlayer = value; }
     }
 
     private void Awake()
@@ -90,13 +84,17 @@ public class GameInfo : MonoBehaviour
         this.course = course.ToString();
         level = 1;
         totalLevels = numLevels;
-        fastestPlayer = -1;
 
         playerScores = new List<List<int>>();
 
         for (int i = 0; i < players; i++)
         {
             playerScores.Add(new List<int>());
+
+            for (int j = 0; j < totalLevels; j++)
+            {
+                playerScores[i].Add(0);
+            }
         }
     }
 
