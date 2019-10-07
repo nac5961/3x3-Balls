@@ -11,6 +11,8 @@ public class LevelOverUI : MonoBehaviour
 
     public GameObject p1Score;
     public GameObject p2Score;
+    public GameObject p3Score;
+    public GameObject p4Score;
 
     // Start is called before the first frame update
     void Start()
@@ -56,14 +58,12 @@ public class LevelOverUI : MonoBehaviour
     }
 
     /// <summary>
+    /// REDO
     /// Sets the scores shown at the end of each level.
     /// </summary>
     public void SetupScores()
     {
-        string p1 = "Player 1 - ";
-        string p2 = "Player 2 - ";
-        int p1Total = 0;
-        int p2Total = 0;
+        List<KeyValuePair<string, string>> players = new List<KeyValuePair<string, string>>(); //key = all individual scores; value = total score
 
         //Store scores
         for (int i = 0; i < SceneInfo.instance.Scores.Count; i++)
@@ -71,28 +71,36 @@ public class LevelOverUI : MonoBehaviour
             GameInfo.instance.PlayerScores[i][GameInfo.instance.Level - 1] = SceneInfo.instance.Scores[i];
         }
 
-        //Display scores
+        //Get score info
         for (int i = 0; i < GameInfo.instance.PlayerScores.Count; i++)
         {
+            int total = 0;
+            string info = "Player " + (i + 1) + ": ";
+
             for (int j = 0; j < GameInfo.instance.PlayerScores[i].Count; j++)
             {
-                //Player 1
-                if (i == 0)
-                {
-                    p1 += GameInfo.instance.PlayerScores[i][j] + " ";
-                    p1Total += GameInfo.instance.PlayerScores[i][j];
-                }
-
-                //Player 2
-                else if (i == 1)
-                {
-                    p2 += GameInfo.instance.PlayerScores[i][j] + " ";
-                    p2Total += GameInfo.instance.PlayerScores[i][j];
-                }
+                total += GameInfo.instance.PlayerScores[i][j];
+                info += GameInfo.instance.PlayerScores[i][j] + " ";
             }
+
+            players.Add(new KeyValuePair<string, string>(info, "Total: " + total.ToString()));
         }
 
-        p1Score.GetComponent<TextMeshProUGUI>().text = p1 + "Total: " + p1Total.ToString();
-        p2Score.GetComponent<TextMeshProUGUI>().text = p2 + "Total: " + p2Total.ToString();
+        //Display score info
+        for (int i = 0; i < players.Count; i++)
+        {
+            //Player 1
+            if (i == 0)
+                p1Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
+            //Player 2
+            else if (i == 1)
+                p2Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
+            //Player 3
+            else if (i == 2)
+                p3Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
+            //Player 4
+            else if (i == 3)
+                p4Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
+        }
     }
 }

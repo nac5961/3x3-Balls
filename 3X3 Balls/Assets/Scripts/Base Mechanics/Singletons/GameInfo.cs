@@ -56,7 +56,7 @@ public class GameInfo : MonoBehaviour
     void Start()
     {
         //Default players
-        SetPlayers(2);
+        SetPlayers(1);
     }
 
     // Update is called once per frame

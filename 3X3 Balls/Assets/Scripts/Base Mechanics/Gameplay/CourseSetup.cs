@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class CourseSetup : MonoBehaviour
 {
-    public GameObject[] playerSpawns;
+    public int offset;
+    public GameObject playerSpawn;
+    private List<Vector3> spawnPoints;
 
     public GameObject cuePrefab;
     public GameObject cueBallPrefab;
@@ -15,6 +17,8 @@ public class CourseSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        spawnPoints = new List<Vector3>();
+
         SetupCourse();
 
         //TEMPORARY
@@ -33,15 +37,17 @@ public class CourseSetup : MonoBehaviour
     /// </summary>
     private void SetupCourse()
     {
+        SetupSpawnPoints();
+
         //Eight Ball
         GameObject eightBall = Instantiate(eightBallPrefab, eightBallSpawn.transform.position, Quaternion.identity);
         MoveAboveSurface(eightBall, eightBall.GetComponent<SphereCollider>());
         eightBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
 
         //Cue Balls aka Players
-        for (int i = 0; i < GameInfo.instance.Players; i++)
+        for (int i = 0; i < spawnPoints.Count; i++)
         {
-            GameObject playerBall = Instantiate(cueBallPrefab, playerSpawns[i].transform.position, Quaternion.identity);
+            GameObject playerBall = Instantiate(cueBallPrefab, spawnPoints[i], Quaternion.identity);
             MoveAboveSurface(playerBall, playerBall.GetComponent<SphereCollider>());
             playerBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
 
@@ -60,6 +66,37 @@ public class CourseSetup : MonoBehaviour
 
         //Camera
         Camera.main.gameObject.AddComponent<ThirdPersonCamera>(); //Cannot attach in inspector because we need an active ball to be spawned
+    }
+
+    /// <summary>
+    /// Calculates the spawn points for each player.
+    /// </summary>
+    private void SetupSpawnPoints()
+    {
+        if (GameInfo.instance.Players == 1)
+        {
+            spawnPoints.Add(playerSpawn.transform.position);
+        }
+        else
+        {
+            //Calculate the spacing inbetween each player
+            float spacing = cueBallPrefab.GetComponent<SphereCollider>().radius * 2.0f + offset;
+
+            //Get the direction to spawn players to the right and left of each other
+            Vector3 left = -playerSpawn.transform.right;
+
+            //Get the position of the first ball based on the number of players playing
+            float playerNumOffset = GameInfo.instance.Players / 2.0f - 0.5f;
+            Vector3 startPos = playerSpawn.transform.position + (left * spacing * playerNumOffset);
+
+            //Save the position and calculate the position for the next ball
+            for (int i = 0; i < GameInfo.instance.Players; i++)
+            {
+                spawnPoints.Add(startPos);
+
+                startPos -= left * spacing;
+            }
+        }
     }
 
     /// <summary>
