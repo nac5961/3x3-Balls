@@ -53,7 +53,7 @@ public class ThirdPersonCamera : MonoBehaviour
         xRot = -25.0f; //Sets start rotation
         yRot = -88.0f; //Sets start rotation
         maxXRot = -25.0f; //Change to 25.0f or similar to allow camera to get close to target
-        minXRot = -50.0f;
+        minXRot = -80.0f;
         rotationSpeed = 60.0f;
 
         //Collision
@@ -109,6 +109,8 @@ public class ThirdPersonCamera : MonoBehaviour
         //Set rotation to next player's rotation
         yRot = playerRotations[nextPlayer];
 
+        //Reset x rotation to ideal rotation
+        xRot = maxXRot;
     }
 
     /// <summary>
@@ -153,10 +155,10 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     private void RotateAroundTarget()
     {
-        //xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
+        xRot += -Input.GetAxis("Vertical") * rotationSpeed * Time.deltaTime;
         yRot += Input.GetAxis("Horizontal") * rotationSpeed * Time.deltaTime;
 
-        //xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
+        xRot = Mathf.Clamp(xRot, minXRot, maxXRot);
     }
 
     /// <summary>

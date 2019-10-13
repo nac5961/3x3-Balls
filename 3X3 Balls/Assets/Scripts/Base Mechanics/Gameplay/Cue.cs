@@ -196,6 +196,13 @@ public class Cue : MonoBehaviour
                 fillAmount = 1.2f;
             }
 
+            //Enable collisions after first hit
+            if (SceneInfo.instance.ActiveBall.GetComponent<SphereCollider>().isTrigger)
+            {
+                SceneInfo.instance.ActiveBall.GetComponent<SphereCollider>().isTrigger = false;
+                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().useGravity = true;
+            }
+
             //Apply force
             float power = maxForce * fillAmount;
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;

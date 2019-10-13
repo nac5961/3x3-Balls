@@ -24,7 +24,7 @@ public class UILevelManager : MonoBehaviour
     /// </summary>
     private void LoadForestLevels()
     {
-        GameInfo.instance.SetupGame(2, Courses.Forest);
+        GameInfo.instance.SetupGame(4, Courses.Forest);
         GameInfo.instance.LoadLevel();
     }
 }

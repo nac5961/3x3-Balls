@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5275410840088438685}
   - component: {fileID: 5269166506139075055}
   m_Layer: 0
-  m_Name: rpgpp_lt_rocks_tiny_01
+  m_Name: M_Rock14
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5281036114075718087}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -54.848755, y: 0.00006859687, z: -35.15219}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
