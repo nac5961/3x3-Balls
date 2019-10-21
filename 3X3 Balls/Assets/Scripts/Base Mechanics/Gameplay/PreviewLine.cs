@@ -42,7 +42,7 @@ public class PreviewLine : MonoBehaviour
                 firstDistance = hitInfo.distance;
 
                 //Another ball is hit, show second preview line
-                if (hitInfo.transform.CompareTag("Cue Ball") || hitInfo.transform.CompareTag("Eight Ball"))
+                if (hitInfo.transform.CompareTag("Ball"))
                 {
                     Vector3 toOtherBall = hitInfo.transform.position - hitInfo.point;
                     toOtherBall = new Vector3(toOtherBall.x, 0.0f, toOtherBall.z).normalized;

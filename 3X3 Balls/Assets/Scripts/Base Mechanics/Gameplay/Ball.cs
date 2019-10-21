@@ -10,7 +10,7 @@ public class Ball : MonoBehaviour
     public float floorBounceLimit;
 
     //Spawning
-    private Vector3 eightBallSpawn;
+    private Vector3 targetBallSpawn;
     private Vector3 prevPos;
     private bool inBounds;
 
@@ -23,9 +23,9 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
-    public Vector3 EightBallSpawn
+    public Vector3 TargetBallSpawn
     {
-        set { eightBallSpawn = value; }
+        set { targetBallSpawn = value; }
     }
     public bool InBounds
     {
@@ -134,14 +134,14 @@ public class Ball : MonoBehaviour
         //If somehow a player scores without landing on the scoring area,
         //then we need to make sure that they respawn at that area,
         //instead of at their previous position.
-        if (gameObject == SceneInfo.instance.TargetBall)
+        if (SceneInfo.instance.TargetBalls.Contains(gameObject))
         {
             RaycastHit hitInfo;
             if (Physics.Raycast(respawnPos, Vector3.down, out hitInfo))
             {
                 if (!hitInfo.transform.CompareTag("Score Area"))
                 {
-                    respawnPos = eightBallSpawn;
+                    respawnPos = targetBallSpawn;
                 }
             }
         }
@@ -186,7 +186,7 @@ public class Ball : MonoBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
 
         //Limit how high the ball bounces off of certain objects
-        if (collision.gameObject.CompareTag("Cue Ball") || collision.gameObject.CompareTag("Eight Ball") || collision.gameObject.CompareTag("Wall"))
+        if (collision.gameObject.CompareTag("Ball") || collision.gameObject.CompareTag("Wall"))
         {
             if (rb.velocity.y > ballBounceLimit)
             {
@@ -208,11 +208,12 @@ public class Ball : MonoBehaviour
         }
 
         //Check if ball needs to be respawned (Fell off course or was knocked into a hole)
-        if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("Hole") && gameObject != SceneInfo.instance.TargetBall))
+        if (collision.gameObject.CompareTag("Ground") || (collision.gameObject.CompareTag("Hole") && !SceneInfo.instance.TargetBalls.Contains(gameObject)))
         {
             //This takes into account bouncing.
             //If the target ball switches when the previous target ball is bouncing
             //in the hole, the previous target ball will respawn.
+            // **This was needed when TargetBalls was not a list**
             if (!isScored)
             {
                 Respawn();
@@ -220,10 +221,10 @@ public class Ball : MonoBehaviour
         }
 
         //Check if ball is scored
-        else if (collision.gameObject.CompareTag("Hole") && gameObject == SceneInfo.instance.TargetBall)
+        else if (collision.gameObject.CompareTag("Hole") && SceneInfo.instance.TargetBalls.Contains(gameObject))
         {
-            //Player scored only the target ball during their turn
-            if (SceneInfo.instance.TargetBall != SceneInfo.instance.ActiveBall)
+            //Player scored only target balls during their turn
+            if (gameObject != SceneInfo.instance.ActiveBall)
             {
                 isScored = true;
 
@@ -240,7 +241,7 @@ public class Ball : MonoBehaviour
                 SceneInfo.instance.SwitchTargetBall();
             }
 
-            //Player scored both their ball and the target ball so respawn them
+            //Player scored both their ball and target balls so respawn them
             else
             {
                 Respawn();

@@ -11,8 +11,7 @@ public class CourseSetup : MonoBehaviour
     public GameObject cuePrefab;
     public GameObject cueBallPrefab;
 
-    public GameObject eightBallSpawn;
-    public GameObject eightBallPrefab;
+    public GameObject[] targetBalls;
 
     // Start is called before the first frame update
     void Start()
@@ -37,16 +36,18 @@ public class CourseSetup : MonoBehaviour
     private void SetupCourse()
     {
         //Eight Ball
-        GameObject eightBall = Instantiate(eightBallPrefab, eightBallSpawn.transform.position, Quaternion.identity);
-        MoveAboveSurface(eightBall, eightBall.GetComponent<SphereCollider>());
-        eightBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
+        for (int i = 0; i < targetBalls.Length; i++)
+        {
+            MoveAboveSurface(targetBalls[i], targetBalls[i].GetComponent<SphereCollider>());
+            targetBalls[i].GetComponent<Ball>().TargetBallSpawn = targetBalls[i].transform.position;
+        }
 
         //Cue Balls aka Players
         for (int i = 0; i < GameInfo.instance.Players; i++)
         {
             GameObject playerBall = Instantiate(cueBallPrefab, playerSpawn.transform.position, Quaternion.identity);
             MoveAboveSurface(playerBall, playerBall.GetComponent<SphereCollider>());
-            playerBall.GetComponent<Ball>().EightBallSpawn = eightBall.transform.position;
+            playerBall.GetComponent<Ball>().TargetBallSpawn = targetBalls[0].transform.position;
 
             //Prevent collisions until first hit so balls can spawn inside each other
             playerBall.GetComponent<SphereCollider>().isTrigger = true;
@@ -59,11 +60,14 @@ public class CourseSetup : MonoBehaviour
         GameObject cue = Instantiate(cuePrefab);
 
         //Scene Manager
-        SceneInfo.instance.Balls.Add(eightBall); //Add after player balls so we can index the Balls list by the player (player 1 is ball[0], player 2 is ball[1], etc.)
+        for (int i = 0; i < targetBalls.Length; i++)
+        {
+            SceneInfo.instance.Balls.Add(targetBalls[i]); //Add after player balls so we can index the Balls list by the player (player 1 is ball[0], player 2 is ball[1], etc.)
+            SceneInfo.instance.TargetBalls.Add(targetBalls[i]);
+        }
         SceneInfo.instance.Cue = cue;
         SceneInfo.instance.SetActiveBall();
-        SceneInfo.instance.TargetBall = eightBall;
-        SceneInfo.instance.TargetBallMaterial = eightBall.GetComponent<Renderer>().material;
+        SceneInfo.instance.TargetBallMaterial = targetBalls[0].GetComponent<Renderer>().material;
 
         //Camera
         Camera.main.gameObject.AddComponent<ThirdPersonCamera>(); //Cannot attach in inspector because we need an active ball to be spawned

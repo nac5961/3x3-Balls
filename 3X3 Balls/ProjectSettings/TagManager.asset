@@ -4,13 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Cue Ball
   - Ground
   - Hole
-  - Eight Ball
   - Wall
   - Score Area
   - Floor
+  - Ball
   layers:
   - Default
   - TransparentFX

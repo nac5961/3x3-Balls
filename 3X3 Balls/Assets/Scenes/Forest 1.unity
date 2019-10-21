@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4461053, g: 0.71626747, b: 0.92289996, a: 1}
+  m_IndirectSpecularColor: {r: 0.4736132, g: 0.7841968, b: 1.0028458, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8920,7 +8920,7 @@ Transform:
   - {fileID: 1994158393}
   - {fileID: 33213903}
   - {fileID: 389036683}
-  - {fileID: 775326320}
+  - {fileID: 1443970173}
   m_Father: {fileID: 1121295808}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -10885,36 +10885,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 772849363}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &775326319
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 775326320}
-  m_Layer: 0
-  m_Name: Eight Ball Spawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &775326320
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775326319}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.17, y: 3.0383058, z: -0.39}
-  m_LocalScale: {x: 0.57326525, y: 0.57326525, z: 0.57326525}
-  m_Children: []
-  m_Father: {fileID: 654286046}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &777295226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8478195644167281841, guid: cdf635cb01cd8664488044e57570a25d,
@@ -22648,6 +22618,102 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1431002164}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1443970172
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 654286046}
+    m_Modifications:
+    - target: {fileID: 7391789941207013686, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_Name
+      value: Eight Ball
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -7.17
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.57326525
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.57326525
+      objectReference: {fileID: 0}
+    - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.57326525
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 7d6674a0797e8b7429e7939db0daffea, type: 3}
+--- !u!4 &1443970173 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
+    type: 3}
+  m_PrefabInstance: {fileID: 1443970172}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1443970174 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7391789941207013686, guid: 7d6674a0797e8b7429e7939db0daffea,
+    type: 3}
+  m_PrefabInstance: {fileID: 1443970172}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1447124709
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31907,6 +31973,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5068105333764723682, guid: f6b07f2c6bbda4d42be460df0dc171f9,
         type: 3}
+      propertyPath: targetBalls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5068105333764723682, guid: f6b07f2c6bbda4d42be460df0dc171f9,
+        type: 3}
       propertyPath: playerSpawn
       value: 
       objectReference: {fileID: 1918132079}
@@ -31914,7 +31985,12 @@ PrefabInstance:
         type: 3}
       propertyPath: eightBallSpawn
       value: 
-      objectReference: {fileID: 775326319}
+      objectReference: {fileID: 0}
+    - target: {fileID: 5068105333764723682, guid: f6b07f2c6bbda4d42be460df0dc171f9,
+        type: 3}
+      propertyPath: targetBalls.Array.data[0]
+      value: 
+      objectReference: {fileID: 1443970174}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f6b07f2c6bbda4d42be460df0dc171f9, type: 3}
 --- !u!1001 &5702771802815561988

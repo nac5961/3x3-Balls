@@ -10,7 +10,7 @@ public class SceneInfo : MonoBehaviour
     private GameObject cue;
     private List<GameObject> balls;
     private GameObject activeBall;
-    private GameObject targetBall;
+    private List<GameObject> targetBalls;
     private Material targetBallMaterial;
 
     //Turns and Scores
@@ -49,10 +49,10 @@ public class SceneInfo : MonoBehaviour
     {
         get { return activeBall; }
     }
-    public GameObject TargetBall
+    public List<GameObject> TargetBalls
     {
-        get { return targetBall; }
-        set { targetBall = value; }
+        get { return targetBalls; }
+        set { targetBalls = value; }
     }
     public Material TargetBallMaterial
     {
@@ -107,6 +107,7 @@ public class SceneInfo : MonoBehaviour
 
         //Initialize in Awake() so that other scripts can access these variables on Start()
         balls = new List<GameObject>();
+        targetBalls = new List<GameObject>();
 
         finishedPlayers = new List<int>();
         scores = new List<int>();
@@ -314,8 +315,8 @@ public class SceneInfo : MonoBehaviour
         //Only make a new target ball if there are players still playing
         if (finishedPlayers.Count < GameInfo.instance.Players)
         {
-            targetBall = activeBall;
-            targetBall.GetComponent<Renderer>().material = targetBallMaterial;
+            activeBall.GetComponent<Renderer>().material = targetBallMaterial;
+            targetBalls.Add(activeBall);
         }
     }
 
@@ -414,7 +415,7 @@ public class SceneInfo : MonoBehaviour
             if (!ball.IsScored)
             {
                 //Respawn target ball if it was knocked out of the scoring area
-                if (ball.gameObject == targetBall && !ball.InBounds)
+                if (targetBalls.Contains(ball.gameObject) && !ball.InBounds)
                 {
                     ball.Respawn();
                 }
