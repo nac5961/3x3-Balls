@@ -125,7 +125,7 @@ public class SceneInfo : MonoBehaviour
         disableControls = false;
 
         endTurnWaitTime = 2.0f;
-        nextTurnWaitTime = 0.4f;
+        nextTurnWaitTime = 0.0f;
         timer = 0.0f;
 
         InitializeScores();
@@ -141,6 +141,7 @@ public class SceneInfo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ManuallyEndLevel(); //DELETE ME
         if (gameStart)
         {
             if (!disableControls)
@@ -176,6 +177,16 @@ public class SceneInfo : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    //DELETE ME
+    private void ManuallyEndLevel()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            gameStart = false;
+            UIGameInfo.instance.DisplayLevelOverUI();
         }
     }
 
@@ -310,13 +321,18 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     public void SwitchTargetBall()
     {
-        finishedPlayers.Add(GetCurrentPlayer());
-
-        //Only make a new target ball if there are players still playing
-        if (finishedPlayers.Count < GameInfo.instance.Players)
+        //This check prevents duplicate entries when multiple balls
+        //are scored during one turn.
+        if (!finishedPlayers.Contains(GetCurrentPlayer()))
         {
-            activeBall.GetComponent<Renderer>().material = targetBallMaterial;
-            targetBalls.Add(activeBall);
+            finishedPlayers.Add(GetCurrentPlayer());
+
+            //Only make a new target ball if there are players still playing
+            if (finishedPlayers.Count < GameInfo.instance.Players)
+            {
+                activeBall.GetComponent<Renderer>().material = targetBallMaterial;
+                targetBalls.Add(activeBall);
+            }
         }
     }
 
@@ -334,6 +350,20 @@ public class SceneInfo : MonoBehaviour
     public void UpdatePlayerScore()
     {
         scores[GetCurrentPlayer()]++;
+    }
+
+    /// <summary>
+    /// Gives players a bonus (bonus subtracts from the stroke count).
+    /// </summary>
+    /// <param name="bonus"></param>
+    public void AddBonusScore(int bonus)
+    {
+        scores[GetCurrentPlayer()] -= bonus;
+
+        if (scores[GetCurrentPlayer()] <= 0)
+        {
+            scores[GetCurrentPlayer()] = 1;
+        }
     }
 
     /// <summary>
@@ -421,6 +451,7 @@ public class SceneInfo : MonoBehaviour
                 }
 
                 ball.UpdatePrevPos();
+                ball.ScoreCount = 0;
             }
         }
 

@@ -6,12 +6,16 @@ public class CourseSetup : MonoBehaviour
 {
     //public int offset; //used for spawning players next to each other
     //private List<Vector3> spawnPoints; //used for spawning players next to each other
+    public GameObject levelOverview;
+    public GameObject scoreAreaOverview;
+
     public GameObject playerSpawn;
 
     public GameObject cuePrefab;
     public GameObject cueBallPrefab;
 
     public GameObject[] targetBalls;
+    public GameObject[] otherBalls;
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +46,13 @@ public class CourseSetup : MonoBehaviour
             targetBalls[i].GetComponent<Ball>().TargetBallSpawn = targetBalls[i].transform.position;
         }
 
+        //Other Balls
+        for (int i = 0; i < otherBalls.Length; i++)
+        {
+            MoveAboveSurface(otherBalls[i], otherBalls[i].GetComponent<SphereCollider>());
+            otherBalls[i].GetComponent<Ball>().TargetBallSpawn = otherBalls[i].transform.position;
+        }
+
         //Cue Balls aka Players
         for (int i = 0; i < GameInfo.instance.Players; i++)
         {
@@ -65,12 +76,18 @@ public class CourseSetup : MonoBehaviour
             SceneInfo.instance.Balls.Add(targetBalls[i]); //Add after player balls so we can index the Balls list by the player (player 1 is ball[0], player 2 is ball[1], etc.)
             SceneInfo.instance.TargetBalls.Add(targetBalls[i]);
         }
+        for (int i = 0; i < otherBalls.Length; i++)
+        {
+            SceneInfo.instance.Balls.Add(otherBalls[i]); //Add after player balls so we can index the Balls list by the player (player 1 is ball[0], player 2 is ball[1], etc.)
+        }
         SceneInfo.instance.Cue = cue;
         SceneInfo.instance.SetActiveBall();
         SceneInfo.instance.TargetBallMaterial = targetBalls[0].GetComponent<Renderer>().material;
 
         //Camera
         Camera.main.gameObject.AddComponent<ThirdPersonCamera>(); //Cannot attach in inspector because we need an active ball to be spawned
+        Camera.main.GetComponent<ThirdPersonCamera>().LevelOverview = levelOverview;
+        Camera.main.GetComponent<ThirdPersonCamera>().ScoreAreaOverview = scoreAreaOverview;
     }
 
     /// <summary>

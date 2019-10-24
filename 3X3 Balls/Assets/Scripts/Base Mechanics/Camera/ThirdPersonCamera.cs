@@ -31,11 +31,30 @@ public class ThirdPersonCamera : MonoBehaviour
     //Player
     private List<float> playerRotations;
 
+    //Views
+    private GameObject levelOverview;
+    private GameObject scoreAreaOverview;
+    private bool locked;
+    private bool autoSwitch;
+    private Vector3 playerOverhead;
+    private Quaternion playerOverheadRotation;
+
     public Transform Target
     {
         set { target = value; }
     }
-
+    public GameObject LevelOverview
+    {
+        set { levelOverview = value; }
+    }
+    public GameObject ScoreAreaOverview
+    {
+        set { scoreAreaOverview = value; }
+    }
+    public bool Locked
+    {
+        get { return locked; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +86,12 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             playerRotations.Add(yRot);
         }
+
+        //Views
+        locked = false;
+        autoSwitch = false;
+        playerOverhead = new Vector3(0.0f, 16.87f, 0.0f);
+        playerOverheadRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
     }
 
     // Update is called once per frame
@@ -74,7 +99,17 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
-            if (!SceneInfo.instance.IsTakingShot)
+            if (SceneInfo.instance.IsHit && !autoSwitch)
+            {
+                AutomaticallySwitchView();
+            }
+
+            if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
+            {
+                ManuallySwitchView();
+            }
+
+            if (!SceneInfo.instance.IsTakingShot && !locked)
             {
                 RotateAroundTarget();
             }
@@ -87,11 +122,63 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            FollowTarget();
-            LookAtTarget();
+            if (!locked)
+            {
+                FollowTarget();
+                LookAtTarget();
+            }
 
             //SetClipPoints();
             //SetAdjustedDistance();
+        }
+    }
+
+    private void AutomaticallySwitchView()
+    {
+        if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().InBounds && SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity.magnitude < 2.0f)
+        {
+            autoSwitch = true;
+            locked = true;
+
+            UIGameInfo.instance.HideAllUI();
+
+            Camera.main.transform.position = scoreAreaOverview.transform.position;
+            Camera.main.transform.rotation = scoreAreaOverview.transform.rotation;
+        }
+    }
+
+    private void ManuallySwitchView()
+    {
+        if (Input.GetButton("CameraViewLevel"))
+        {
+            if (!locked)
+            {
+                UIGameInfo.instance.DisplayCamViewUI();
+            }
+
+            locked = true;
+            Camera.main.transform.position = levelOverview.transform.position;
+            Camera.main.transform.rotation = levelOverview.transform.rotation;
+        }
+        else if (Input.GetButton("CameraViewOverhead"))
+        {
+            if (!locked)
+            {
+                UIGameInfo.instance.DisplayCamViewUI();
+            }
+
+            locked = true;
+            Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + playerOverhead;
+            Camera.main.transform.rotation = playerOverheadRotation;
+        }
+        else
+        {
+            if (locked)
+            {
+                UIGameInfo.instance.HideCamViewUI();
+            }
+
+            locked = false;
         }
     }
 
@@ -111,6 +198,9 @@ public class ThirdPersonCamera : MonoBehaviour
 
         //Reset x rotation to ideal rotation
         xRot = maxXRot;
+
+        autoSwitch = false;
+        locked = false;
     }
 
     /// <summary>

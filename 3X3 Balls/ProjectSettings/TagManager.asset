@@ -10,6 +10,7 @@ TagManager:
   - Score Area
   - Floor
   - Ball
+  - Bumper
   layers:
   - Default
   - TransparentFX

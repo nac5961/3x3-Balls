@@ -67,21 +67,24 @@ public class Cue : MonoBehaviour
     /// </summary>
     private void AlignWithBall()
     {
-        GameObject ball = SceneInfo.instance.ActiveBall;
-        SphereCollider collider = ball.GetComponent<SphereCollider>();
+        if (!Camera.main.GetComponent<ThirdPersonCamera>().Locked)
+        {
+            GameObject ball = SceneInfo.instance.ActiveBall;
+            SphereCollider collider = ball.GetComponent<SphereCollider>();
 
-        //Always reset rotation so the transform.RotateAround doesn't stack
-        transform.rotation = Quaternion.identity;
+            //Always reset rotation so the transform.RotateAround doesn't stack
+            transform.rotation = Quaternion.identity;
 
-        //Zero out the y to prevent the cue from moving up and down
-        Vector3 toCam = Camera.main.transform.position - ball.transform.position;
-        toCam = new Vector3(toCam.x, 0.0f, toCam.z);
+            //Zero out the y to prevent the cue from moving up and down
+            Vector3 toCam = Camera.main.transform.position - ball.transform.position;
+            toCam = new Vector3(toCam.x, 0.0f, toCam.z);
 
-        //Move to the edge of the ball
-        transform.position = ball.transform.position + (toCam.normalized * collider.radius);
+            //Move to the edge of the ball
+            transform.position = ball.transform.position + (toCam.normalized * collider.radius);
 
-        //Rotate the cue around itself to not have the rotation change its position
-        transform.RotateAround(transform.position, Camera.main.transform.right, hitAngle);
+            //Rotate the cue around itself to not have the rotation change its position
+            transform.RotateAround(transform.position, Camera.main.transform.right, hitAngle);
+        }
     }
 
     /// <summary>
@@ -114,60 +117,50 @@ public class Cue : MonoBehaviour
         //Input
         else
         {
-            //Start taking shot
-            if (!SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
+            if (!Camera.main.GetComponent<ThirdPersonCamera>().Locked)
             {
-                SceneInfo.instance.IsTakingShot = true;
-                FindAnimationPoints();
-
-                UIGameInfo.instance.DisplayShotUI();
-            }
-
-            //Stop taking shot
-            else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Cancel"))
-            {
-                SceneInfo.instance.IsTakingShot = false;
-
-                UIGameInfo.instance.HideShotUI(false);
-            }
-
-            //Take shot
-            else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
-            {
-                SceneInfo.instance.IsAiming = false;
-                SceneInfo.instance.IsTakingShot = false;
-
-                startPos = transform.position;
-                animationTime = 0.0f;
-                isAnimatingHit = true;
-
-                if (shotUI.GetFillAmount() >= 1.0f - marginOfError)
+                //Start taking shot
+                if (!SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
                 {
-                    UIGameInfo.instance.HideShotUI(true, true);
+                    SceneInfo.instance.IsTakingShot = true;
+                    FindAnimationPoints();
+
+                    UIGameInfo.instance.DisplayShotUI();
                 }
-                else
+
+                //Stop taking shot
+                else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Cancel"))
                 {
-                    UIGameInfo.instance.HideShotUI(true);
+                    SceneInfo.instance.IsTakingShot = false;
+
+                    UIGameInfo.instance.HideShotUI(false);
                 }
-            }
 
-            //SHOWCASE (DELETE ME)
-            else if (SceneInfo.instance.IsTakingShot && Input.GetKeyDown(KeyCode.K))
-            {
-                SceneInfo.instance.IsAiming = false;
-                SceneInfo.instance.IsTakingShot = false;
+                //Take shot
+                else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
+                {
+                    SceneInfo.instance.IsAiming = false;
+                    SceneInfo.instance.IsTakingShot = false;
 
-                startPos = transform.position;
-                animationTime = 0.0f;
-                isAnimatingHit = true;
+                    startPos = transform.position;
+                    animationTime = 0.0f;
+                    isAnimatingHit = true;
 
-                UIGameInfo.instance.HideShotUI(true, true);
-            }
+                    if (shotUI.GetFillAmount() >= 1.0f - marginOfError)
+                    {
+                        UIGameInfo.instance.HideShotUI(true, true);
+                    }
+                    else
+                    {
+                        UIGameInfo.instance.HideShotUI(true);
+                    }
+                }
 
-            //Move according to the power
-            if (SceneInfo.instance.IsTakingShot)
-            {
-                transform.position = Vector3.Lerp(minPos, maxPos, shotUI.GetFillAmount());
+                //Move according to the power
+                if (SceneInfo.instance.IsTakingShot)
+                {
+                    transform.position = Vector3.Lerp(minPos, maxPos, shotUI.GetFillAmount());
+                }
             }
         }
     }

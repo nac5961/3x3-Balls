@@ -16,6 +16,7 @@ public class Ball : MonoBehaviour
 
     //Scoring
     private bool isScored;
+    private int scoreCount;
 
     //Pausing (Rigidbody)
     private bool wasPaused;
@@ -35,6 +36,11 @@ public class Ball : MonoBehaviour
     {
         get { return isScored; }
     }
+    public int ScoreCount
+    {
+        get { return scoreCount; }
+        set { scoreCount = value; }
+    }
     public bool WasMoving
     {
         get { return wasMoving; }
@@ -45,6 +51,7 @@ public class Ball : MonoBehaviour
     {
         prevPos = transform.position;
         isScored = false;
+        scoreCount = 0;
 
         wasPaused = false;
         wasMoving = false;
@@ -174,7 +181,7 @@ public class Ball : MonoBehaviour
             }
 
             //Slow down the velocity
-            else if (rb.velocity.magnitude <= 0.5f)
+            else if (rb.velocity.magnitude <= 0.4f)
             {
                 rb.velocity *= deceleration;
             }
@@ -200,6 +207,13 @@ public class Ball : MonoBehaviour
                 rb.velocity = new Vector3(rb.velocity.x, floorBounceLimit, rb.velocity.z);
             }
         }
+        else if (collision.gameObject.CompareTag("Bumper"))
+        {
+            if (rb.velocity.y > 0.5f)
+            {
+                rb.velocity = new Vector3(rb.velocity.x, 0.5f, rb.velocity.z);
+            }
+        }
 
         //Check if the ball is in the scoring area
         if (collision.gameObject.CompareTag("Score Area"))
@@ -213,7 +227,7 @@ public class Ball : MonoBehaviour
             //This takes into account bouncing.
             //If the target ball switches when the previous target ball is bouncing
             //in the hole, the previous target ball will respawn.
-            // **This was needed when TargetBalls was not a list**
+            // **The check in the if-statement was needed when TargetBalls was not a list**
             if (!isScored)
             {
                 Respawn();
@@ -239,6 +253,20 @@ public class Ball : MonoBehaviour
 
                 //Setup next target
                 SceneInfo.instance.SwitchTargetBall();
+
+                SceneInfo.instance.ActiveBall.GetComponent<Ball>().ScoreCount++;
+
+                if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().ScoreCount > 1)
+                {
+                    SceneInfo.instance.AddBonusScore(1);
+                    UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
+                }
+
+                if (gameObject.name.Contains("Special"))
+                {
+                    SceneInfo.instance.AddBonusScore(3);
+                    UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
+                }
             }
 
             //Player scored both their ball and target balls so respawn them

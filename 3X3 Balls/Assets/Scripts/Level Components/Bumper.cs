@@ -58,7 +58,7 @@ public class Bumper : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ball"))
         {
-            if (!isStationary && !remove && !collision.gameObject.GetComponent<Rigidbody>().IsSleeping() && collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 0.01f)
+            if (!isStationary && !remove && !collision.gameObject.GetComponent<Rigidbody>().IsSleeping() && collision.gameObject.GetComponent<Rigidbody>().velocity.magnitude > 0.2f)
             {
                 remove = true;
             }

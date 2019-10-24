@@ -13,6 +13,7 @@ public class UIGameInfo : MonoBehaviour
     public GameObject turnUI;
     public GameObject levelOverUI;
     public GameObject pauseUI;
+    public GameObject camViewUI;
 
     public GameObject GeneralUI
     {
@@ -72,6 +73,7 @@ public class UIGameInfo : MonoBehaviour
     {
         HideUI(hitUI);
         DisplayUI(aimUI);
+        DisplayUI(generalUI);
     }
 
     /// <summary>
@@ -157,5 +159,53 @@ public class UIGameInfo : MonoBehaviour
     public void HidePauseUI()
     {
         HideUI(pauseUI);
+    }
+
+    /// <summary>
+    /// Displays the UI for when the camera's view is switched.
+    /// </summary>
+    public void DisplayCamViewUI()
+    {
+        if (SceneInfo.instance.IsAiming)
+        {
+            HideUI(aimUI);
+        }
+        else if (SceneInfo.instance.IsHit)
+        {
+            HideUI(hitUI);
+        }
+
+        DisplayUI(camViewUI);
+    }
+
+    /// <summary>
+    /// Hides the UI for when the camera's view is switched.
+    /// </summary>
+    public void HideCamViewUI()
+    {
+        HideUI(camViewUI);
+
+        if (SceneInfo.instance.IsAiming)
+        {
+            DisplayUI(aimUI);
+        }
+        else if (SceneInfo.instance.IsHit)
+        {
+            DisplayUI(hitUI);
+        }
+    }
+
+    /// <summary>
+    /// Hides all UI except the General UI.
+    /// </summary>
+    public void HideAllUI()
+    {
+        HideUI(aimUI);
+        HideUI(shotUI);
+        HideUI(hitUI);
+        HideUI(turnUI);
+        HideUI(levelOverUI);
+        HideUI(pauseUI);
+        HideUI(camViewUI);
     }
 }
