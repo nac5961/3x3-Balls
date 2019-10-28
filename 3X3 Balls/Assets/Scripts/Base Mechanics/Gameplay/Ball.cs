@@ -8,6 +8,8 @@ public class Ball : MonoBehaviour
     public float deceleration;
     public float ballBounceLimit;
     public float floorBounceLimit;
+    private bool appliedSpin;
+    private Vector3 hitDirection;
 
     //Spawning
     private Vector3 targetBallSpawn;
@@ -24,6 +26,10 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
+    public Vector3 HitDirection
+    {
+        set { hitDirection = value; }
+    }
     public Vector3 TargetBallSpawn
     {
         set { targetBallSpawn = value; }
@@ -49,6 +55,8 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        appliedSpin = false;
+
         prevPos = transform.position;
         isScored = false;
         scoreCount = 0;
@@ -191,6 +199,20 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
+
+        if (collision.gameObject.CompareTag("Ball") && gameObject == SceneInfo.instance.ActiveBall)
+        {
+            if (!appliedSpin)
+            {
+                appliedSpin = true;
+
+                //Apply torque
+                gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 500;
+                Vector3 torque = hitDirection;
+                torque = new Vector3(0.0f, 0.0f, torque.z) * -15000;
+                gameObject.GetComponent<Rigidbody>().AddTorque(torque);
+            }
+        }
 
         //Limit how high the ball bounces off of certain objects
         if (collision.gameObject.CompareTag("Ball") || collision.gameObject.CompareTag("Wall"))

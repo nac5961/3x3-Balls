@@ -202,6 +202,8 @@ public class Cue : MonoBehaviour
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
+            SceneInfo.instance.ActiveBall.GetComponent<Ball>().HitDirection = force.normalized;
+
             //Update stroke count
             SceneInfo.instance.UpdatePlayerScore();
             UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
