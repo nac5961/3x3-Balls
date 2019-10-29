@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SpinType
+{
+    Normal,
+    Top,
+    Back,
+    Left,
+    Right
+}
+
 public class Ball : MonoBehaviour
 {
     //Rigidbody
@@ -9,7 +18,14 @@ public class Ball : MonoBehaviour
     public float ballBounceLimit;
     public float floorBounceLimit;
     private bool appliedSpin;
-    private Vector3 hitDirection;
+    private Vector3 initalVelocity;
+    private Vector3 initialAngularVelocity;
+    private Vector3 prevVelocity;
+    private float minMagnitude;
+    private bool startHit;
+
+    //Spin
+    private SpinType spin;
 
     //Spawning
     private Vector3 targetBallSpawn;
@@ -26,9 +42,9 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
-    public Vector3 HitDirection
+    public SpinType Spin
     {
-        set { hitDirection = value; }
+        set { spin = value; }
     }
     public Vector3 TargetBallSpawn
     {
@@ -56,6 +72,13 @@ public class Ball : MonoBehaviour
     void Start()
     {
         appliedSpin = false;
+        initalVelocity = Vector3.zero;
+        initialAngularVelocity = Vector3.zero;
+        prevVelocity = Vector3.zero;
+        minMagnitude = 25.0f;
+        startHit = false;
+
+        spin = SpinType.Normal;
 
         prevPos = transform.position;
         isScored = false;
@@ -88,8 +111,28 @@ public class Ball : MonoBehaviour
                 {
                     ResumeBall();
                 }
+                else if (SceneInfo.instance.IsAiming)
+                {
+                    if (startHit)
+                    {
+                        appliedSpin = false;
+                        startHit = false;
+                        initalVelocity = Vector3.zero;
+                        initialAngularVelocity = Vector3.zero;
+                        prevVelocity = Vector3.zero;
+                    }
+                }
                 else if (SceneInfo.instance.IsHit)
                 {
+                    prevVelocity = gameObject.GetComponent<Rigidbody>().velocity;
+
+                    if (!startHit)
+                    {
+                        startHit = true;
+                        initalVelocity = gameObject.GetComponent<Rigidbody>().velocity;
+                        initialAngularVelocity = gameObject.GetComponent<Rigidbody>().angularVelocity;
+                    }
+
                     StopMoving();
                 }
             }
@@ -206,11 +249,47 @@ public class Ball : MonoBehaviour
             {
                 appliedSpin = true;
 
-                //Apply torque
-                gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 500;
-                Vector3 torque = hitDirection;
-                torque = new Vector3(0.0f, 0.0f, torque.z) * -15000;
-                gameObject.GetComponent<Rigidbody>().AddTorque(torque);
+                if (spin != SpinType.Normal)
+                {
+                    //Calculate torque
+                    gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 100;
+                    Vector3 torque = Vector3.zero;
+                    float velocityScale = prevVelocity.magnitude / initalVelocity.magnitude * Mathf.Clamp(prevVelocity.magnitude / minMagnitude, 0.0f, 1.0f);
+                    float torqueMultiplier = 200.0f * velocityScale;
+                    
+                    Debug.Log(torqueMultiplier);
+
+                    switch (spin)
+                    {
+                        case SpinType.Top:
+                            torque = initialAngularVelocity.normalized * torqueMultiplier;
+                            break;
+                        case SpinType.Back:
+                            torque = initialAngularVelocity.normalized * -torqueMultiplier;
+                            break;
+                        case SpinType.Left:
+                            torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity * torqueMultiplier;
+                            break;
+                        case SpinType.Right:
+                            torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity * torqueMultiplier;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    gameObject.GetComponent<Rigidbody>().AddTorque(torque, ForceMode.VelocityChange);
+                }
+            }
+        }
+        else if (collision.gameObject.CompareTag("Wall") && gameObject == SceneInfo.instance.ActiveBall)
+        {
+            if (!appliedSpin)
+            {
+                appliedSpin = true;
+            }
+            else if (appliedSpin)
+            {
+                gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
             }
         }
 

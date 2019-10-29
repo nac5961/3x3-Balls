@@ -156,6 +156,31 @@ public class Cue : MonoBehaviour
                     }
                 }
 
+                //Set spin type
+                else if (!SceneInfo.instance.IsTakingShot)
+                {
+                    if (Input.GetButtonDown("NormalSpin"))
+                    {
+                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Normal;
+                    }
+                    else if (Input.GetButtonDown("TopSpin"))
+                    {
+                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Top;
+                    }
+                    else if (Input.GetButtonDown("BackSpin"))
+                    {
+                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Back;
+                    }
+                    else if (Input.GetButtonDown("LeftSpin"))
+                    {
+                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Left;
+                    }
+                    else if (Input.GetButtonDown("RightSpin"))
+                    {
+                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Right;
+                    }
+                }
+
                 //Move according to the power
                 if (SceneInfo.instance.IsTakingShot)
                 {
@@ -201,8 +226,6 @@ public class Cue : MonoBehaviour
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
-
-            SceneInfo.instance.ActiveBall.GetComponent<Ball>().HitDirection = force.normalized;
 
             //Update stroke count
             SceneInfo.instance.UpdatePlayerScore();
