@@ -2,17 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShotUI : MonoBehaviour
 {
+    public Image ballImage;
+
+    public GameObject cancelImage;
+    public GameObject cancelText;
+    public GameObject hitText;
+
     public GameObject powerMeter;
     public float fillSpeed;
     public float minFill;
+
+    private bool powerSet;
+
+    public bool PowerSet
+    {
+        get { return powerSet; }
+        set { powerSet = value; }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         powerMeter.GetComponent<Image>().fillAmount = minFill;
+        powerSet = false;
     }
 
     // Update is called once per frame
@@ -32,18 +48,21 @@ public class ShotUI : MonoBehaviour
     /// </summary>
     private void AnimatePowerMeter()
     {
-        Image img = powerMeter.GetComponent<Image>();
-
-        float percent = img.fillAmount;
-
-        percent += fillSpeed * Time.deltaTime;
-        percent = Mathf.Clamp(percent, minFill, 1.0f);
-        img.fillAmount = percent;
-
-        //Reverse
-        if (percent == minFill || percent == 1.0f)
+        if (!powerSet)
         {
-            fillSpeed = -fillSpeed;
+            Image img = powerMeter.GetComponent<Image>();
+
+            float percent = img.fillAmount;
+
+            percent += fillSpeed * Time.deltaTime;
+            percent = Mathf.Clamp(percent, minFill, 1.0f);
+            img.fillAmount = percent;
+
+            //Reverse
+            if (percent == minFill || percent == 1.0f)
+            {
+                fillSpeed = -fillSpeed;
+            }
         }
     }
 
@@ -52,8 +71,22 @@ public class ShotUI : MonoBehaviour
     /// </summary>
     public void ResetPowerMeter()
     {
+        ballImage.sprite = UIGameInfo.instance.AimUI.GetComponent<AimUI>().Ball.sprite;
+
+        cancelImage.SetActive(true);
+        cancelText.SetActive(true);
+        hitText.GetComponent<TextMeshProUGUI>().text = "Hold to\r\nset power";
+
+        powerSet = false;
         powerMeter.GetComponent<Image>().fillAmount = minFill;
         fillSpeed = Mathf.Abs(fillSpeed);
+    }
+
+    public void ShowReleaseText()
+    {
+        cancelImage.SetActive(false);
+        cancelText.SetActive(false);
+        hitText.GetComponent<TextMeshProUGUI>().text = "Release to\r\nhit ball";
     }
 
     /// <summary>

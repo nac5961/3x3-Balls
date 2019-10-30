@@ -23,6 +23,7 @@ public class Cue : MonoBehaviour
     private Vector3 minPos;
     private Vector3 maxPos;
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -129,15 +130,22 @@ public class Cue : MonoBehaviour
                 }
 
                 //Stop taking shot
-                else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Cancel"))
+                else if (SceneInfo.instance.IsTakingShot && !shotUI.PowerSet && Input.GetButtonDown("Cancel"))
                 {
                     SceneInfo.instance.IsTakingShot = false;
 
                     UIGameInfo.instance.HideShotUI(false);
                 }
 
-                //Take shot
+                //Hold shot
                 else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
+                {
+                    shotUI.PowerSet = true;
+                    shotUI.ShowReleaseText();
+                }
+
+                //Take shot
+                else if (SceneInfo.instance.IsTakingShot && shotUI.PowerSet && Input.GetButtonUp("Hit"))
                 {
                     SceneInfo.instance.IsAiming = false;
                     SceneInfo.instance.IsTakingShot = false;

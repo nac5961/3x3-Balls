@@ -12,6 +12,11 @@ public class AimUI : MonoBehaviour
     public Sprite left;
     public Sprite right;
 
+    public Image Ball
+    {
+        get { return ball; }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,28 +29,33 @@ public class AimUI : MonoBehaviour
         
     }
 
+    private void SetBall(Sprite sprite)
+    {
+        ball.sprite = sprite;
+    }
+
     public void SetCenterHit()
     {
-        ball.sprite = center;
+        SetBall(center);
     }
 
     public void SetTopHit()
     {
-        ball.sprite = top;
+        SetBall(top);
     }
 
     public void SetBottomHit()
     {
-        ball.sprite = bottom;
+        SetBall(bottom);
     }
 
     public void SetLeftHit()
     {
-        ball.sprite = left;
+        SetBall(left);
     }
 
     public void SetRightHit()
     {
-        ball.sprite = right;
+        SetBall(right);
     }
 }

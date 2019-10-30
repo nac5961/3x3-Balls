@@ -17,12 +17,15 @@ public class Ball : MonoBehaviour
     public float deceleration;
     public float ballBounceLimit;
     public float floorBounceLimit;
+
+    private bool startOfHit;
     private bool appliedSpin;
+    private bool removedTorque;
     private Vector3 initalVelocity;
     private Vector3 initialAngularVelocity;
     private Vector3 prevVelocity;
     private float minMagnitude;
-    private bool startHit;
+    private float maxTorque;
 
     //Spin
     private SpinType spin;
@@ -71,12 +74,14 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startOfHit = false;
         appliedSpin = false;
+        removedTorque = false;
         initalVelocity = Vector3.zero;
         initialAngularVelocity = Vector3.zero;
         prevVelocity = Vector3.zero;
-        minMagnitude = 25.0f;
-        startHit = false;
+        minMagnitude = 35.0f; //min magnitude of velocity needed to achieve full torque
+        maxTorque = 200.0f;
 
         spin = SpinType.Normal;
 
@@ -86,6 +91,8 @@ public class Ball : MonoBehaviour
 
         wasPaused = false;
         wasMoving = false;
+
+        GetComponent<Rigidbody>().maxAngularVelocity = 100; //used for spinning the ball (back spin, front spin, etc)
     }
 
     // Update is called once per frame
@@ -113,28 +120,41 @@ public class Ball : MonoBehaviour
                 }
                 else if (SceneInfo.instance.IsAiming)
                 {
-                    if (startHit)
-                    {
-                        appliedSpin = false;
-                        startHit = false;
-                        initalVelocity = Vector3.zero;
-                        initialAngularVelocity = Vector3.zero;
-                        prevVelocity = Vector3.zero;
-                    }
+                    ResetSpinData();
                 }
                 else if (SceneInfo.instance.IsHit)
                 {
-                    prevVelocity = gameObject.GetComponent<Rigidbody>().velocity;
-
-                    if (!startHit)
-                    {
-                        startHit = true;
-                        initalVelocity = gameObject.GetComponent<Rigidbody>().velocity;
-                        initialAngularVelocity = gameObject.GetComponent<Rigidbody>().angularVelocity;
-                    }
-
+                    SetSpinData();
                     StopMoving();
                 }
+            }
+        }
+    }
+
+    private void ResetSpinData()
+    {
+        if (startOfHit && gameObject == SceneInfo.instance.ActiveBall)
+        {
+            startOfHit = false;
+            appliedSpin = false;
+            removedTorque = false;
+            initalVelocity = Vector3.zero;
+            initialAngularVelocity = Vector3.zero;
+            prevVelocity = Vector3.zero;
+        }
+    }
+
+    private void SetSpinData()
+    {
+        if (gameObject == SceneInfo.instance.ActiveBall)
+        {
+            prevVelocity = GetComponent<Rigidbody>().velocity;
+
+            if (!startOfHit)
+            {
+                startOfHit = true;
+                initalVelocity = GetComponent<Rigidbody>().velocity;
+                initialAngularVelocity = GetComponent<Rigidbody>().angularVelocity;
             }
         }
     }
@@ -226,6 +246,13 @@ public class Ball : MonoBehaviour
             //Velocity is low enough to forefully stop movement
             if (rb.velocity.magnitude <= 0.01f)
             {
+                //Always default to Normal spin for the start of each turn
+                if (gameObject == SceneInfo.instance.ActiveBall)
+                {
+                    spin = SpinType.Normal;
+                    UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetCenterHit();
+                }
+
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 rb.Sleep(); //Make sure to have the rigidbody sleep. Rigidbody may not detect that it is done moving with just a zeroed out velocity.
@@ -243,6 +270,7 @@ public class Ball : MonoBehaviour
     {
         Rigidbody rb = GetComponent<Rigidbody>();
 
+        //Apply spin
         if (collision.gameObject.CompareTag("Ball") && gameObject == SceneInfo.instance.ActiveBall)
         {
             if (!appliedSpin)
@@ -251,45 +279,54 @@ public class Ball : MonoBehaviour
 
                 if (spin != SpinType.Normal)
                 {
-                    //Calculate torque
-                    gameObject.GetComponent<Rigidbody>().maxAngularVelocity = 100;
+                    //Calculate torque              
                     Vector3 torque = Vector3.zero;
                     float velocityScale = prevVelocity.magnitude / initalVelocity.magnitude * Mathf.Clamp(prevVelocity.magnitude / minMagnitude, 0.0f, 1.0f);
-                    float torqueMultiplier = 200.0f * velocityScale;
-                    
-                    Debug.Log(torqueMultiplier);
+                    float torqueScale = maxTorque * velocityScale;
 
                     switch (spin)
                     {
                         case SpinType.Top:
-                            torque = initialAngularVelocity.normalized * torqueMultiplier;
+                            torque = initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Back:
-                            torque = initialAngularVelocity.normalized * -torqueMultiplier;
+                            torque = initialAngularVelocity.normalized * -torqueScale;
                             break;
                         case SpinType.Left:
-                            torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity * torqueMultiplier;
+                            torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Right:
-                            torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity * torqueMultiplier;
+                            torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         default:
                             break;
                     }
 
-                    gameObject.GetComponent<Rigidbody>().AddTorque(torque, ForceMode.VelocityChange);
+                    //Apply torque
+                    GetComponent<Rigidbody>().AddTorque(torque, ForceMode.VelocityChange);
                 }
             }
         }
         else if (collision.gameObject.CompareTag("Wall") && gameObject == SceneInfo.instance.ActiveBall)
         {
+            //If the ball hits a wall first, we want to not have it apply torque
+            //on ball collision, since the torque is lost when the ball collides
+            //with the wall.
             if (!appliedSpin)
             {
                 appliedSpin = true;
+                removedTorque = true; //set to true so we don't enter the if-statement below
             }
-            else if (appliedSpin)
+
+            //If spin is already applied, the ball will lose its spin when it
+            //hits the wall. So, zero out its spin to have it spin normally.
+            else
             {
-                gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                if (!removedTorque)
+                {
+                    removedTorque = true;
+                    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                }
             }
         }
 
