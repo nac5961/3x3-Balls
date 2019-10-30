@@ -162,22 +162,27 @@ public class Cue : MonoBehaviour
                     if (Input.GetButtonDown("NormalSpin"))
                     {
                         SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Normal;
+                        UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetCenterHit();
                     }
                     else if (Input.GetButtonDown("TopSpin"))
                     {
                         SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Top;
+                        UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetTopHit();
                     }
                     else if (Input.GetButtonDown("BackSpin"))
                     {
                         SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Back;
+                        UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetBottomHit();
                     }
                     else if (Input.GetButtonDown("LeftSpin"))
                     {
                         SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Left;
+                        UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetLeftHit();
                     }
                     else if (Input.GetButtonDown("RightSpin"))
                     {
                         SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Right;
+                        UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetRightHit();
                     }
                 }
 

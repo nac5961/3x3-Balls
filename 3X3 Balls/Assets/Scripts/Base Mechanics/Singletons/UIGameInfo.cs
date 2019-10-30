@@ -19,6 +19,10 @@ public class UIGameInfo : MonoBehaviour
     {
         get { return generalUI; }
     }
+    public GameObject AimUI
+    {
+        get { return aimUI; }
+    }
     public GameObject ShotUI
     {
         get { return shotUI; }
