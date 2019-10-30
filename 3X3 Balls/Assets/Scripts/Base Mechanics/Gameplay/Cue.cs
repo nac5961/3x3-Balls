@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ShotType
+{
+    Normal,
+    Jump,
+    Curve
+}
+
 public class Cue : MonoBehaviour
 {
     //Rotation
@@ -23,6 +30,9 @@ public class Cue : MonoBehaviour
     private Vector3 minPos;
     private Vector3 maxPos;
 
+    //Special Shot
+    private ShotType shot;
+
 
     // Start is called before the first frame update
     void Start()
@@ -33,6 +43,9 @@ public class Cue : MonoBehaviour
         //Animation
         animationTime = 0.0f;
         isAnimatingHit = false;
+
+        //Special Shot
+        shot = ShotType.Normal;
     }
 
     // Update is called once per frame
@@ -238,7 +251,17 @@ public class Cue : MonoBehaviour
             float power = maxForce * fillAmount;
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
+
+            switch (shot)
+            {
+                case ShotType.Jump:
+                    break;
+                case ShotType.Curve:
+                    break;
+                default:
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
+                    break;
+            }
 
             //Update stroke count
             SceneInfo.instance.UpdatePlayerScore();

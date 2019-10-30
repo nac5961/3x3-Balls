@@ -92,7 +92,7 @@ public class Ball : MonoBehaviour
         wasPaused = false;
         wasMoving = false;
 
-        GetComponent<Rigidbody>().maxAngularVelocity = 100; //used for spinning the ball (back spin, front spin, etc)
+        GetComponent<Rigidbody>().maxAngularVelocity = 100.0f; //used for spinning the ball (back spin, front spin, etc)
     }
 
     // Update is called once per frame
@@ -243,8 +243,20 @@ public class Ball : MonoBehaviour
 
         if (!rb.IsSleeping())
         {
+            //Slow down the velocity
+            if (rb.velocity.magnitude <= 0.4f)
+            {
+                rb.velocity *= deceleration;
+            }
+
+            //Slow down the angular velocity
+            if (rb.angularVelocity.magnitude <= 0.4f)
+            {
+                rb.angularVelocity *= deceleration;
+            }
+
             //Velocity is low enough to forefully stop movement
-            if (rb.velocity.magnitude <= 0.01f)
+            if (rb.velocity.magnitude <= 0.01f && rb.angularVelocity.magnitude <= 0.01f)
             {
                 //Always default to Normal spin for the start of each turn
                 if (gameObject == SceneInfo.instance.ActiveBall)
@@ -256,12 +268,6 @@ public class Ball : MonoBehaviour
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 rb.Sleep(); //Make sure to have the rigidbody sleep. Rigidbody may not detect that it is done moving with just a zeroed out velocity.
-            }
-
-            //Slow down the velocity
-            else if (rb.velocity.magnitude <= 0.4f)
-            {
-                rb.velocity *= deceleration;
             }
         }
     }
