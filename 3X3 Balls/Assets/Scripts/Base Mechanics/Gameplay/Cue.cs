@@ -252,16 +252,28 @@ public class Cue : MonoBehaviour
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
 
+            shot = ShotType.Curve;
+
             switch (shot)
             {
                 case ShotType.Jump:
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, 180.0f, 0.0f));
                     break;
                 case ShotType.Curve:
+                    Vector3 sideForce = Quaternion.Euler(0.0f, 90.0f, 0.0f) * force;
+                    float sideForceMultiplier = Mathf.Clamp(400.0f * fillAmount, 200.0f, 400.0f);
+                    sideForce = sideForce.normalized * sideForceMultiplier;
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(sideForce);
+
+                    Vector3 torque = force;
+                    torque = torque.normalized * (sideForceMultiplier - 50.0f);
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddTorque(torque);
                     break;
                 default:
-                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
                     break;
             }
+
+            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
             //Update stroke count
             SceneInfo.instance.UpdatePlayerScore();

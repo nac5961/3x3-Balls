@@ -21,6 +21,7 @@ public class Ball : MonoBehaviour
     private bool startOfHit;
     private bool appliedSpin;
     private bool removedTorque;
+    private bool aidSpin;
     private Vector3 initalVelocity;
     private Vector3 initialAngularVelocity;
     private Vector3 prevVelocity;
@@ -45,6 +46,10 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
+    public bool AidSpin
+    {
+        set { aidSpin = value; }
+    }
     public SpinType Spin
     {
         set { spin = value; }
@@ -293,15 +298,18 @@ public class Ball : MonoBehaviour
                     switch (spin)
                     {
                         case SpinType.Top:
+                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.13f, ForceMode.VelocityChange);
                             torque = initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Back:
                             torque = initialAngularVelocity.normalized * -torqueScale;
                             break;
                         case SpinType.Left:
+                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange);
                             torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Right:
+                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange);
                             torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         default:
