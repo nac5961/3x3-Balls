@@ -5009,14 +5009,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ballImage: {fileID: 7534016503493363993}
-  cancelImage: {fileID: 5702771801414846271}
-  cancelText: {fileID: 5702771802082002262}
-  hitText: {fileID: 5702771801968271687}
+  cancelImage: {fileID: 5702771801414846265}
+  cancelText: {fileID: 5702771802082002256}
+  hitText: {fileID: 5702771801968271681}
   border: {fileID: 5702771802727096348}
   normal: {fileID: 21300000, guid: dc52b3bd3f24e4147afa7a275d06aad7, type: 3}
   jump: {fileID: 21300000, guid: ba009277378dff748a41569049271466, type: 3}
   curve: {fileID: 21300000, guid: b864281ed40cdcb49b057139a3af58e0, type: 3}
-  powerMeter: {fileID: 5702771802033749319}
+  powerMeter: {fileID: 5702771802033749313}
   fillSpeed: 0.9
   minFill: 0.03
 --- !u!1 &5702771802384483768

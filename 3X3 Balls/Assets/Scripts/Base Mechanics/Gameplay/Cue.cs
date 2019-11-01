@@ -328,6 +328,10 @@ public class Cue : MonoBehaviour
             UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
 
             SceneInfo.instance.IsHit = true;
+
+            //Always reset after each shot since players are on the center
+            //shot at the start of their turn
+            specialShotEnabled = true;
         }
     }
 }

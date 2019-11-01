@@ -38,59 +38,51 @@ public class AimUI : MonoBehaviour
     {
         if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanJumpShot)
         {
-            EnableJumpHit();
+            LightenJumpHit();
             jumpText.text = "Start Jump\r\nShot (x1)";
         }
         else
         {
-            DisableJumpHit();
+            DarkenJumpHit();
             jumpText.text = "Start Jump\r\nShot (x0)";
         }
 
         if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanCurveShot)
         {
-            EnableCurveHit();
+            LightenCurveHit();
             curveText.text = "Start Curve\r\nShot (x1)";
         }
         else
         {
-            DisableCurveHit();
+            DarkenCurveHit();
             curveText.text = "Start Curve\r\nShot (x0)";
         }
     }
 
-    private void DisableOption(Image img, TextMeshProUGUI textUI)
+    private void ChangeColor(Image img, TextMeshProUGUI text, Color32 color)
     {
-        img.color = new Color32(85, 85, 85, 255);
-
-        textUI.color = new Color32(85, 85, 85, 255);
+        img.color = color;
+        text.color = color;
     }
 
-    private void EnableOption(Image img, TextMeshProUGUI textUI)
+    private void DarkenJumpHit()
     {
-        img.color = new Color32(255, 255, 255, 255);
-
-        textUI.color = new Color32(255, 255, 255, 255);
+        ChangeColor(jump, jumpText, new Color32(85, 85, 85, 255));
     }
 
-    public void DisableJumpHit()
+    private void LightenJumpHit()
     {
-        DisableOption(jump, jumpText);
+        ChangeColor(jump, jumpText, new Color32(255, 255, 255, 255));
     }
 
-    private void EnableJumpHit()
+    private void DarkenCurveHit()
     {
-        EnableOption(jump, jumpText);
+        ChangeColor(curve, curveText, new Color32(85, 85, 85, 255));
     }
 
-    public void DisableCurveHit()
+    private void LightenCurveHit()
     {
-        DisableOption(curve, curveText);
-    }
-
-    private void EnableCurveHit()
-    {
-        EnableOption(curve, curveText);
+        ChangeColor(curve, curveText, new Color32(255, 255, 255, 255));
     }
 
     private void SetBall(Sprite sprite)
@@ -101,24 +93,24 @@ public class AimUI : MonoBehaviour
         {
             if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanJumpShot)
             {
-                EnableJumpHit();
+                LightenJumpHit();
             }
 
             if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanCurveShot)
             {
-                EnableCurveHit();
+                LightenCurveHit();
             }
         }
         else
         {
             if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanJumpShot)
             {
-                DisableJumpHit();
+                DarkenJumpHit();
             }
 
             if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanCurveShot)
             {
-                DisableCurveHit();
+                DarkenCurveHit();
             }
         }
     }

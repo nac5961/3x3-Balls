@@ -70,7 +70,7 @@ public class ThirdPersonCamera : MonoBehaviour
 
         //Rotation
         xRot = -25.0f; //Sets start rotation
-        yRot = -90.0f; //Sets start rotation
+        yRot = -88.0f; //Sets start rotation
         maxXRot = -25.0f; //Change to 25.0f or similar to allow camera to get close to target
         minXRot = -80.0f;
         rotationSpeed = 60.0f;

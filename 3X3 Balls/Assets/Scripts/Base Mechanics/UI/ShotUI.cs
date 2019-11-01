@@ -8,16 +8,16 @@ public class ShotUI : MonoBehaviour
 {
     public Image ballImage;
 
-    public GameObject cancelImage;
-    public GameObject cancelText;
-    public GameObject hitText;
+    public Image cancelImage;
+    public TextMeshProUGUI cancelText;
+    public TextMeshProUGUI hitText;
 
     public Image border;
     public Sprite normal;
     public Sprite jump;
     public Sprite curve;
 
-    public GameObject powerMeter;
+    public Image powerMeter;
     public float fillSpeed;
     public float minFill;
 
@@ -32,7 +32,7 @@ public class ShotUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        powerMeter.GetComponent<Image>().fillAmount = minFill;
+        powerMeter.fillAmount = minFill;
         powerSet = false;
     }
 
@@ -55,13 +55,11 @@ public class ShotUI : MonoBehaviour
     {
         if (!powerSet)
         {
-            Image img = powerMeter.GetComponent<Image>();
-
-            float percent = img.fillAmount;
+            float percent = powerMeter.fillAmount;
 
             percent += fillSpeed * Time.deltaTime;
             percent = Mathf.Clamp(percent, minFill, 1.0f);
-            img.fillAmount = percent;
+            powerMeter.fillAmount = percent;
 
             //Reverse
             if (percent == minFill || percent == 1.0f)
@@ -78,20 +76,20 @@ public class ShotUI : MonoBehaviour
     {
         ballImage.sprite = UIGameInfo.instance.AimUI.GetComponent<AimUI>().Ball.sprite;
 
-        cancelImage.SetActive(true);
-        cancelText.SetActive(true);
-        hitText.GetComponent<TextMeshProUGUI>().text = "Hold to\r\nset power";
+        cancelImage.gameObject.SetActive(true);
+        cancelText.gameObject.SetActive(true);
+        hitText.text = "Hold to\r\nset power";
 
         powerSet = false;
-        powerMeter.GetComponent<Image>().fillAmount = minFill;
+        powerMeter.fillAmount = minFill;
         fillSpeed = Mathf.Abs(fillSpeed);
     }
 
     public void ShowReleaseText()
     {
-        cancelImage.SetActive(false);
-        cancelText.SetActive(false);
-        hitText.GetComponent<TextMeshProUGUI>().text = "Release to\r\nhit ball";
+        cancelImage.gameObject.SetActive(false);
+        cancelText.gameObject.SetActive(false);
+        hitText.text = "Release to\r\nhit ball";
     }
 
     public void SetBorder(ShotType shot)
@@ -116,6 +114,6 @@ public class ShotUI : MonoBehaviour
     /// <returns>fill amount</returns>
     public float GetFillAmount()
     {
-        return powerMeter.GetComponent<Image>().fillAmount;
+        return powerMeter.fillAmount;
     }
 }
