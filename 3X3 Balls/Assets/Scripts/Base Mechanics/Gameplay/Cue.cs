@@ -32,7 +32,10 @@ public class Cue : MonoBehaviour
 
     //Special Shot
     private ShotType shot;
-
+    private Vector3 jumpForce;
+    private float maxCurvePower;
+    private float minCurvePower;
+    private bool specialShotEnabled;
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,10 @@ public class Cue : MonoBehaviour
 
         //Special Shot
         shot = ShotType.Normal;
+        jumpForce = new Vector3(0.0f, 180.0f, 0.0f);
+        maxCurvePower = 400.0f;
+        minCurvePower = 200.0f;
+        specialShotEnabled = true;
     }
 
     // Update is called once per frame
@@ -133,9 +140,38 @@ public class Cue : MonoBehaviour
         {
             if (!Camera.main.GetComponent<ThirdPersonCamera>().Locked)
             {
-                //Start taking shot
-                if (!SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
+                Ball player = SceneInfo.instance.ActiveBall.GetComponent<Ball>();
+
+                //Start taking jump shot
+                if (player.CanJumpShot && specialShotEnabled && !SceneInfo.instance.IsTakingShot && Input.GetButton("JumpHit") && Input.GetButtonDown("Hit"))
                 {
+                    shot = ShotType.Jump;
+                    shotUI.SetBorder(shot);
+
+                    SceneInfo.instance.IsTakingShot = true;
+                    FindAnimationPoints();
+
+                    UIGameInfo.instance.DisplayShotUI();
+                }
+
+                //Start taking curve shot
+                else if (player.CanCurveShot && specialShotEnabled && !SceneInfo.instance.IsTakingShot && Input.GetButton("CurveHit") && Input.GetButtonDown("Hit"))
+                {
+                    shot = ShotType.Curve;
+                    shotUI.SetBorder(shot);
+
+                    SceneInfo.instance.IsTakingShot = true;
+                    FindAnimationPoints();
+
+                    UIGameInfo.instance.DisplayShotUI();
+                }
+
+                //Start taking normal shot
+                else if (!SceneInfo.instance.IsTakingShot && !Input.GetButton("JumpHit") && !Input.GetButton("CurveHit") && Input.GetButtonDown("Hit"))
+                {
+                    shot = ShotType.Normal;
+                    shotUI.SetBorder(shot);
+
                     SceneInfo.instance.IsTakingShot = true;
                     FindAnimationPoints();
 
@@ -182,27 +218,37 @@ public class Cue : MonoBehaviour
                 {
                     if (Input.GetButtonDown("NormalSpin"))
                     {
-                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Normal;
+                        specialShotEnabled = true;
+
+                        player.Spin = SpinType.Normal;
                         UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetCenterHit();
                     }
                     else if (Input.GetButtonDown("TopSpin"))
                     {
-                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Top;
+                        specialShotEnabled = false;
+
+                        player.Spin = SpinType.Top;
                         UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetTopHit();
                     }
                     else if (Input.GetButtonDown("BackSpin"))
                     {
-                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Back;
+                        specialShotEnabled = false;
+
+                        player.Spin = SpinType.Back;
                         UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetBottomHit();
                     }
                     else if (Input.GetButtonDown("LeftSpin"))
                     {
-                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Left;
+                        specialShotEnabled = false;
+
+                        player.Spin = SpinType.Left;
                         UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetLeftHit();
                     }
                     else if (Input.GetButtonDown("RightSpin"))
                     {
-                        SceneInfo.instance.ActiveBall.GetComponent<Ball>().Spin = SpinType.Right;
+                        specialShotEnabled = false;
+
+                        player.Spin = SpinType.Right;
                         UIGameInfo.instance.AimUI.GetComponent<AimUI>().SetRightHit();
                     }
                 }
@@ -252,21 +298,23 @@ public class Cue : MonoBehaviour
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
             force = new Vector3(force.x, 0.0f, force.z).normalized * power;
 
-            shot = ShotType.Curve;
-
             switch (shot)
             {
                 case ShotType.Jump:
-                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(new Vector3(0.0f, 180.0f, 0.0f));
+                    SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanJumpShot = false;
+
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(jumpForce);
                     break;
                 case ShotType.Curve:
-                    Vector3 sideForce = Quaternion.Euler(0.0f, 90.0f, 0.0f) * force;
-                    float sideForceMultiplier = Mathf.Clamp(400.0f * fillAmount, 200.0f, 400.0f);
-                    sideForce = sideForce.normalized * sideForceMultiplier;
-                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(sideForce);
+                    SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanCurveShot = false;
+
+                    float curvePower = Mathf.Clamp(maxCurvePower * fillAmount, minCurvePower, maxCurvePower);
+                    Vector3 curveForce = Quaternion.Euler(0.0f, 90.0f, 0.0f) * force;
+                    curveForce = curveForce.normalized * curvePower;
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(curveForce);
 
                     Vector3 torque = force;
-                    torque = torque.normalized * (sideForceMultiplier - 50.0f);
+                    torque = torque.normalized * (curvePower - 50.0f);
                     SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddTorque(torque);
                     break;
                 default:

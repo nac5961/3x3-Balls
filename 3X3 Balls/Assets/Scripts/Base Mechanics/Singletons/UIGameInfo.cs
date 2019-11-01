@@ -75,6 +75,8 @@ public class UIGameInfo : MonoBehaviour
     /// </summary>
     public void DisplayAimUI()
     {
+        aimUI.GetComponent<AimUI>().SetupUI();
+
         HideUI(hitUI);
         DisplayUI(aimUI);
         DisplayUI(generalUI);
@@ -132,6 +134,8 @@ public class UIGameInfo : MonoBehaviour
     /// </summary>
     public void HideTurnUI()
     {
+        aimUI.GetComponent<AimUI>().SetupUI();
+
         HideUI(turnUI);
         DisplayUI(generalUI);
         DisplayUI(aimUI);

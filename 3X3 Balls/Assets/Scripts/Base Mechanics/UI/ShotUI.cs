@@ -12,6 +12,11 @@ public class ShotUI : MonoBehaviour
     public GameObject cancelText;
     public GameObject hitText;
 
+    public Image border;
+    public Sprite normal;
+    public Sprite jump;
+    public Sprite curve;
+
     public GameObject powerMeter;
     public float fillSpeed;
     public float minFill;
@@ -87,6 +92,22 @@ public class ShotUI : MonoBehaviour
         cancelImage.SetActive(false);
         cancelText.SetActive(false);
         hitText.GetComponent<TextMeshProUGUI>().text = "Release to\r\nhit ball";
+    }
+
+    public void SetBorder(ShotType shot)
+    {
+        if (shot == ShotType.Normal)
+        {
+            border.sprite = normal;
+        }
+        else if (shot == ShotType.Jump)
+        {
+            border.sprite = jump;
+        }
+        else if (shot == ShotType.Curve)
+        {
+            border.sprite = curve;
+        }
     }
 
     /// <summary>

@@ -28,8 +28,10 @@ public class Ball : MonoBehaviour
     private float minMagnitude;
     private float maxTorque;
 
-    //Spin
+    //Special Shots
     private SpinType spin;
+    private bool canJumpShot = true;
+    private bool canCurveShot = true;
 
     //Spawning
     private Vector3 targetBallSpawn;
@@ -53,6 +55,16 @@ public class Ball : MonoBehaviour
     public SpinType Spin
     {
         set { spin = value; }
+    }
+    public bool CanJumpShot
+    {
+        get { return canJumpShot; }
+        set { canJumpShot = value; }
+    }
+    public bool CanCurveShot
+    {
+        get { return canCurveShot; }
+        set { canCurveShot = value; }
     }
     public Vector3 TargetBallSpawn
     {
