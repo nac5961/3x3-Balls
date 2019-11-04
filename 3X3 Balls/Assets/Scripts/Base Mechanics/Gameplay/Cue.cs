@@ -35,6 +35,7 @@ public class Cue : MonoBehaviour
     private Vector3 jumpForce;
     private float maxCurvePower;
     private float minCurvePower;
+    private bool curveRight;
     private bool specialShotEnabled;
 
     // Start is called before the first frame update
@@ -52,6 +53,7 @@ public class Cue : MonoBehaviour
         jumpForce = new Vector3(0.0f, 180.0f, 0.0f);
         maxCurvePower = 400.0f;
         minCurvePower = 200.0f;
+        curveRight = true;
         specialShotEnabled = true;
     }
 
@@ -158,7 +160,7 @@ public class Cue : MonoBehaviour
                 else if (player.CanCurveShot && specialShotEnabled && !SceneInfo.instance.IsTakingShot && Input.GetButton("CurveHit") && Input.GetButtonDown("Hit"))
                 {
                     shot = ShotType.Curve;
-                    shotUI.SetBorder(shot);
+                    shotUI.SetBorder(shot, curveRight);
 
                     SceneInfo.instance.IsTakingShot = true;
                     FindAnimationPoints();
@@ -186,11 +188,17 @@ public class Cue : MonoBehaviour
                     UIGameInfo.instance.HideShotUI(false);
                 }
 
+                else if (SceneInfo.instance.IsTakingShot && shot == ShotType.Curve && Input.GetButtonDown("CurveDirectionToggle"))
+                {
+                    curveRight = !curveRight;
+                    shotUI.SetCurveBorder(curveRight);
+                }
+
                 //Hold shot
                 else if (SceneInfo.instance.IsTakingShot && Input.GetButtonDown("Hit"))
                 {
                     shotUI.PowerSet = true;
-                    shotUI.ShowReleaseText();
+                    shotUI.ShowReleaseUI();
                 }
 
                 //Take shot
@@ -311,10 +319,12 @@ public class Cue : MonoBehaviour
                     float curvePower = Mathf.Clamp(maxCurvePower * fillAmount, minCurvePower, maxCurvePower);
                     Vector3 curveForce = Quaternion.Euler(0.0f, 90.0f, 0.0f) * force;
                     curveForce = curveForce.normalized * curvePower;
+                    curveForce = curveRight ? curveForce : -curveForce;
                     SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(curveForce);
 
                     Vector3 torque = force;
                     torque = torque.normalized * (curvePower - 50.0f);
+                    torque = curveRight ? torque : -torque;
                     SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddTorque(torque);
                     break;
                 default:
@@ -331,6 +341,7 @@ public class Cue : MonoBehaviour
 
             //Always reset after each shot since players are on the center
             //shot at the start of their turn
+            curveRight = true;
             specialShotEnabled = true;
         }
     }

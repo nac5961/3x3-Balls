@@ -6,7 +6,7 @@ using TMPro;
 
 public class GeneralUI : MonoBehaviour
 {
-    public GameObject strokeCount;
+    public TextMeshProUGUI strokeCount;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +25,6 @@ public class GeneralUI : MonoBehaviour
     /// </summary>
     public void SetStrokeCount()
     {
-        strokeCount.GetComponent<TextMeshProUGUI>().text = SceneInfo.instance.Scores[SceneInfo.instance.GetCurrentPlayer()].ToString();
+        strokeCount.text = SceneInfo.instance.Scores[SceneInfo.instance.GetCurrentPlayer()].ToString();
     }
 }

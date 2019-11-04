@@ -87,7 +87,7 @@ public class UIGameInfo : MonoBehaviour
     /// </summary>
     public void DisplayShotUI()
     {
-        shotUI.GetComponent<ShotUI>().ResetPowerMeter();
+        shotUI.GetComponent<ShotUI>().SetupUI();
 
         HideUI(aimUI);
         DisplayUI(shotUI);

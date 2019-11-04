@@ -18,10 +18,9 @@ public class Ball : MonoBehaviour
     public float ballBounceLimit;
     public float floorBounceLimit;
 
-    private bool startOfHit;
+    private bool hasHit;
     private bool appliedSpin;
     private bool removedTorque;
-    private bool aidSpin;
     private Vector3 initalVelocity;
     private Vector3 initialAngularVelocity;
     private Vector3 prevVelocity;
@@ -48,10 +47,6 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
-    public bool AidSpin
-    {
-        set { aidSpin = value; }
-    }
     public SpinType Spin
     {
         set { spin = value; }
@@ -91,7 +86,7 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startOfHit = false;
+        hasHit = false;
         appliedSpin = false;
         removedTorque = false;
         initalVelocity = Vector3.zero;
@@ -150,9 +145,9 @@ public class Ball : MonoBehaviour
 
     private void ResetSpinData()
     {
-        if (startOfHit && gameObject == SceneInfo.instance.ActiveBall)
+        if (hasHit && gameObject == SceneInfo.instance.ActiveBall)
         {
-            startOfHit = false;
+            hasHit = false;
             appliedSpin = false;
             removedTorque = false;
             initalVelocity = Vector3.zero;
@@ -167,9 +162,9 @@ public class Ball : MonoBehaviour
         {
             prevVelocity = GetComponent<Rigidbody>().velocity;
 
-            if (!startOfHit)
+            if (!hasHit)
             {
-                startOfHit = true;
+                hasHit = true;
                 initalVelocity = GetComponent<Rigidbody>().velocity;
                 initialAngularVelocity = GetComponent<Rigidbody>().angularVelocity;
             }

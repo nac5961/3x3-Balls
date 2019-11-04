@@ -6,16 +6,20 @@ using TMPro;
 
 public class ShotUI : MonoBehaviour
 {
-    public Image ballImage;
+    public Image ball;
 
-    public Image cancelImage;
+    public Image toggle;
+    public TextMeshProUGUI toggleText;
+
+    public Image cancel;
     public TextMeshProUGUI cancelText;
     public TextMeshProUGUI hitText;
 
     public Image border;
     public Sprite normal;
     public Sprite jump;
-    public Sprite curve;
+    public Sprite curveRight;
+    public Sprite curveLeft;
 
     public Image powerMeter;
     public float fillSpeed;
@@ -70,41 +74,82 @@ public class ShotUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Resets the properties in the power meter animation.
+    /// Sets up the images, text, and variables needed to display the UI.
     /// </summary>
-    public void ResetPowerMeter()
+    public void SetupUI()
     {
-        ballImage.sprite = UIGameInfo.instance.AimUI.GetComponent<AimUI>().Ball.sprite;
+        //Make sure the ball image matches the one on the AimUI.
+        ball.sprite = UIGameInfo.instance.AimUI.GetComponent<AimUI>().Ball.sprite;
 
-        cancelImage.gameObject.SetActive(true);
+        //Show the cancel image and text along with the correct text for hitting.
+        cancel.gameObject.SetActive(true);
         cancelText.gameObject.SetActive(true);
         hitText.text = "Hold to\r\nset power";
 
+        //Reset variables to their defaults
         powerSet = false;
         powerMeter.fillAmount = minFill;
         fillSpeed = Mathf.Abs(fillSpeed);
     }
 
-    public void ShowReleaseText()
+    /// <summary>
+    /// Displays the correct UI for releasing the button
+    /// to hit the ball.
+    /// </summary>
+    public void ShowReleaseUI()
     {
-        cancelImage.gameObject.SetActive(false);
+        cancel.gameObject.SetActive(false);
         cancelText.gameObject.SetActive(false);
         hitText.text = "Release to\r\nhit ball";
     }
 
-    public void SetBorder(ShotType shot)
+    /// <summary>
+    /// Sets the correct border for the power meter based on the
+    /// shot type.
+    /// </summary>
+    /// <param name="shot">shot type (jump, curve, normal)</param>
+    /// <param name="right">curving right? Defaults to true</param>
+    public void SetBorder(ShotType shot, bool right = true)
     {
         if (shot == ShotType.Normal)
         {
             border.sprite = normal;
+
+            //Toggle is only for curving, so make sure it's disabled
+            toggle.gameObject.SetActive(false);
+            toggleText.gameObject.SetActive(false);
         }
         else if (shot == ShotType.Jump)
         {
             border.sprite = jump;
+
+            //Toggle is only for curving, so make sure it's disabled
+            toggle.gameObject.SetActive(false);
+            toggleText.gameObject.SetActive(false);
         }
         else if (shot == ShotType.Curve)
         {
-            border.sprite = curve;
+            SetCurveBorder(right);
+
+            toggle.gameObject.SetActive(true);
+            toggleText.gameObject.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Sets the correct border for the power meter based on the
+    /// curve direction (left or right).
+    /// </summary>
+    /// <param name="right">curving right?</param>
+    public void SetCurveBorder(bool right)
+    {
+        if (right)
+        {
+            border.sprite = curveRight;
+        }
+        else
+        {
+            border.sprite = curveLeft;
         }
     }
 

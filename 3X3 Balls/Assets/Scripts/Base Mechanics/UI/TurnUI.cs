@@ -5,7 +5,7 @@ using TMPro;
 
 public class TurnUI : MonoBehaviour
 {
-    public GameObject text;
+    public TextMeshProUGUI turn;
 
     public float duration;
     private float timer;
@@ -30,11 +30,12 @@ public class TurnUI : MonoBehaviour
     /// </summary>
     public void SetupUI()
     {
-        timer = 0.0f;
         SceneInfo.instance.DisableControls = true;
 
+        timer = 0.0f;
+
         int player = SceneInfo.instance.GetCurrentPlayer() + 1;
-        text.GetComponent<TextMeshProUGUI>().text = "Player " + player + "'s Turn";
+        turn.text = "Player " + player + "'s Turn";
     }
 
     /// <summary>
