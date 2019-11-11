@@ -123,10 +123,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deceleration: 0.97
-  ballBounceLimit: 0.25
-  floorBounceLimit: 7
-  overhead: {fileID: 0}
-  side: {fileID: 0}
+  ballBounceLimit: 0.5
+  floorBounceLimit: 5
 --- !u!114 &1649016491799724804
 MonoBehaviour:
   m_ObjectHideFlags: 0
