@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4735111, g: 0.78416187, b: 1.0028489, a: 1}
+  m_IndirectSpecularColor: {r: 0.4736132, g: 0.7841968, b: 1.0028458, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1468,7 +1468,7 @@ PrefabInstance:
     - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7992830160962345302, guid: 7d6674a0797e8b7429e7939db0daffea,
         type: 3}
@@ -2002,7 +2002,7 @@ PrefabInstance:
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
@@ -5952,7 +5952,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1121295808}
-  m_RootOrder: 4
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &457359317
 GameObject:
@@ -8561,7 +8561,7 @@ PrefabInstance:
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
@@ -8845,7 +8845,6 @@ Transform:
   - {fileID: 1994158393}
   - {fileID: 33213903}
   - {fileID: 389036683}
-  - {fileID: 775326320}
   - {fileID: 96573213}
   - {fileID: 1085951545}
   m_Father: {fileID: 1121295808}
@@ -10060,7 +10059,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 3.98706, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1121295808}
-  m_RootOrder: 14
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!23 &727535989
 MeshRenderer:
@@ -10798,36 +10797,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 772849363}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &775326319
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 775326320}
-  m_Layer: 0
-  m_Name: Eight Ball Spawn
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &775326320
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 775326319}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.17, y: 3.0383058, z: -1.32}
-  m_LocalScale: {x: 0.57326525, y: 0.57326525, z: 0.57326525}
-  m_Children: []
-  m_Father: {fileID: 654286046}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &777295226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8478195644167281841, guid: cdf635cb01cd8664488044e57570a25d,
@@ -12189,7 +12158,7 @@ PrefabInstance:
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
@@ -16258,7 +16227,7 @@ Transform:
   m_LocalScale: {x: 0.57326525, y: 0.5732655, z: 0.5732655}
   m_Children: []
   m_Father: {fileID: 654286046}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1087753149
 GameObject:
@@ -16290,7 +16259,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 5.3211174, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1121295808}
-  m_RootOrder: 13
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1087753151
 MeshRenderer:
@@ -17399,8 +17368,6 @@ Transform:
   - {fileID: 654286046}
   - {fileID: 1046226693}
   - {fileID: 202117856}
-  - {fileID: 1918132080}
-  - {fileID: 448090034}
   - {fileID: 866218905}
   - {fileID: 1188864914}
   - {fileID: 1902461838}
@@ -17412,6 +17379,8 @@ Transform:
   - {fileID: 1087753150}
   - {fileID: 727535988}
   - {fileID: 1846078815}
+  - {fileID: 1918132080}
+  - {fileID: 448090034}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -18839,7 +18808,7 @@ PrefabInstance:
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
@@ -21680,7 +21649,7 @@ PrefabInstance:
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
       propertyPath: m_RootOrder
-      value: 8
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
@@ -27453,7 +27422,7 @@ Transform:
   m_LocalScale: {x: 0.5, y: 3.98706, z: 0.5}
   m_Children: []
   m_Father: {fileID: 1121295808}
-  m_RootOrder: 15
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: -45, y: 0, z: 0}
 --- !u!23 &1846078816
 MeshRenderer:
@@ -28191,7 +28160,7 @@ PrefabInstance:
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
@@ -28415,7 +28384,7 @@ Transform:
   m_LocalScale: {x: 0.50000024, y: 0.5, z: 0.50000024}
   m_Children: []
   m_Father: {fileID: 1121295808}
-  m_RootOrder: 3
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1001 &1918709878
 PrefabInstance:
@@ -29884,7 +29853,7 @@ PrefabInstance:
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7136078484102416179, guid: 8cb4ab3578fe9e740a92289257b54085,
         type: 3}
@@ -32397,7 +32366,7 @@ PrefabInstance:
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 378702726728052076, guid: 2fa727fa43ca6e1418ff5d4a6ca713fb,
         type: 3}
@@ -32502,7 +32471,7 @@ PrefabInstance:
         type: 3}
       propertyPath: eightBallSpawn
       value: 
-      objectReference: {fileID: 775326319}
+      objectReference: {fileID: 0}
     - target: {fileID: 5068105333764723682, guid: f6b07f2c6bbda4d42be460df0dc171f9,
         type: 3}
       propertyPath: targetBalls.Array.data[0]
