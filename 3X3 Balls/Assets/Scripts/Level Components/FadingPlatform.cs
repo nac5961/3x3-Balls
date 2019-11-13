@@ -23,6 +23,9 @@ public class FadingPlatform : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Fades in and out.
+    /// </summary>
     private void Fade()
     {
         if (timer < waitTime)
@@ -31,20 +34,22 @@ public class FadingPlatform : MonoBehaviour
         }
         else
         {
+            //Lower alpha
             Color color = GetComponent<Renderer>().material.color;
             color.a -= fadeSpeed * Time.deltaTime;
             color.a = Mathf.Clamp(color.a, 0.0f, 1.0f);
 
+            //Set color
             GetComponent<Renderer>().material.color = color;
 
             //Enable collisions when it fades in
-            if (color.a > 0.2f && GetComponent<Collider>().isTrigger)
+            if (GetComponent<Collider>().isTrigger && color.a > 0.2f)
             {
                 GetComponent<Collider>().isTrigger = false;
             }
 
             //Disable collisions when it fades out
-            else if (color.a < 0.2f && !GetComponent<Collider>().isTrigger)
+            else if (!GetComponent<Collider>().isTrigger && color.a < 0.2f)
             {
                 GetComponent<Collider>().isTrigger = true;
             }

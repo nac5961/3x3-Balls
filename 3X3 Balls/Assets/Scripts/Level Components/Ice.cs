@@ -18,11 +18,16 @@ public class Ice : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ball"))
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            Vector3 forwardForce = collision.gameObject.GetComponent<Rigidbody>().velocity.normalized;
-            forwardForce = new Vector3(forwardForce.x, 0.0f, forwardForce.z) * 0.7f;
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(forwardForce);
+            //Only affect ball
+            if (collision.gameObject.CompareTag("Ball"))
+            {
+                //Add forwards force to constantly move the ball forwards
+                Vector3 forwardForce = collision.gameObject.GetComponent<Rigidbody>().velocity.normalized;
+                forwardForce = new Vector3(forwardForce.x, 0.0f, forwardForce.z) * 0.7f; //0.7f allows ball to move slow enough with noticeably speeding up
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(forwardForce);
+            }
         }
     }
 }

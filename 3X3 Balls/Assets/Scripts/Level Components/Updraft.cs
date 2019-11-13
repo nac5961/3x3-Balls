@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Updraft : MonoBehaviour
 {
+    public float force;
     private Vector3 upwardsForce;
 
     // Start is called before the first frame update
     void Start()
     {
-        upwardsForce = new Vector3(0.0f, 15.0f, 0.0f);
+        upwardsForce = new Vector3(0.0f, force, 0.0f);
     }
 
     // Update is called once per frame
@@ -20,13 +21,19 @@ public class Updraft : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Ball"))
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            other.gameObject.GetComponent<Rigidbody>().AddForce(upwardsForce);
+            //Only affect ball
+            if (other.gameObject.CompareTag("Ball"))
+            {
+                //Apply upwards force
+                other.gameObject.GetComponent<Rigidbody>().AddForce(upwardsForce);
 
-            Vector3 forwardForce = other.gameObject.GetComponent<Rigidbody>().velocity.normalized;
-            forwardForce = new Vector3(forwardForce.x, 0.0f, forwardForce.z) * 3.0f;
-            other.gameObject.GetComponent<Rigidbody>().AddForce(forwardForce);
+                //Add forwards force to constantly move the ball forwards
+                Vector3 forwardForce = other.gameObject.GetComponent<Rigidbody>().velocity.normalized;
+                forwardForce = new Vector3(forwardForce.x, 0.0f, forwardForce.z) * 3.0f;
+                other.gameObject.GetComponent<Rigidbody>().AddForce(forwardForce);
+            }
         }
     }
 }

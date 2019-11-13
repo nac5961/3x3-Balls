@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.4735111, g: 0.78416187, b: 1.0028489, a: 1}
+  m_IndirectSpecularColor: {r: 0.4736132, g: 0.7841968, b: 1.0028458, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -229,8 +229,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1909688903}
-  - {fileID: 732100210}
   - {fileID: 1830894797}
+  - {fileID: 732100210}
   - {fileID: 836845763}
   m_Father: {fileID: 1121295808}
   m_RootOrder: 3
@@ -31502,6 +31502,8 @@ MonoBehaviour:
   bumperPrefab: {fileID: 3466489103852837683, guid: e9eeccf0541d3e24d8500779e0e854f4,
     type: 3}
   parent: {fileID: 665263893}
+  radius: 12
+  spacing: 15
 --- !u!1001 &5702771802815561988
 PrefabInstance:
   m_ObjectHideFlags: 0

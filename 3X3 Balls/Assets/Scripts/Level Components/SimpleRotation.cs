@@ -21,6 +21,9 @@ public class SimpleRotation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Rotate around itself.
+    /// </summary>
     private void RotateObject()
     {
         transform.RotateAround(transform.position, Vector3.up, rotationSpeed * Time.deltaTime);

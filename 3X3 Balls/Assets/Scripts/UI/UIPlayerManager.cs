@@ -24,6 +24,7 @@ public class UIPlayerManager : MonoBehaviour
 
     /// <summary>
     /// Sets the number of players.
+    /// Called in the UI.
     /// </summary>
     /// <param name="num">number of players</param>
     public void SetNumPlayers(int num)

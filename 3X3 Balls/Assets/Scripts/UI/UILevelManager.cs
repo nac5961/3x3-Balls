@@ -5,12 +5,10 @@ using UnityEngine.UI;
 
 public class UILevelManager : MonoBehaviour
 {
-    public Button forestLevelButton;
-
     // Start is called before the first frame update
     void Start()
     {
-        forestLevelButton.onClick.AddListener(() => LoadForestLevels());
+        
     }
 
     // Update is called once per frame
@@ -21,10 +19,11 @@ public class UILevelManager : MonoBehaviour
 
     /// <summary>
     /// Sets up the game and loads the forest courses.
+    /// Called in the UI.
     /// </summary>
-    private void LoadForestLevels()
+    public void LoadForestLevels()
     {
-        GameInfo.instance.SetupGame(6, Courses.Forest);
+        GameInfo.instance.SetupGame(8, Courses.Forest);
         GameInfo.instance.LoadLevel();
     }
 }
