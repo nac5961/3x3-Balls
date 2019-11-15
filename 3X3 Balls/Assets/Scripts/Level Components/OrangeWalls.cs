@@ -54,7 +54,7 @@ public class OrangeWalls : MonoBehaviour
     {
         List<GameObject> wallsCopy = new List<GameObject>(walls);
 
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 1; i++)
         {
             int rand = Random.Range(0, wallsCopy.Count);
 
