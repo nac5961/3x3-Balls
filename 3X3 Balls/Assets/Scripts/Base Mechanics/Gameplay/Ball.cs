@@ -72,6 +72,7 @@ public class Ball : MonoBehaviour
     public bool IsScored
     {
         get { return isScored; }
+        set { isScored = value; }
     }
     public int ScoreCount
     {

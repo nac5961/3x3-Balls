@@ -88,6 +88,11 @@ public class SceneInfo : MonoBehaviour
         set { isHit = value; }
     }
 
+    public bool IsTurnOver
+    {
+        get { return isTurnOver; }
+    }
+
     public bool DisableControls
     {
         get { return disableControls; }

@@ -82,7 +82,7 @@ public class GameInfo : MonoBehaviour
     public void SetupGame(int numLevels, Courses course)
     {
         this.course = course.ToString();
-        level = 1;
+        level = 7;
         totalLevels = numLevels;
 
         playerScores = new List<List<int>>();
