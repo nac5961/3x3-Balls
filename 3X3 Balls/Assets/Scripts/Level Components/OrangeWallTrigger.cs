@@ -4,20 +4,18 @@ using UnityEngine;
 
 public class OrangeWallTrigger : MonoBehaviour
 {
-    public GameObject nextDestination;
-
     private GameObject scoredBall;
     private Vector3 scoredBallVelocity;
     private Vector3 startPos;
     private Vector3 endPos;
+    private Vector3 upOffset;
 
     private int orangeWallLayer;
+    private int switchLayer;
 
     private bool triggered;
     private float percentage;
     private float moveSpeed;
-    private float timer;
-    private float waitTime;
 
     // Start is called before the first frame update
     void Start()
@@ -25,14 +23,14 @@ public class OrangeWallTrigger : MonoBehaviour
         scoredBallVelocity = Vector3.zero;
         startPos = Vector3.zero;
         endPos = Vector3.zero;
+        upOffset = new Vector3(0.0f, 0.01f, 0.0f);
 
         orangeWallLayer = 10;
+        switchLayer = 12;
 
         triggered = false;
         percentage = 0.0f;
-        moveSpeed = 0.5f;
-        timer = 0.0f;
-        waitTime = 0.2f;
+        moveSpeed = 1.0f;
     }
 
     // Update is called once per frame
@@ -42,114 +40,96 @@ public class OrangeWallTrigger : MonoBehaviour
         {
             SwapBalls();
         }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            scoredBall = GameObject.Find("Orange Ball(Clone)");
-            scoredBallVelocity = scoredBall.GetComponent<Rigidbody>().velocity;
-            startPos = scoredBall.transform.position;
-            endPos = SceneInfo.instance.ActiveBall.transform.position;
-
-            SceneInfo.instance.ActiveBall.layer = 11;
-
-            scoredBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            scoredBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
-            //other.gameObject.GetComponent<Collider>().isTrigger = true;
-            //other.gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-            //transform.parent.parent.GetComponent<OrangeWalls>().ResetWalls();
-
-            triggered = true;
-        }
     }
 
+    /// <summary>
+    /// Swaps the orange ball with the player ball.
+    /// </summary>
     private void SwapBalls()
     {
         if (percentage < 1.0f)
         {
-            if (timer < waitTime)
+            percentage += moveSpeed * Time.deltaTime;
+            percentage = Mathf.Clamp(percentage, 0.0f, 1.0f);
+
+            scoredBall.transform.position = Vector3.Lerp(startPos, endPos, percentage);
+            SceneInfo.instance.ActiveBall.transform.position = Vector3.Lerp(endPos, startPos, percentage);
+
+            if (percentage >= 1.0f)
             {
-                timer += Time.deltaTime;
+                //Remove scored ball
+                scoredBall.GetComponent<Ball>().IsScored = true;
+                scoredBall.GetComponent<Collider>().isTrigger = true;
+                scoredBall.GetComponent<MeshRenderer>().enabled = false;
+
+                //Give the player ball the scored ball's velocity
+                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(scoredBallVelocity, ForceMode.VelocityChange);
+
+                //Add a little extra force just in case the scored ball's velocity
+                //wasn't enough to move the ball out of the wall
+                Vector3 boost = transform.up * 10.0f;
+                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost, ForceMode.VelocityChange);
+
+                //Make sure to remove the temp lock
+                Camera.main.GetComponent<ThirdPersonCamera>().TempUnlockCam();
             }
-            else
-            {
-                percentage += moveSpeed * Time.deltaTime;
-                percentage = Mathf.Clamp(percentage, 0.0f, 1.0f);
-
-                scoredBall.transform.position = Vector3.Lerp(startPos, endPos, percentage);
-                SceneInfo.instance.ActiveBall.transform.position = Vector3.Lerp(endPos, startPos, percentage);
-
-                if (percentage >= 1.0f)
-                {
-                    scoredBall.GetComponent<Ball>().IsScored = true;
-                    scoredBall.GetComponent<Collider>().isTrigger = true;
-                    scoredBall.GetComponent<MeshRenderer>().enabled = false;
-
-                    //SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity = scoredBallVelocity;
-
-                    Vector3 extraForce = scoredBallVelocity.normalized * 3.0f;
-                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(scoredBallVelocity, ForceMode.VelocityChange);
-                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(extraForce, ForceMode.VelocityChange);
-                }
-            }
-        }
-    }
-
-    private void GoToNextDestination()
-    {
-        if (timer < waitTime)
-        {
-            timer += Time.deltaTime;
-        }
-        else
-        {
-            triggered = false;
-
-            scoredBall.GetComponent<Ball>().IsScored = true;
-
-            SceneInfo.instance.ActiveBall.transform.position = nextDestination.transform.position;
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        //Make sure this is an orange ball and the trigger
+        //is inside an orange wall
         if (other.gameObject.CompareTag("Ball") && other.name.Contains("Orange") && transform.parent.gameObject.layer == orangeWallLayer)
         {
+            //Set variables
             scoredBall = other.gameObject;
             scoredBallVelocity = scoredBall.GetComponent<Rigidbody>().velocity;
-            startPos = scoredBall.transform.position;
-            endPos = SceneInfo.instance.ActiveBall.transform.position;
+            startPos = scoredBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
+            endPos = SceneInfo.instance.ActiveBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
 
-            SceneInfo.instance.ActiveBall.layer = 11;
+            //Temporarily lock the camera to perform the switch without camera stutters
+            Camera.main.GetComponent<ThirdPersonCamera>().TempLockCam();
 
+            //Zero out movement to lerp
             scoredBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
             scoredBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
-            //other.gameObject.GetComponent<Collider>().isTrigger = true;
-            //other.gameObject.GetComponent<MeshRenderer>().enabled = false;
-
-            //transform.parent.parent.GetComponent<OrangeWalls>().ResetWalls();
+            //Set appropriate layers for collision.
+            //This prevents multiple orange balls from being scored at once
+            //by making the scored orange ball and the player ball the
+            //only 2 balls that can move through the walls.
+            scoredBall.layer = switchLayer;
+            SceneInfo.instance.ActiveBall.layer = switchLayer;
+            transform.parent.parent.GetComponent<OrangeWalls>().ResetWallLayers();
 
             triggered = true;
+            percentage = 0.0f;
         }
     }
+
+    //private void OnTriggerStay(Collider other)
+    //{
+    //    if (triggered && other.gameObject.CompareTag("Ball") && other.gameObject == SceneInfo.instance.ActiveBall && SceneInfo.instance.ActiveBall.layer != 0)
+    //    {
+    //        //THIS COULD CAUSE THE TURN TO NOT END IF THE BALL IS STUCK
+    //        //IN THE GROUND AND CAN'T MOVE DESPITE THE CONSTANT FORCE
+    //        //Add a little extra force just in case the scored ball's velocity
+    //        //wasn't enough to move the ball out of the wall
+    //        Vector3 boost = transform.up * 2.0f;
+    //        SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost);
+    //    }
+    //}
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Ball") && other.gameObject == SceneInfo.instance.ActiveBall)
         {
             triggered = false;
-            timer = 0.0f;
-            percentage = 0.0f;
-            SceneInfo.instance.ActiveBall.layer = 0;
+            SceneInfo.instance.ActiveBall.layer = 0; //Put ball back to its default layer
         }
     }
 }

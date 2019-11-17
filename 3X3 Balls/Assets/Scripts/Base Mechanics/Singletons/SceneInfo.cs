@@ -401,7 +401,7 @@ public class SceneInfo : MonoBehaviour
             }
         }
 
-        if (!stillMoving)
+        if (!stillMoving && !Camera.main.GetComponent<ThirdPersonCamera>().TempLock)
         {
             timer = 0.0f;
             isHit = false;

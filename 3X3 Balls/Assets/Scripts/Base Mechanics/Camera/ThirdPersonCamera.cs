@@ -38,6 +38,9 @@ public class ThirdPersonCamera : MonoBehaviour
     private bool autoSwitch;
     private Vector3 playerOverhead;
     private Quaternion playerOverheadRotation;
+    private Vector3 tempPosOffset;
+    private Quaternion tempRot;
+    private bool tempLock;
 
     public Transform Target
     {
@@ -54,6 +57,11 @@ public class ThirdPersonCamera : MonoBehaviour
     public bool Locked
     {
         get { return locked; }
+    }
+
+    public bool TempLock
+    {
+        get { return tempLock; }
     }
 
     // Start is called before the first frame update
@@ -92,6 +100,9 @@ public class ThirdPersonCamera : MonoBehaviour
         autoSwitch = false;
         playerOverhead = new Vector3(0.0f, 16.87f, 0.0f);
         playerOverheadRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
+        tempPosOffset = Vector3.zero;
+        tempRot = Quaternion.identity;
+        tempLock = false;
     }
 
     // Update is called once per frame
@@ -99,22 +110,29 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
-            if (SceneInfo.instance.IsHit && !autoSwitch)
+            if (tempLock)
             {
-                AutomaticallySwitchView();
+                TempFollow();
             }
-
-            if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
+            else
             {
-                ManuallySwitchView();
-            }
+                if (SceneInfo.instance.IsHit && !autoSwitch)
+                {
+                    AutomaticallySwitchView();
+                }
 
-            if (!SceneInfo.instance.IsTakingShot && !locked)
-            {
-                RotateAroundTarget();
-            }
+                if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
+                {
+                    ManuallySwitchView();
+                }
 
-            //Zoom();
+                if (!SceneInfo.instance.IsTakingShot && !locked)
+                {
+                    RotateAroundTarget();
+                }
+
+                //Zoom();
+            }
         }
     }
 
@@ -122,7 +140,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            if (!locked)
+            if (!locked && !tempLock)
             {
                 FollowTarget();
                 LookAtTarget();
@@ -131,6 +149,40 @@ public class ThirdPersonCamera : MonoBehaviour
             //SetClipPoints();
             //SetAdjustedDistance();
         }
+    }
+
+    private void TempFollow()
+    {
+        Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + tempPosOffset;
+        Camera.main.transform.rotation = tempRot;
+    }
+
+    public void TempLockCam()
+    {
+        //If player was in a different view, forcefully
+        //switch back to the follow view
+        if (locked)
+        {
+            locked = false;
+            FollowTarget();
+            LookAtTarget();
+        }
+
+        tempLock = true;
+        tempPosOffset = Camera.main.transform.position - SceneInfo.instance.ActiveBall.transform.position;
+        tempRot = Camera.main.transform.rotation;
+
+        //Remove UI controls since they are disabled
+        //Must do camview first then hit
+        UIGameInfo.instance.HideCamViewUI();
+        UIGameInfo.instance.HideHitUI();
+    }
+
+    public void TempUnlockCam()
+    {
+        tempLock = false;
+
+        UIGameInfo.instance.DisplayHitUI(); //Re-display UI controls since they are re-enabled
     }
 
     private void AutomaticallySwitchView()
@@ -234,11 +286,11 @@ public class ThirdPersonCamera : MonoBehaviour
     /// <summary>
     /// Zooms in and out from the target.
     /// </summary>
-    private void Zoom()
-    {
-        distance += Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime;
-        distance = Mathf.Clamp(distance, minDistance, maxDistance);
-    }
+    //private void Zoom()
+    //{
+    //    distance += Input.GetAxis("Mouse ScrollWheel") * zoomSpeed * Time.deltaTime;
+    //    distance = Mathf.Clamp(distance, minDistance, maxDistance);
+    //}
 
     /// <summary>
     /// Rotates the camera around the target.
@@ -264,36 +316,36 @@ public class ThirdPersonCamera : MonoBehaviour
     /// <summary>
     /// Sets the clip points of the camera (Outer edges and middle of camera).
     /// </summary>
-    private void SetClipPoints()
-    {
-        //Find coordinates for clip points relative to the camera's position
-        float x = Mathf.Tan(Camera.main.fieldOfView / 3.4f);
-        float y = x / Camera.main.aspect;
-        float z = Camera.main.nearClipPlane;
-        x *= z;
+    //private void SetClipPoints()
+    //{
+    //    //Find coordinates for clip points relative to the camera's position
+    //    float x = Mathf.Tan(Camera.main.fieldOfView / 3.4f);
+    //    float y = x / Camera.main.aspect;
+    //    float z = Camera.main.nearClipPlane;
+    //    x *= z;
 
-        //Find the top left clip point (Rotate relative to camera)
-        Vector3 topLeft = (Camera.main.transform.rotation * new Vector3(-x, y, z)) + desiredPos;
+    //    //Find the top left clip point (Rotate relative to camera)
+    //    Vector3 topLeft = (Camera.main.transform.rotation * new Vector3(-x, y, z)) + desiredPos;
 
-        //Find the top right clip point (Rotate relative to camera)
-        Vector3 topRight = (Camera.main.transform.rotation * new Vector3(x, y, z)) + desiredPos;
+    //    //Find the top right clip point (Rotate relative to camera)
+    //    Vector3 topRight = (Camera.main.transform.rotation * new Vector3(x, y, z)) + desiredPos;
 
-        //Find the bottom left clip point (Rotate relative to camera)
-        Vector3 bottomLeft = (Camera.main.transform.rotation * new Vector3(-x, -y, z)) + desiredPos;
+    //    //Find the bottom left clip point (Rotate relative to camera)
+    //    Vector3 bottomLeft = (Camera.main.transform.rotation * new Vector3(-x, -y, z)) + desiredPos;
 
-        //Find the bottom right clip point (Rotate relative to camera)
-        Vector3 bottomRight = (Camera.main.transform.rotation * new Vector3(x, -y, z)) + desiredPos;
+    //    //Find the bottom right clip point (Rotate relative to camera)
+    //    Vector3 bottomRight = (Camera.main.transform.rotation * new Vector3(x, -y, z)) + desiredPos;
 
-        //Find the clip point slightly behind the camera
-        Vector3 middle = Camera.main.transform.position - Camera.main.transform.forward;
+    //    //Find the clip point slightly behind the camera
+    //    Vector3 middle = Camera.main.transform.position - Camera.main.transform.forward;
 
-        //Set clip points
-        clipPoints[0] = topLeft;
-        clipPoints[1] = topRight;
-        clipPoints[2] = bottomLeft;
-        clipPoints[3] = bottomRight;
-        clipPoints[4] = middle;
-    }
+    //    //Set clip points
+    //    clipPoints[0] = topLeft;
+    //    clipPoints[1] = topRight;
+    //    clipPoints[2] = bottomLeft;
+    //    clipPoints[3] = bottomRight;
+    //    clipPoints[4] = middle;
+    //}
 
     /// <summary>
     /// Finds the closest distance from the target to any objects 
@@ -301,31 +353,31 @@ public class ThirdPersonCamera : MonoBehaviour
     /// This allows the camera to be repositioned in front of any blocking
     /// objects.
     /// </summary>
-    private void SetAdjustedDistance()
-    {
-        adjDistance = -1.0f;
+    //private void SetAdjustedDistance()
+    //{
+    //    adjDistance = -1.0f;
 
-        for (int i = 0; i < clipPoints.Length; i++)
-        {
-            RaycastHit hitInfo;
-            if (Physics.Raycast(target.position, (clipPoints[i] - target.position).normalized, out hitInfo, Vector3.Distance(clipPoints[i], target.position), mask))
-            {
-                //Find shortest distance to blocking object
-                if (adjDistance == -1.0f || hitInfo.distance < adjDistance)
-                {
-                    adjDistance = hitInfo.distance;
-                }
-            }
-        }
+    //    for (int i = 0; i < clipPoints.Length; i++)
+    //    {
+    //        RaycastHit hitInfo;
+    //        if (Physics.Raycast(target.position, (clipPoints[i] - target.position).normalized, out hitInfo, Vector3.Distance(clipPoints[i], target.position), mask))
+    //        {
+    //            //Find shortest distance to blocking object
+    //            if (adjDistance == -1.0f || hitInfo.distance < adjDistance)
+    //            {
+    //                adjDistance = hitInfo.distance;
+    //            }
+    //        }
+    //    }
 
-        if (adjDistance == -1.0f)
-        {
-            isColliding = false;
-            adjDistance =  0.0f;
-        }
-        else
-        {
-            isColliding = true;
-        }
-    }
+    //    if (adjDistance == -1.0f)
+    //    {
+    //        isColliding = false;
+    //        adjDistance =  0.0f;
+    //    }
+    //    else
+    //    {
+    //        isColliding = true;
+    //    }
+    //}
 }

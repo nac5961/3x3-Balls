@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class OrangeWalls : MonoBehaviour
 {
-    public GameObject[] walls;
+    public GameObject[] rightWalls;
+    public GameObject[] leftWalls;
     public Material normalMaterial;
     public Material orangeMaterial;
 
@@ -41,32 +42,54 @@ public class OrangeWalls : MonoBehaviour
         }
     }
 
-    public void ResetWalls()
+    public void ResetWallLayers()
     {
-        for (int i = 0; i < walls.Length; i++)
+        //Right walls
+        for (int i = 0; i < rightWalls.Length; i++)
         {
-            walls[i].GetComponent<Renderer>().material = normalMaterial;
-            walls[i].layer = 0;
+            rightWalls[i].layer = 0;
+        }
+
+        //Left walls
+        for (int i = 0; i < leftWalls.Length; i++)
+        {
+            leftWalls[i].layer = 0;
         }
     }
 
     private void SetOrangeWalls()
     {
-        List<GameObject> wallsCopy = new List<GameObject>(walls);
+        int rightRand = Random.Range(0, rightWalls.Length);
+        int leftRand = Random.Range(0, leftWalls.Length);
 
-        for (int i = 0; i < 1; i++)
+        //Right walls
+        for (int i = 0; i < rightWalls.Length; i++)
         {
-            int rand = Random.Range(0, wallsCopy.Count);
-
-            wallsCopy[rand].GetComponent<Renderer>().material = orangeMaterial;
-            wallsCopy[rand].layer = orangeWallLayer;
-            wallsCopy.RemoveAt(rand);
+            if (i == rightRand)
+            {
+                rightWalls[i].GetComponent<Renderer>().material = orangeMaterial;
+                rightWalls[i].layer = orangeWallLayer;
+            }
+            else
+            {
+                rightWalls[i].GetComponent<Renderer>().material = normalMaterial;
+                rightWalls[i].layer = 0;
+            }
         }
 
-        for (int i = 0; i < wallsCopy.Count; i++)
+        //Left walls
+        for (int i = 0; i < leftWalls.Length; i++)
         {
-            wallsCopy[i].GetComponent<Renderer>().material = normalMaterial;
-            wallsCopy[i].layer = 0;
+            if (i == leftRand)
+            {
+                leftWalls[i].GetComponent<Renderer>().material = orangeMaterial;
+                leftWalls[i].layer = orangeWallLayer;
+            }
+            else
+            {
+                leftWalls[i].GetComponent<Renderer>().material = normalMaterial;
+                leftWalls[i].layer = 0;
+            }
         }
     }
 }

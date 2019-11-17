@@ -118,6 +118,22 @@ public class UIGameInfo : MonoBehaviour
     }
 
     /// <summary>
+    /// Displays the UI after the ball is hit.
+    /// </summary>
+    public void DisplayHitUI()
+    {
+        DisplayUI(hitUI);
+    }
+
+    /// <summary>
+    /// Hides the UI after the ball is hit.
+    /// </summary>
+    public void HideHitUI()
+    {
+        HideUI(hitUI);
+    }
+
+    /// <summary>
     /// Displays the UI for showing player turns.
     /// </summary>
     public void DisplayTurnUI()
