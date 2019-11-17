@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CourseSetup : MonoBehaviour
 {
-    //public int offset; //used for spawning players next to each other
-    //private List<Vector3> spawnPoints; //used for spawning players next to each other
     public GameObject levelOverview;
     public GameObject scoreAreaOverview;
 
@@ -20,8 +18,6 @@ public class CourseSetup : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //spawnPoints = new List<Vector3>();
-
         SetupCourse();
 
         SceneInfo.instance.StartGame();
@@ -42,26 +38,25 @@ public class CourseSetup : MonoBehaviour
         //Eight Ball
         for (int i = 0; i < targetBalls.Length; i++)
         {
-            MoveAboveSurface(targetBalls[i], targetBalls[i].GetComponent<SphereCollider>());
+            MoveAboveSurface(targetBalls[i], targetBalls[i].GetComponent<Collider>());
             targetBalls[i].GetComponent<Ball>().TargetBallSpawn = targetBalls[i].transform.position;
         }
 
         //Other Balls
         for (int i = 0; i < otherBalls.Length; i++)
         {
-            MoveAboveSurface(otherBalls[i], otherBalls[i].GetComponent<SphereCollider>());
-            otherBalls[i].GetComponent<Ball>().TargetBallSpawn = otherBalls[i].transform.position;
+            MoveAboveSurface(otherBalls[i], otherBalls[i].GetComponent<Collider>());
         }
 
         //Cue Balls aka Players
         for (int i = 0; i < GameInfo.instance.Players; i++)
         {
             GameObject playerBall = Instantiate(cueBallPrefab, playerSpawn.transform.position, Quaternion.identity);
-            MoveAboveSurface(playerBall, playerBall.GetComponent<SphereCollider>());
+            MoveAboveSurface(playerBall, playerBall.GetComponent<Collider>());
             playerBall.GetComponent<Ball>().TargetBallSpawn = targetBalls[0].transform.position;
 
             //Prevent collisions until first hit so balls can spawn inside each other
-            playerBall.GetComponent<SphereCollider>().isTrigger = true;
+            playerBall.GetComponent<Collider>().isTrigger = true;
             playerBall.GetComponent<Rigidbody>().useGravity = false;
 
             SceneInfo.instance.Balls.Add(playerBall);
@@ -89,38 +84,6 @@ public class CourseSetup : MonoBehaviour
         Camera.main.GetComponent<ThirdPersonCamera>().LevelOverview = levelOverview;
         Camera.main.GetComponent<ThirdPersonCamera>().ScoreAreaOverview = scoreAreaOverview;
     }
-
-    /// <summary>
-    /// Calculates the spawn points for each player.
-    /// **Used to spawn the players next to each other**
-    /// </summary>
-    //private void SetupSpawnPoints()
-    //{
-    //    if (GameInfo.instance.Players == 1)
-    //    {
-    //        spawnPoints.Add(playerSpawn.transform.position);
-    //    }
-    //    else
-    //    {
-    //        //Calculate the spacing inbetween each player
-    //        float spacing = cueBallPrefab.GetComponent<SphereCollider>().radius * 2.0f + offset;
-
-    //        //Get the direction to spawn players to the right and left of each other
-    //        Vector3 left = -playerSpawn.transform.right;
-
-    //        //Get the position of the first ball based on the number of players playing
-    //        float playerNumOffset = GameInfo.instance.Players / 2.0f - 0.5f;
-    //        Vector3 startPos = playerSpawn.transform.position + (left * spacing * playerNumOffset);
-
-    //        //Save the position and calculate the position for the next ball
-    //        for (int i = 0; i < GameInfo.instance.Players; i++)
-    //        {
-    //            spawnPoints.Add(startPos);
-
-    //            startPos -= left * spacing;
-    //        }
-    //    }
-    //}
 
     /// <summary>
     /// Moves a gameobject above a flat surface when spawned.

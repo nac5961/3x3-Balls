@@ -144,8 +144,13 @@ public class Ball : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Resets all the values used for spinning the ball.
+    /// </summary>
     private void ResetSpinData()
     {
+        //If the ball has been previously hit, and it is the current
+        //player's ball, then reset it to re-calculate spin after hit.
         if (hasHit && gameObject == SceneInfo.instance.ActiveBall)
         {
             hasHit = false;
@@ -157,8 +162,12 @@ public class Ball : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the values used for spinning the ball.
+    /// </summary>
     private void SetSpinData()
     {
+        //Only perform calculations on the current player's ball
         if (gameObject == SceneInfo.instance.ActiveBall)
         {
             prevVelocity = GetComponent<Rigidbody>().velocity;
@@ -178,8 +187,9 @@ public class Ball : MonoBehaviour
     private void PauseBall()
     {
         wasPaused = true;
+        Rigidbody rb = GetComponent<Rigidbody>();
 
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        //Store movement data if the ball was moving
         if (!rb.IsSleeping())
         {
             wasMoving = true;
@@ -200,7 +210,7 @@ public class Ball : MonoBehaviour
         {
             wasMoving = false;
 
-            Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+            Rigidbody rb = GetComponent<Rigidbody>();
             rb.WakeUp();
             rb.AddForce(pausedVelocity, ForceMode.VelocityChange);
             rb.AddTorque(pausedAngularVelocity, ForceMode.VelocityChange);
@@ -242,7 +252,7 @@ public class Ball : MonoBehaviour
 
         //Forcefully stop the velocity when respawned, otherwise it will continue moving
         //with the same velocity.
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        Rigidbody rb = GetComponent<Rigidbody>();
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
@@ -252,7 +262,7 @@ public class Ball : MonoBehaviour
     /// </summary>
     private void StopMoving()
     {
-        Rigidbody rb = gameObject.GetComponent<Rigidbody>();
+        Rigidbody rb = GetComponent<Rigidbody>();
 
         if (!rb.IsSleeping())
         {
@@ -298,7 +308,8 @@ public class Ball : MonoBehaviour
 
                 if (spin != SpinType.Normal)
                 {
-                    //Calculate torque              
+                    //Calculate torque
+                    //Velocity scale is used to scale down the torque based on the velocity (slower velocity = lower torque)
                     Vector3 torque = Vector3.zero;
                     float velocityScale = prevVelocity.magnitude / initalVelocity.magnitude * Mathf.Clamp(prevVelocity.magnitude / minMagnitude, 0.0f, 1.0f);
                     float torqueScale = maxTorque * velocityScale;
@@ -306,18 +317,18 @@ public class Ball : MonoBehaviour
                     switch (spin)
                     {
                         case SpinType.Top:
-                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.13f, ForceMode.VelocityChange);
+                            rb.AddForce(prevVelocity * 0.13f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
                             torque = initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Back:
                             torque = initialAngularVelocity.normalized * -torqueScale;
                             break;
                         case SpinType.Left:
-                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange);
+                            rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
                             torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         case SpinType.Right:
-                            GetComponent<Rigidbody>().AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange);
+                            rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
                             torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
                             break;
                         default:
@@ -325,7 +336,7 @@ public class Ball : MonoBehaviour
                     }
 
                     //Apply torque
-                    GetComponent<Rigidbody>().AddTorque(torque, ForceMode.VelocityChange);
+                    rb.AddTorque(torque, ForceMode.VelocityChange);
                 }
             }
         }
@@ -347,7 +358,7 @@ public class Ball : MonoBehaviour
                 if (!removedTorque)
                 {
                     removedTorque = true;
-                    GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                    rb.angularVelocity = Vector3.zero;
                 }
             }
         }
@@ -403,8 +414,8 @@ public class Ball : MonoBehaviour
                 isScored = true;
 
                 //Stop colliding with other stuff and make invisible
-                gameObject.GetComponent<SphereCollider>().isTrigger = true;
-                gameObject.GetComponent<MeshRenderer>().enabled = false;
+                GetComponent<Collider>().isTrigger = true;
+                GetComponent<MeshRenderer>().enabled = false;
 
                 //Stop moving
                 rb.velocity = Vector3.zero;
@@ -414,14 +425,17 @@ public class Ball : MonoBehaviour
                 //Setup next target
                 SceneInfo.instance.SwitchTargetBall();
 
+                //Store number of balls scored
                 SceneInfo.instance.ActiveBall.GetComponent<Ball>().ScoreCount++;
 
+                //Add bonus score for more than one ball scored
                 if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().ScoreCount > 1)
                 {
                     SceneInfo.instance.AddBonusScore(1);
                     UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
                 }
 
+                //Add bonus score for scoring the special ball
                 if (gameObject.name.Contains("Special"))
                 {
                     SceneInfo.instance.AddBonusScore(3);

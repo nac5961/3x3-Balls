@@ -188,6 +188,7 @@ public class Cue : MonoBehaviour
                     UIGameInfo.instance.HideShotUI(false);
                 }
 
+                //Change curve direction
                 else if (SceneInfo.instance.IsTakingShot && shot == ShotType.Curve && Input.GetButtonDown("CurveDirectionToggle"))
                 {
                     curveRight = !curveRight;
@@ -288,16 +289,10 @@ public class Cue : MonoBehaviour
                 fillAmount = 1.2f;
             }
 
-            //SHOWCASE (DELETE ME)
-            if (Input.GetKey(KeyCode.K))
-            {
-                fillAmount = 1.2f;
-            }
-
             //Enable collisions after first hit
-            if (SceneInfo.instance.ActiveBall.GetComponent<SphereCollider>().isTrigger)
+            if (SceneInfo.instance.ActiveBall.GetComponent<Collider>().isTrigger)
             {
-                SceneInfo.instance.ActiveBall.GetComponent<SphereCollider>().isTrigger = false;
+                SceneInfo.instance.ActiveBall.GetComponent<Collider>().isTrigger = false;
                 SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().useGravity = true;
             }
 
@@ -316,12 +311,15 @@ public class Cue : MonoBehaviour
                 case ShotType.Curve:
                     SceneInfo.instance.ActiveBall.GetComponent<Ball>().CanCurveShot = false;
 
+                    //Curve force is a leftward or rightward force to have the ball
+                    //move to the side then curve back in.
                     float curvePower = Mathf.Clamp(maxCurvePower * fillAmount, minCurvePower, maxCurvePower);
                     Vector3 curveForce = Quaternion.Euler(0.0f, 90.0f, 0.0f) * force;
                     curveForce = curveForce.normalized * curvePower;
                     curveForce = curveRight ? curveForce : -curveForce;
                     SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(curveForce);
 
+                    //Torque allows the ball to curve in after the leftward/rightward force
                     Vector3 torque = force;
                     torque = torque.normalized * (curvePower - 50.0f);
                     torque = curveRight ? torque : -torque;
@@ -331,6 +329,7 @@ public class Cue : MonoBehaviour
                     break;
             }
 
+            //Add the standard forwards force
             SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(force);
 
             //Update stroke count

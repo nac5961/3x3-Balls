@@ -185,7 +185,9 @@ public class SceneInfo : MonoBehaviour
         }
     }
 
-    //DELETE ME
+    /// <summary>
+    /// DELETE ME
+    /// </summary>
     private void ManuallyEndLevel()
     {
         if (Input.GetKeyDown(KeyCode.L))
@@ -243,7 +245,7 @@ public class SceneInfo : MonoBehaviour
             //Make highest scores (players in last) go first and lowest scores (players in first) go last
             for (int i = totals.Count - 1; i >= 0; i--)
             {
-                for (int j = 0; j < GameInfo.instance.Players; j++)
+                for (int j = 0; j < players.Count; j++)
                 {
                     if (players[j].Value == totals[i])
                     {
@@ -460,8 +462,10 @@ public class SceneInfo : MonoBehaviour
             }
         }
 
-        //Setup camera
+        //Set new active ball
         SetActiveBall();
+
+        //Setup camera
         Camera.main.GetComponent<ThirdPersonCamera>().Target = activeBall.transform;
         Camera.main.GetComponent<ThirdPersonCamera>().UpdatePlayerRotations(prevPlayer, GetCurrentPlayer());
 

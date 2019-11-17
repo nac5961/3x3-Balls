@@ -36,9 +36,12 @@ public class OrangeWallTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (triggered)
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            SwapBalls();
+            if (triggered)
+            {
+                SwapBalls();
+            }
         }
     }
 
@@ -110,19 +113,6 @@ public class OrangeWallTrigger : MonoBehaviour
             percentage = 0.0f;
         }
     }
-
-    //private void OnTriggerStay(Collider other)
-    //{
-    //    if (triggered && other.gameObject.CompareTag("Ball") && other.gameObject == SceneInfo.instance.ActiveBall && SceneInfo.instance.ActiveBall.layer != 0)
-    //    {
-    //        //THIS COULD CAUSE THE TURN TO NOT END IF THE BALL IS STUCK
-    //        //IN THE GROUND AND CAN'T MOVE DESPITE THE CONSTANT FORCE
-    //        //Add a little extra force just in case the scored ball's velocity
-    //        //wasn't enough to move the ball out of the wall
-    //        Vector3 boost = transform.up * 2.0f;
-    //        SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost);
-    //    }
-    //}
 
     private void OnTriggerExit(Collider other)
     {

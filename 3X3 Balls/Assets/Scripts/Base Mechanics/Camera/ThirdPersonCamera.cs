@@ -116,16 +116,24 @@ public class ThirdPersonCamera : MonoBehaviour
             }
             else
             {
+                //Check to see if view needs to automatically switch to the
+                //score area overview after a hit
                 if (SceneInfo.instance.IsHit && !autoSwitch)
                 {
                     AutomaticallySwitchView();
                 }
 
+                //Check to see if the player is trying to manually switch their view.
+                //But make sure they cannot do that if they're taking a shot, or the
+                //view is automatically switched to the score area.
                 if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
                 {
                     ManuallySwitchView();
                 }
 
+                //Rotate the camera around the ball as long as the view is not locked
+                //to another view.
+                //Also do not allow rotation during a shot.
                 if (!SceneInfo.instance.IsTakingShot && !locked)
                 {
                     RotateAroundTarget();
@@ -140,6 +148,7 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
+            //Follow the ball unless the view is locked to another view
             if (!locked && !tempLock)
             {
                 FollowTarget();
@@ -151,12 +160,20 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Follows the ball based on the camera's last position and rotation
+    /// around the ball.
+    /// </summary>
     private void TempFollow()
     {
         Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + tempPosOffset;
         Camera.main.transform.rotation = tempRot;
     }
 
+    /// <summary>
+    /// Temporarily locks the camera to its last position and rotation
+    /// around the ball.
+    /// </summary>
     public void TempLockCam()
     {
         //If player was in a different view, forcefully
@@ -168,25 +185,32 @@ public class ThirdPersonCamera : MonoBehaviour
             LookAtTarget();
         }
 
+        //Set temp lock data
         tempLock = true;
         tempPosOffset = Camera.main.transform.position - SceneInfo.instance.ActiveBall.transform.position;
         tempRot = Camera.main.transform.rotation;
 
-        //Remove UI controls since they are disabled
-        //Must do camview first then hit
+        //Remove UI controls since they are disabled.
+        //Must do camview first then hit.
         UIGameInfo.instance.HideCamViewUI();
         UIGameInfo.instance.HideHitUI();
     }
 
+    /// <summary>
+    /// Removes the temporarily lock on the camera.
+    /// </summary>
     public void TempUnlockCam()
     {
         tempLock = false;
-
         UIGameInfo.instance.DisplayHitUI(); //Re-display UI controls since they are re-enabled
     }
 
+    /// <summary>
+    /// Automatically switches the camera view to the score area overview.
+    /// </summary>
     private void AutomaticallySwitchView()
     {
+        //If the ball is in the score area and is moving at a slow speed
         if (SceneInfo.instance.ActiveBall.GetComponent<Ball>().InBounds && SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity.magnitude < 2.0f)
         {
             autoSwitch = true;
@@ -199,8 +223,12 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Switches the camera view to another view based on player input.
+    /// </summary>
     private void ManuallySwitchView()
     {
+        //Show the level overview
         if (Input.GetButton("CameraViewLevel"))
         {
             if (!locked)
@@ -212,6 +240,8 @@ public class ThirdPersonCamera : MonoBehaviour
             Camera.main.transform.position = levelOverview.transform.position;
             Camera.main.transform.rotation = levelOverview.transform.rotation;
         }
+
+        //Show the player overview
         else if (Input.GetButton("CameraViewOverhead"))
         {
             if (!locked)
@@ -223,6 +253,8 @@ public class ThirdPersonCamera : MonoBehaviour
             Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + playerOverhead;
             Camera.main.transform.rotation = playerOverheadRotation;
         }
+
+        //Stop the manual switch
         else
         {
             if (locked)

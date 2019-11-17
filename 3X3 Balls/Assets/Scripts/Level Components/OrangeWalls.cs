@@ -25,23 +25,29 @@ public class OrangeWalls : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneInfo.instance.IsAiming)
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            if (!switchWalls)
+            if (SceneInfo.instance.IsAiming)
             {
-                switchWalls = true;
+                if (!switchWalls)
+                {
+                    switchWalls = true;
+                }
             }
-        }
-        else if (SceneInfo.instance.IsTurnOver)
-        {
-            if (switchWalls)
+            else if (SceneInfo.instance.IsTurnOver)
             {
-                switchWalls = false;
-                SetOrangeWalls();
+                if (switchWalls)
+                {
+                    switchWalls = false;
+                    SetOrangeWalls();
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Sets the layers of the walls back to default.
+    /// </summary>
     public void ResetWallLayers()
     {
         //Right walls
@@ -57,6 +63,9 @@ public class OrangeWalls : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Chooses random walls to be orange walls.
+    /// </summary>
     private void SetOrangeWalls()
     {
         int rightRand = Random.Range(0, rightWalls.Length);

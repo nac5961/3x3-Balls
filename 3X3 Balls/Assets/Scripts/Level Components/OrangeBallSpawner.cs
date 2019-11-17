@@ -7,16 +7,16 @@ public class OrangeBallSpawner : MonoBehaviour
     public GameObject orangeBallPrefab;
     public GameObject spawnPos;
 
-    private List<GameObject> enteredBalls;
     private List<GameObject> spawnedBalls;
+    private int enteredBalls;
 
     private bool checkBalls;
 
     // Start is called before the first frame update
     void Start()
     {
-        enteredBalls = new List<GameObject>();
         spawnedBalls = new List<GameObject>();
+        enteredBalls = 0;
 
         checkBalls = false;
     }
@@ -24,24 +24,32 @@ public class OrangeBallSpawner : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (SceneInfo.instance.IsAiming)
+        if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            if (!checkBalls)
+            if (SceneInfo.instance.IsAiming)
             {
-                checkBalls = true;
+                if (!checkBalls)
+                {
+                    checkBalls = true;
+                }
             }
-        }
-        else if (SceneInfo.instance.IsTurnOver)
-        {
-            if (checkBalls)
+            else if (SceneInfo.instance.IsTurnOver)
             {
-                checkBalls = false;
+                if (checkBalls)
+                {
+                    checkBalls = false;
 
-                SpawnExtraBall();
+                    SpawnExtraBall();
+                }
             }
         }
     }
 
+    /// <summary>
+    /// Spawns an extra ball if for some reason they are no
+    /// available orange balls.
+    /// ** This could happen if one player scores 2 orange balls **
+    /// </summary>
     private void SpawnExtraBall()
     {
         bool availableBalls = false;
@@ -55,16 +63,23 @@ public class OrangeBallSpawner : MonoBehaviour
             }
         }
 
-        if (!availableBalls && enteredBalls.Count > 0)
+        //There are no available balls but there are players
+        //still in the area.
+        if (!availableBalls && enteredBalls > 0)
         {
             SpawnBall();
         }
     }
 
+    /// <summary>
+    /// Spawns an orange ball.
+    /// </summary>
     private void SpawnBall()
     {
+        //Spawn
         GameObject orangeBall = Instantiate(orangeBallPrefab, spawnPos.transform.position, Quaternion.identity);
 
+        //Add to list of balls to keep track of it and properly end turns
         spawnedBalls.Add(orangeBall);
         SceneInfo.instance.Balls.Add(orangeBall);
 
@@ -74,19 +89,19 @@ public class OrangeBallSpawner : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Ball") && !other.name.Contains("Orange"))
+        //Spawn balls when a cue ball enters
+        if (other.gameObject.CompareTag("Ball") && other.name.Contains("Cue Ball"))
         {
-            enteredBalls.Add(other.gameObject);
-
+            enteredBalls++;
             SpawnBall();
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Ball") && !other.name.Contains("Orange"))
+        if (other.gameObject.CompareTag("Ball") && other.name.Contains("Cue Ball"))
         {
-            enteredBalls.Remove(other.gameObject);
+            enteredBalls--;
         }
     }
 }

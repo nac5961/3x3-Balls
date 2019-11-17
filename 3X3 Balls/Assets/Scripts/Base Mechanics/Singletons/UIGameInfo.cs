@@ -164,8 +164,8 @@ public class UIGameInfo : MonoBehaviour
     {
         levelOverUI.GetComponent<LevelOverUI>().SetupScores();
 
+        HideAllUI();
         HideUI(generalUI);
-        HideUI(hitUI);
         DisplayUI(levelOverUI);
     }
 
