@@ -64,6 +64,7 @@ public class OrangeWallTrigger : MonoBehaviour
                 scoredBall.GetComponent<Ball>().IsScored = true;
                 scoredBall.GetComponent<Collider>().isTrigger = true;
                 scoredBall.GetComponent<MeshRenderer>().enabled = false;
+                scoredBall.GetComponent<Rigidbody>().useGravity = false; //turn off gravity, otherwise ball will continuosly fall due to being a trigger
 
                 //Give the player ball the scored ball's velocity
                 SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(scoredBallVelocity, ForceMode.VelocityChange);

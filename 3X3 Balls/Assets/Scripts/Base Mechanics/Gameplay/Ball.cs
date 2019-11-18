@@ -420,6 +420,7 @@ public class Ball : MonoBehaviour
                 //Stop moving
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
+                rb.useGravity = false; //turn off gravity, otherwise ball will continuously fall due to being a trigger
                 rb.Sleep();
 
                 //Setup next target
