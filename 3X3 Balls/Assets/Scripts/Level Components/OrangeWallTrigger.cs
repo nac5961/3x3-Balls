@@ -1,36 +1,43 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OrangeWallTrigger : MonoBehaviour
 {
+    public Image fade;
+
     private GameObject scoredBall;
     private Vector3 scoredBallVelocity;
-    private Vector3 startPos;
-    private Vector3 endPos;
+    private Vector3 targetPos;
     private Vector3 upOffset;
 
     private int orangeWallLayer;
     private int switchLayer;
 
-    private bool triggered;
     private float percentage;
-    private float moveSpeed;
+    private float fadeSpeed;
+    private float timer;
+    private float waitTime;
+    private bool fadeIn;
+    private bool switched;
 
     // Start is called before the first frame update
     void Start()
     {
         scoredBallVelocity = Vector3.zero;
-        startPos = Vector3.zero;
-        endPos = Vector3.zero;
+        targetPos = Vector3.zero;
         upOffset = new Vector3(0.0f, 0.01f, 0.0f);
 
         orangeWallLayer = 10;
         switchLayer = 12;
 
-        triggered = false;
         percentage = 0.0f;
-        moveSpeed = 1.0f;
+        fadeSpeed = 1.0f;
+        timer = 0.0f;
+        waitTime = 0.5f;
+        fadeIn = true;
+        switched = false;
     }
 
     // Update is called once per frame
@@ -38,7 +45,7 @@ public class OrangeWallTrigger : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            if (triggered)
+            if (fade.gameObject.activeSelf)
             {
                 SwapBalls();
             }
@@ -50,32 +57,72 @@ public class OrangeWallTrigger : MonoBehaviour
     /// </summary>
     private void SwapBalls()
     {
-        if (percentage < 1.0f)
+        //Fade overlay in
+        if (fadeIn)
         {
-            percentage += moveSpeed * Time.deltaTime;
+            percentage += fadeSpeed * Time.deltaTime;
             percentage = Mathf.Clamp(percentage, 0.0f, 1.0f);
 
-            scoredBall.transform.position = Vector3.Lerp(startPos, endPos, percentage);
-            SceneInfo.instance.ActiveBall.transform.position = Vector3.Lerp(endPos, startPos, percentage);
+            Color color = fade.color;
+            color.a = percentage;
+            fade.color = color;
 
             if (percentage >= 1.0f)
             {
-                //Remove scored ball
-                scoredBall.GetComponent<Ball>().IsScored = true;
-                scoredBall.GetComponent<Collider>().isTrigger = true;
-                scoredBall.GetComponent<MeshRenderer>().enabled = false;
-                scoredBall.GetComponent<Rigidbody>().useGravity = false; //turn off gravity, otherwise ball will continuosly fall due to being a trigger
+                fadeIn = false;
+            }
+        }
 
-                //Give the player ball the scored ball's velocity
-                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(scoredBallVelocity, ForceMode.VelocityChange);
+        //Fade overlay out
+        else
+        {
+            if (timer < waitTime)
+            {
+                timer += Time.deltaTime;
 
-                //Add a little extra force just in case the scored ball's velocity
-                //wasn't enough to move the ball out of the wall
-                Vector3 boost = transform.up * 10.0f;
-                SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost, ForceMode.VelocityChange);
+                if (timer >= waitTime && !switched)
+                {
+                    Debug.Log("call");
 
-                //Make sure to remove the temp lock
-                Camera.main.GetComponent<ThirdPersonCamera>().TempUnlockCam();
+                    switched = true;
+
+                    //Move player to scored ball
+                    SceneInfo.instance.ActiveBall.transform.position = targetPos;
+
+                    //Remove scored ball
+                    scoredBall.GetComponent<Ball>().IsScored = true;
+                    scoredBall.GetComponent<Collider>().isTrigger = true;
+                    scoredBall.GetComponent<MeshRenderer>().enabled = false;
+                    scoredBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
+                    scoredBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+                    scoredBall.GetComponent<Rigidbody>().useGravity = false; //turn off gravity, otherwise ball will continuosly fall due to being a trigger
+
+                    //Give the player ball the scored ball's velocity
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(scoredBallVelocity, ForceMode.VelocityChange);
+
+                    //Add a little extra force just in case the scored ball's velocity
+                    //wasn't enough to move the ball out of the wall
+                    Vector3 boost = transform.up * 10.0f;
+                    SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost, ForceMode.VelocityChange);
+
+                    //Make sure to remove the temp lock
+                    Camera.main.GetComponent<ThirdPersonCamera>().TempUnlockCam();
+                }
+            }
+            else
+            {
+                percentage -= fadeSpeed * Time.deltaTime;
+                percentage = Mathf.Clamp(percentage, 0.0f, 1.0f);
+
+                Color color = fade.color;
+                color.a = percentage;
+                fade.color = color;
+
+                //Hide fade UI
+                if (percentage <= 0.0f)
+                {
+                    fade.gameObject.SetActive(false);
+                }
             }
         }
     }
@@ -89,18 +136,10 @@ public class OrangeWallTrigger : MonoBehaviour
             //Set variables
             scoredBall = other.gameObject;
             scoredBallVelocity = scoredBall.GetComponent<Rigidbody>().velocity;
-            startPos = scoredBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
-            endPos = SceneInfo.instance.ActiveBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
+            targetPos = scoredBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
 
             //Temporarily lock the camera to perform the switch without camera stutters
             Camera.main.GetComponent<ThirdPersonCamera>().TempLockCam();
-
-            //Zero out movement to lerp
-            scoredBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            scoredBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
 
             //Set appropriate layers for collision.
             //This prevents multiple orange balls from being scored at once
@@ -110,8 +149,13 @@ public class OrangeWallTrigger : MonoBehaviour
             SceneInfo.instance.ActiveBall.layer = switchLayer;
             transform.parent.parent.GetComponent<OrangeWalls>().ResetWallLayers();
 
-            triggered = true;
+            //Show fade UI
+            fade.gameObject.SetActive(true);
+
             percentage = 0.0f;
+            timer = 0.0f;
+            fadeIn = true;
+            switched = false;
         }
     }
 
@@ -119,7 +163,6 @@ public class OrangeWallTrigger : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ball") && other.gameObject == SceneInfo.instance.ActiveBall)
         {
-            triggered = false;
             SceneInfo.instance.ActiveBall.layer = 0; //Put ball back to its default layer
         }
     }
