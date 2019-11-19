@@ -5,10 +5,10 @@ using UnityEngine.UI;
 
 public class UIPlayerManager : MonoBehaviour
 {
-    public GameObject p1Toggle;
-    public GameObject p2Toggle;
-    public GameObject p3Toggle;
-    public GameObject p4Toggle;
+    public Toggle p1Toggle;
+    public Toggle p2Toggle;
+    public Toggle p3Toggle;
+    public Toggle p4Toggle;
 
     // Start is called before the first frame update
     void Start()
@@ -42,19 +42,19 @@ public class UIPlayerManager : MonoBehaviour
         switch (GameInfo.instance.Players)
         {
             case 1:
-                toggle = p1Toggle.GetComponent<Toggle>();
+                toggle = p1Toggle;
                 break;
             case 2:
-                toggle = p2Toggle.GetComponent<Toggle>();
+                toggle = p2Toggle;
                 break;
             case 3:
-                toggle = p3Toggle.GetComponent<Toggle>();
+                toggle = p3Toggle;
                 break;
             case 4:
-                toggle = p4Toggle.GetComponent<Toggle>();
+                toggle = p4Toggle;
                 break;
             default:
-                toggle = p1Toggle.GetComponent<Toggle>();
+                toggle = p1Toggle;
                 break;
         }
 

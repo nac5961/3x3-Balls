@@ -19,6 +19,8 @@ public class GameInfo : MonoBehaviour
     private int totalLevels;
     private int players;
 
+    private bool guideLines = true;
+
     public List<List<int>> PlayerScores
     {
         get { return playerScores; }
@@ -36,6 +38,11 @@ public class GameInfo : MonoBehaviour
     public int Players
     {
         get { return players; }
+    }
+    public bool GuideLines
+    {
+        get { return guideLines; }
+        set { guideLines = value; }
     }
 
     private void Awake()
