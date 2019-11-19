@@ -15,12 +15,12 @@ public class OrangeWallTrigger : MonoBehaviour
     private int orangeWallLayer;
     private int switchLayer;
 
+    private bool trigger;
     private float percentage;
     private float fadeSpeed;
     private float timer;
     private float waitTime;
     private bool fadeIn;
-    private bool switched;
 
     // Start is called before the first frame update
     void Start()
@@ -32,12 +32,12 @@ public class OrangeWallTrigger : MonoBehaviour
         orangeWallLayer = 10;
         switchLayer = 12;
 
+        trigger = false;
         percentage = 0.0f;
-        fadeSpeed = 1.0f;
+        fadeSpeed = 2.0f;
         timer = 0.0f;
         waitTime = 0.5f;
         fadeIn = true;
-        switched = false;
     }
 
     // Update is called once per frame
@@ -45,7 +45,7 @@ public class OrangeWallTrigger : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
-            if (fade.gameObject.activeSelf)
+            if (trigger)
             {
                 SwapBalls();
             }
@@ -80,11 +80,10 @@ public class OrangeWallTrigger : MonoBehaviour
             {
                 timer += Time.deltaTime;
 
-                if (timer >= waitTime && !switched)
+                if (timer >= waitTime)
                 {
-                    Debug.Log("call");
-
-                    switched = true;
+                    //Ensure the active ball doesn't collide with walls on switch
+                    SceneInfo.instance.ActiveBall.layer = switchLayer;
 
                     //Move player to scored ball
                     SceneInfo.instance.ActiveBall.transform.position = targetPos;
@@ -105,8 +104,8 @@ public class OrangeWallTrigger : MonoBehaviour
                     Vector3 boost = transform.up * 10.0f;
                     SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().AddForce(boost, ForceMode.VelocityChange);
 
-                    //Make sure to remove the temp lock
-                    Camera.main.GetComponent<ThirdPersonCamera>().TempUnlockCam();
+                    //Make sure to allow the game to end the turn again
+                    SceneInfo.instance.DontEndTurn = false;
                 }
             }
             else
@@ -121,6 +120,7 @@ public class OrangeWallTrigger : MonoBehaviour
                 //Hide fade UI
                 if (percentage <= 0.0f)
                 {
+                    trigger = false;
                     fade.gameObject.SetActive(false);
                 }
             }
@@ -138,32 +138,32 @@ public class OrangeWallTrigger : MonoBehaviour
             scoredBallVelocity = scoredBall.GetComponent<Rigidbody>().velocity;
             targetPos = scoredBall.transform.position + upOffset; //offset makes sure ball isn't stuck in floor
 
-            //Temporarily lock the camera to perform the switch without camera stutters
-            Camera.main.GetComponent<ThirdPersonCamera>().TempLockCam();
+            //Make sure the turn cannot end, just in case the balls stop
+            //moving during the fade
+            SceneInfo.instance.DontEndTurn = true;
 
-            //Set appropriate layers for collision.
             //This prevents multiple orange balls from being scored at once
-            //by making the scored orange ball and the player ball the
-            //only 2 balls that can move through the walls.
+            //by making the scored orange ball the only ball that can move
+            //through walls.
             scoredBall.layer = switchLayer;
-            SceneInfo.instance.ActiveBall.layer = switchLayer;
             transform.parent.parent.GetComponent<OrangeWalls>().ResetWallLayers();
 
             //Show fade UI
             fade.gameObject.SetActive(true);
 
+            trigger = true;
             percentage = 0.0f;
             timer = 0.0f;
             fadeIn = true;
-            switched = false;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
+        //Put the player's ball back to its default layer
         if (other.gameObject.CompareTag("Ball") && other.gameObject == SceneInfo.instance.ActiveBall)
         {
-            SceneInfo.instance.ActiveBall.layer = 0; //Put ball back to its default layer
+            SceneInfo.instance.ActiveBall.layer = 0;
         }
     }
 }

@@ -38,9 +38,6 @@ public class ThirdPersonCamera : MonoBehaviour
     private bool autoSwitch;
     private Vector3 playerOverhead;
     private Quaternion playerOverheadRotation;
-    private Vector3 tempPosOffset;
-    private Quaternion tempRot;
-    private bool tempLock;
 
     public Transform Target
     {
@@ -57,11 +54,6 @@ public class ThirdPersonCamera : MonoBehaviour
     public bool Locked
     {
         get { return locked; }
-    }
-
-    public bool TempLock
-    {
-        get { return tempLock; }
     }
 
     // Start is called before the first frame update
@@ -100,9 +92,6 @@ public class ThirdPersonCamera : MonoBehaviour
         autoSwitch = false;
         playerOverhead = new Vector3(0.0f, 16.87f, 0.0f);
         playerOverheadRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
-        tempPosOffset = Vector3.zero;
-        tempRot = Quaternion.identity;
-        tempLock = false;
     }
 
     // Update is called once per frame
@@ -110,37 +99,30 @@ public class ThirdPersonCamera : MonoBehaviour
     {
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused && !SceneInfo.instance.DisableControls)
         {
-            if (tempLock)
+            //Check to see if view needs to automatically switch to the
+            //score area overview after a hit
+            if (SceneInfo.instance.IsHit && !autoSwitch)
             {
-                TempFollow();
+                AutomaticallySwitchView();
             }
-            else
+
+            //Check to see if the player is trying to manually switch their view.
+            //But make sure they cannot do that if they're taking a shot, or the
+            //view is automatically switched to the score area.
+            if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
             {
-                //Check to see if view needs to automatically switch to the
-                //score area overview after a hit
-                if (SceneInfo.instance.IsHit && !autoSwitch)
-                {
-                    AutomaticallySwitchView();
-                }
-
-                //Check to see if the player is trying to manually switch their view.
-                //But make sure they cannot do that if they're taking a shot, or the
-                //view is automatically switched to the score area.
-                if (!SceneInfo.instance.IsTakingShot && !autoSwitch)
-                {
-                    ManuallySwitchView();
-                }
-
-                //Rotate the camera around the ball as long as the view is not locked
-                //to another view.
-                //Also do not allow rotation during a shot.
-                if (!SceneInfo.instance.IsTakingShot && !locked)
-                {
-                    RotateAroundTarget();
-                }
-
-                //Zoom();
+                ManuallySwitchView();
             }
+
+            //Rotate the camera around the ball as long as the view is not locked
+            //to another view.
+            //Also do not allow rotation during a shot.
+            if (!SceneInfo.instance.IsTakingShot && !locked)
+            {
+                RotateAroundTarget();
+            }
+
+            //Zoom();
         }
     }
 
@@ -149,7 +131,7 @@ public class ThirdPersonCamera : MonoBehaviour
         if (SceneInfo.instance.GameStart && !SceneInfo.instance.Paused)
         {
             //Follow the ball unless the view is locked to another view
-            if (!locked && !tempLock)
+            if (!locked)
             {
                 FollowTarget();
                 LookAtTarget();
@@ -158,51 +140,6 @@ public class ThirdPersonCamera : MonoBehaviour
             //SetClipPoints();
             //SetAdjustedDistance();
         }
-    }
-
-    /// <summary>
-    /// Follows the ball based on the camera's last position and rotation
-    /// around the ball.
-    /// </summary>
-    private void TempFollow()
-    {
-        Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + tempPosOffset;
-        Camera.main.transform.rotation = tempRot;
-    }
-
-    /// <summary>
-    /// Temporarily locks the camera to its last position and rotation
-    /// around the ball.
-    /// </summary>
-    public void TempLockCam()
-    {
-        //If player was in a different view, forcefully
-        //switch back to the follow view
-        if (locked)
-        {
-            locked = false;
-            FollowTarget();
-            LookAtTarget();
-        }
-
-        //Set temp lock data
-        tempLock = true;
-        tempPosOffset = Camera.main.transform.position - SceneInfo.instance.ActiveBall.transform.position;
-        tempRot = Camera.main.transform.rotation;
-
-        //Remove UI controls since they are disabled.
-        //Must do camview first then hit.
-        UIGameInfo.instance.HideCamViewUI();
-        UIGameInfo.instance.HideHitUI();
-    }
-
-    /// <summary>
-    /// Removes the temporarily lock on the camera.
-    /// </summary>
-    public void TempUnlockCam()
-    {
-        tempLock = false;
-        UIGameInfo.instance.DisplayHitUI(); //Re-display UI controls since they are re-enabled
     }
 
     /// <summary>

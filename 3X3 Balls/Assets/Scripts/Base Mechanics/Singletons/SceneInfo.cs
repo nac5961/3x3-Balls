@@ -29,6 +29,7 @@ public class SceneInfo : MonoBehaviour
     private bool isTurnOver;
 
     private bool disableControls;
+    private bool dontEndTurn;
 
     //Rigidbody
     private float endTurnWaitTime; //Need to wait a few seconds before checking if a ball is moving after it is hit; Bug where it is flagged as not moving on hit even though ball is moving.
@@ -99,6 +100,11 @@ public class SceneInfo : MonoBehaviour
         set { disableControls = value; }
     }
 
+    public bool DontEndTurn
+    {
+        set { dontEndTurn = value; }
+    }
+
     private void Awake()
     {
         if (instance == null)
@@ -128,6 +134,7 @@ public class SceneInfo : MonoBehaviour
         isTurnOver = false;
 
         disableControls = false;
+        dontEndTurn = false;
 
         endTurnWaitTime = 2.0f;
         nextTurnWaitTime = 0.0f;
@@ -403,7 +410,7 @@ public class SceneInfo : MonoBehaviour
             }
         }
 
-        if (!stillMoving && !Camera.main.GetComponent<ThirdPersonCamera>().TempLock)
+        if (!stillMoving && !dontEndTurn)
         {
             timer = 0.0f;
             isHit = false;
