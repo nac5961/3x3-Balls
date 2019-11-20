@@ -113,6 +113,7 @@ public class GameInfo : MonoBehaviour
         string levelName = course + " " + level;
 
         SceneManager.LoadScene(levelName);
+        AudioInfo.instance.PlayInGameMusic();
     }
 
     /// <summary>
@@ -121,5 +122,6 @@ public class GameInfo : MonoBehaviour
     public void LoadMainMenu()
     {
         SceneManager.LoadScene("Main Menu");
+        AudioInfo.instance.PlayMainMenuMusic();
     }
 }

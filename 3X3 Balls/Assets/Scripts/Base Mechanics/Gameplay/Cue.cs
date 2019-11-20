@@ -296,6 +296,9 @@ public class Cue : MonoBehaviour
                 SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().useGravity = true;
             }
 
+            //Hit sound effect
+            AudioInfo.instance.PlayHitSoundEffect();
+
             //Apply force
             float power = maxForce * fillAmount;
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;

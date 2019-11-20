@@ -423,6 +423,9 @@ public class Ball : MonoBehaviour
                 rb.useGravity = false; //turn off gravity, otherwise ball will continuously fall due to being a trigger
                 rb.Sleep();
 
+                //Score sound effect
+                AudioInfo.instance.PlayScoreSoundEffect();
+
                 //Setup next target
                 SceneInfo.instance.SwitchTargetBall();
 
