@@ -38,6 +38,11 @@ public class Cue : MonoBehaviour
     private bool curveRight;
     private bool specialShotEnabled;
 
+    //Sound
+    private bool playedHitSound;
+    private float minVolume;
+    private float maxVolume;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,6 +60,11 @@ public class Cue : MonoBehaviour
         minCurvePower = 200.0f;
         curveRight = true;
         specialShotEnabled = true;
+
+        //Sound
+        playedHitSound = false;
+        minVolume = 0.2f;
+        maxVolume = 0.5f;
     }
 
     // Update is called once per frame
@@ -135,6 +145,19 @@ public class Cue : MonoBehaviour
             animationTime = Mathf.Clamp(animationTime, 0.0f, 1.0f);
 
             transform.position = Vector3.Lerp(startPos, minPos, animationTime);
+
+            //Cue Hit Sound Effect
+            //We need to play the sound before the force is applied,
+            //otherwise the sound will look like it is delayed when playing the game,
+            //since it doesn't play fast enough.
+            if (animationTime >= 0.3f && !playedHitSound)
+            {
+                playedHitSound = true;
+
+                //Change volume based on power
+                float volume = Mathf.Clamp(shotUI.GetFillAmount() / 1.0f, minVolume, maxVolume);
+                AudioInfo.instance.PlayCueHitSoundEffect(volume);
+            }
         }
 
         //Input
@@ -296,9 +319,6 @@ public class Cue : MonoBehaviour
                 SceneInfo.instance.ActiveBall.GetComponent<Rigidbody>().useGravity = true;
             }
 
-            //Hit sound effect
-            AudioInfo.instance.PlayHitSoundEffect();
-
             //Apply force
             float power = maxForce * fillAmount;
             Vector3 force = SceneInfo.instance.ActiveBall.transform.position - transform.position;
@@ -340,6 +360,9 @@ public class Cue : MonoBehaviour
             UIGameInfo.instance.GeneralUI.GetComponent<GeneralUI>().SetStrokeCount();
 
             SceneInfo.instance.IsHit = true;
+
+            //Always reset after each shot
+            playedHitSound = false;
 
             //Always reset after each shot since players are on the center
             //shot at the start of their turn

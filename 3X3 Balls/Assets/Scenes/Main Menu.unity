@@ -372,6 +372,7 @@ GameObject:
   - component: {fileID: 143502227}
   - component: {fileID: 143502229}
   - component: {fileID: 143502230}
+  - component: {fileID: 143502231}
   m_Layer: 5
   m_Name: Level Selection Panel
   m_TagString: Untagged
@@ -470,6 +471,18 @@ MonoBehaviour:
   p2Toggle: {fileID: 1633642316}
   p3Toggle: {fileID: 2023126100}
   p4Toggle: {fileID: 78247718}
+--- !u!114 &143502231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 143502225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c68395689764b114e940e522d9500f4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &360766807
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,8 +516,11 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8204beb99a18bf040bca40fafefef5fc, type: 3}
   - {fileID: 8300000, guid: 014d9e8dc798a6142b73251f1a4b3a60, type: 3}
   - {fileID: 8300000, guid: afba2de41a570d1468ab09a49eb54552, type: 3}
-  - {fileID: 8300000, guid: fff503ab93311014bafc516a57f3acbe, type: 3}
   - {fileID: 8300000, guid: aacdf7a5ddd7382408cae24af23b4861, type: 3}
+  - {fileID: 8300000, guid: 9706bf46592d5ed4e87611e634eb057f, type: 3}
+  - {fileID: 8300000, guid: 5e93934b6f68b44429b3bdfd2a9efe14, type: 3}
+  - {fileID: 8300000, guid: bcd3e1421cb2db94aa3f2f74c1f4a1cf, type: 3}
+  - {fileID: 8300000, guid: a7974a5a43a0ec244a8b36a13adbb650, type: 3}
 --- !u!4 &360766810
 Transform:
   m_ObjectHideFlags: 0
@@ -1141,6 +1157,7 @@ GameObject:
   - component: {fileID: 880567270}
   - component: {fileID: 880567269}
   - component: {fileID: 880567268}
+  - component: {fileID: 880567271}
   m_Layer: 5
   m_Name: Forest Level Button
   m_TagString: Untagged
@@ -1211,6 +1228,17 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 143502231}
+        m_MethodName: PlayClickSound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 143502229}
         m_MethodName: LoadForestLevels
         m_Mode: 1
@@ -1261,6 +1289,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 880567266}
   m_CullTransparentMesh: 0
+--- !u!114 &880567271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 880567266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1862395651, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 0
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 143502231}
+          m_MethodName: PlayHoverSound
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+      m_TypeName: UnityEngine.EventSystems.EventTrigger+TriggerEvent, UnityEngine.UI,
+        Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1 &1017940083
 GameObject:
   m_ObjectHideFlags: 0

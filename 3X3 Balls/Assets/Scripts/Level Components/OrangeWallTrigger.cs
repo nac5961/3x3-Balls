@@ -151,6 +151,9 @@ public class OrangeWallTrigger : MonoBehaviour
             //Show fade UI
             fade.gameObject.SetActive(true);
 
+            //Play fade sound effect
+            AudioInfo.instance.PlayFadeSoundEffect();
+
             trigger = true;
             percentage = 0.0f;
             timer = 0.0f;

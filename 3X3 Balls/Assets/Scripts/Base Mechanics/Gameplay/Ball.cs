@@ -47,6 +47,18 @@ public class Ball : MonoBehaviour
     private Vector3 pausedVelocity;
     private Vector3 pausedAngularVelocity;
 
+    //Sound
+    private AudioSource ballHitSound;
+    private AudioSource wallHitSound;
+    private AudioSource bumperHitSound;
+    private bool playedHitSound;
+    private float minVolume;
+    private float maxVolume;
+
+    public Vector3 PrevVelocity
+    {
+        get { return prevVelocity; }
+    }
     public SpinType Spin
     {
         set { spin = value; }
@@ -83,6 +95,10 @@ public class Ball : MonoBehaviour
     {
         get { return wasMoving; }
     }
+    public bool PlayedHitSound
+    {
+        get { return playedHitSound; }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -104,6 +120,27 @@ public class Ball : MonoBehaviour
 
         wasPaused = false;
         wasMoving = false;
+
+        AudioSource[] soundEffects = GetComponents<AudioSource>();
+        for (int i = 0; i < soundEffects.Length; i++)
+        {
+            if (soundEffects[i].clip.name == AudioInfo.instance.BallHit)
+            {
+                ballHitSound = soundEffects[i];
+            }
+            else if (soundEffects[i].clip.name == AudioInfo.instance.WallHit)
+            {
+                wallHitSound = soundEffects[i];
+            }
+            else if (soundEffects[i].clip.name == AudioInfo.instance.BumperHit)
+            {
+                bumperHitSound = soundEffects[i];
+            }
+        }
+
+        playedHitSound = false;
+        minVolume = 0.1f;
+        maxVolume = 0.5f;
 
         GetComponent<Rigidbody>().maxAngularVelocity = 100.0f; //used for spinning the ball (back spin, front spin, etc)
     }
@@ -137,6 +174,13 @@ public class Ball : MonoBehaviour
                 }
                 else if (SceneInfo.instance.IsHit)
                 {
+                    //Reset hit sound if it was played, to allow it to play again
+                    //if there is another collision with a ball.
+                    if (playedHitSound)
+                    {
+                        playedHitSound = false;
+                    }
+
                     SetSpinData();
                     StopMoving();
                 }
@@ -149,6 +193,11 @@ public class Ball : MonoBehaviour
     /// </summary>
     private void ResetSpinData()
     {
+        if (prevVelocity.magnitude > 0)
+        {
+            prevVelocity = Vector3.zero;
+        }
+
         //If the ball has been previously hit, and it is the current
         //player's ball, then reset it to re-calculate spin after hit.
         if (hasHit && gameObject == SceneInfo.instance.ActiveBall)
@@ -158,7 +207,6 @@ public class Ball : MonoBehaviour
             removedTorque = false;
             initalVelocity = Vector3.zero;
             initialAngularVelocity = Vector3.zero;
-            prevVelocity = Vector3.zero;
         }
     }
 
@@ -167,11 +215,11 @@ public class Ball : MonoBehaviour
     /// </summary>
     private void SetSpinData()
     {
+        prevVelocity = GetComponent<Rigidbody>().velocity;
+
         //Only perform calculations on the current player's ball
         if (gameObject == SceneInfo.instance.ActiveBall)
         {
-            prevVelocity = GetComponent<Rigidbody>().velocity;
-
             if (!hasHit)
             {
                 hasHit = true;
@@ -298,6 +346,37 @@ public class Ball : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Rigidbody rb = GetComponent<Rigidbody>();
+
+        //Ball Collision Sound Effect
+        //Only play sound effect if the other ball didn't already play the sound effect,
+        //and if this ball is faster than the other ball.
+        if (collision.gameObject.CompareTag("Ball") && !collision.gameObject.GetComponent<Ball>().PlayedHitSound && prevVelocity.magnitude >= collision.gameObject.GetComponent<Ball>().PrevVelocity.magnitude)
+        {
+            playedHitSound = true;
+
+            //Change volume based on the speed of the ball
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            ballHitSound.volume = volume;
+            ballHitSound.Play();
+        }
+
+        //Wall Collision Sound Effect
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            //Change volume based on the speed of the ball
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            wallHitSound.volume = volume;
+            wallHitSound.Play();
+        }
+
+        //Bumper Collision Sound Effect
+        if (collision.gameObject.CompareTag("Bumper"))
+        {
+            //Change volume based on the speed of the ball
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            bumperHitSound.volume = volume;
+            bumperHitSound.Play();
+        }
 
         //Apply spin
         if (collision.gameObject.CompareTag("Ball") && gameObject == SceneInfo.instance.ActiveBall && spin != SpinType.Normal)

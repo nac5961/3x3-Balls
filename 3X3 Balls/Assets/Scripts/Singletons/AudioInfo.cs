@@ -21,11 +21,28 @@ public class AudioInfo : MonoBehaviour
 
     //Sound Effect file names (Game)
     private string score = "SFX_Score";
-    private string hit = "SFX_Hit";
+    private string cueHit = "SFX_CueHit";
+    private string fade = "SFX_Fade";
+    private string ballHit = "SFX_BallHit";
+    private string wallHit = "SFX_WallHit";
+    private string bumperHit = "SFX_BumperHit";
 
     //Sound Effect files names (UI)
     private string uiHover = "SFX_UIHover";
     private string uiClick = "SFX_UIClick";
+
+    public string BallHit
+    {
+        get { return ballHit; }
+    }
+    public string WallHit
+    {
+        get { return wallHit; }
+    }
+    public string BumperHit
+    {
+        get { return bumperHit; }
+    }
 
     private void Awake()
     {
@@ -94,18 +111,20 @@ public class AudioInfo : MonoBehaviour
         return audioSources.Find(i => i.clip.name == name);
     }
 
-    private void PlaySoundEffect(string name)
+    private void PlaySoundEffect(string name, float volume = 1.0f)
     {
         AudioSource soundEffect = FindAudio(name);
+        soundEffect.volume = volume;
         soundEffect.Play();
     }
 
-    private void PlayInstancedSoundEffect(string name)
+    private void PlayInstancedSoundEffect(string name, float volume = 1.0f)
     {
         AudioSource soundEffect = FindAudio(name);
 
         AudioSource soundEffectInstance = gameObject.AddComponent<AudioSource>();
         soundEffectInstance.clip = soundEffect.clip;
+        soundEffectInstance.volume = volume;
         soundEffectInstance.Play();
 
         soundEffectInstances.Add(soundEffectInstance);
@@ -172,55 +191,56 @@ public class AudioInfo : MonoBehaviour
 
     public void PlayMainMenuMusic()
     {
-        //AudioSource game1 = FindAudio(inGame1);
-        //AudioSource game2 = FindAudio(inGame2);
+        AudioSource game1 = FindAudio(inGame1);
+        AudioSource game2 = FindAudio(inGame2);
 
-        //if (game1.isPlaying)
-        //{
-        //    PlayBackgroundMusic(mainMenu, inGame1);
-        //}
-        //else if (game2.isPlaying)
-        //{
-        //    PlayBackgroundMusic(mainMenu, inGame2);
-        //}
-        //else
-        //{
-        //    PlayBackgroundMusic(mainMenu);
-        //}
+        if (game1.isPlaying)
+        {
+            //PlayBackgroundMusic(mainMenu, inGame1);
+        }
+        else if (game2.isPlaying)
+        {
+            //PlayBackgroundMusic(mainMenu, inGame2);
+        }
+        else
+        {
+            //PlayBackgroundMusic(mainMenu);
+        }
     }
 
     public void PlayInGameMusic()
     {
-        //AudioSource menu = FindAudio(mainMenu);
-        //AudioSource game1 = FindAudio(inGame1);
-        //AudioSource game2 = FindAudio(inGame2);
+        AudioSource menu = FindAudio(mainMenu);
+        AudioSource game1 = FindAudio(inGame1);
+        AudioSource game2 = FindAudio(inGame2);
 
-        //int rand = Random.Range(0, 2);
-        //string audio = rand == 0 ? inGame1 : inGame2;
+        //Play InGame1 on the first level (first level is played from main menu)
+        if (GameInfo.instance.Level == 1)
+        {
+            //PlayBackgroundMusic(inGame1, mainMenu);
+        }
 
-        //if (menu.isPlaying)
-        //{
-        //    PlayBackgroundMusic(audio, mainMenu);
-        //}
-        //else if (game1.isPlaying)
-        //{
-        //    PlayBackgroundMusic(audio, inGame1);
-        //}
-        //else if (game2.isPlaying)
-        //{
-        //    PlayBackgroundMusic(audio, inGame2);
-        //}
+        //Play InGame2 after half of the levels are finished
+        else if (GameInfo.instance.Level == GameInfo.instance.TotalLevels / 2)
+        {
+            //PlayBackgroundMusic(inGame2, inGame1);
+        }
     }
 
     #region Game SFX Calls
     public void PlayScoreSoundEffect()
     {
-        //PlaySoundEffect(score);
+        PlayInstancedSoundEffect(score);
     }
 
-    public void PlayHitSoundEffect()
+    public void PlayCueHitSoundEffect(float volume)
     {
-        //PlaySoundEffect(hit);
+        PlaySoundEffect(cueHit, volume);
+    }
+
+    public void PlayFadeSoundEffect()
+    {
+        PlaySoundEffect(fade);
     }
     #endregion
 
