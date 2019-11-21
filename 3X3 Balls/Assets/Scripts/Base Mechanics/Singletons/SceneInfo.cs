@@ -197,7 +197,7 @@ public class SceneInfo : MonoBehaviour
     /// </summary>
     private void ManuallyEndLevel()
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.L))
         {
             gameStart = false;
             UIGameInfo.instance.DisplayLevelOverUI();

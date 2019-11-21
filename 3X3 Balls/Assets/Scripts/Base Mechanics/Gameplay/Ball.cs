@@ -300,47 +300,44 @@ public class Ball : MonoBehaviour
         Rigidbody rb = GetComponent<Rigidbody>();
 
         //Apply spin
-        if (collision.gameObject.CompareTag("Ball") && gameObject == SceneInfo.instance.ActiveBall)
+        if (collision.gameObject.CompareTag("Ball") && gameObject == SceneInfo.instance.ActiveBall && spin != SpinType.Normal)
         {
             if (!appliedSpin)
             {
                 appliedSpin = true;
 
-                if (spin != SpinType.Normal)
+                //Calculate torque
+                //Velocity scale is used to scale down the torque based on the velocity (slower velocity = lower torque)
+                Vector3 torque = Vector3.zero;
+                float velocityScale = prevVelocity.magnitude / initalVelocity.magnitude * Mathf.Clamp(prevVelocity.magnitude / minMagnitude, 0.0f, 1.0f);
+                float torqueScale = maxTorque * velocityScale;
+
+                switch (spin)
                 {
-                    //Calculate torque
-                    //Velocity scale is used to scale down the torque based on the velocity (slower velocity = lower torque)
-                    Vector3 torque = Vector3.zero;
-                    float velocityScale = prevVelocity.magnitude / initalVelocity.magnitude * Mathf.Clamp(prevVelocity.magnitude / minMagnitude, 0.0f, 1.0f);
-                    float torqueScale = maxTorque * velocityScale;
-
-                    switch (spin)
-                    {
-                        case SpinType.Top:
-                            rb.AddForce(prevVelocity * 0.13f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
-                            torque = initialAngularVelocity.normalized * torqueScale;
-                            break;
-                        case SpinType.Back:
-                            torque = initialAngularVelocity.normalized * -torqueScale;
-                            break;
-                        case SpinType.Left:
-                            rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
-                            torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
-                            break;
-                        case SpinType.Right:
-                            rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
-                            torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    //Apply torque
-                    rb.AddTorque(torque, ForceMode.VelocityChange);
+                    case SpinType.Top:
+                        rb.AddForce(prevVelocity * 0.13f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
+                        torque = initialAngularVelocity.normalized * torqueScale;
+                        break;
+                    case SpinType.Back:
+                        torque = initialAngularVelocity.normalized * -torqueScale;
+                        break;
+                    case SpinType.Left:
+                        rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
+                        torque = Quaternion.Euler(0.0f, -45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
+                        break;
+                    case SpinType.Right:
+                        rb.AddForce(prevVelocity * 0.12f, ForceMode.VelocityChange); //small boost just in case ball stops on hit
+                        torque = Quaternion.Euler(0.0f, 45.0f, 0.0f) * initialAngularVelocity.normalized * torqueScale;
+                        break;
+                    default:
+                        break;
                 }
+
+                //Apply torque
+                rb.AddTorque(torque, ForceMode.VelocityChange);
             }
         }
-        else if (collision.gameObject.CompareTag("Wall") && gameObject == SceneInfo.instance.ActiveBall)
+        else if (collision.gameObject.CompareTag("Wall") && gameObject == SceneInfo.instance.ActiveBall && spin != SpinType.Normal)
         {
             //If the ball hits a wall first, we want to not have it apply torque
             //on ball collision, since the torque is lost when the ball collides
