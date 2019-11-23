@@ -170,6 +170,7 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             if (!locked)
             {
+                RenderSettings.fog = false; //hide fog
                 UIGameInfo.instance.DisplayCamViewUI();
             }
 
@@ -196,6 +197,7 @@ public class ThirdPersonCamera : MonoBehaviour
         {
             if (locked)
             {
+                RenderSettings.fog = true; //show fog again
                 UIGameInfo.instance.HideCamViewUI();
             }
 
