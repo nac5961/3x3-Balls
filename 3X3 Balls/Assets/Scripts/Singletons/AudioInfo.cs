@@ -196,15 +196,15 @@ public class AudioInfo : MonoBehaviour
 
         if (game1.isPlaying)
         {
-            //PlayBackgroundMusic(mainMenu, inGame1);
+            PlayBackgroundMusic(mainMenu, inGame1);
         }
         else if (game2.isPlaying)
         {
-            //PlayBackgroundMusic(mainMenu, inGame2);
+            PlayBackgroundMusic(mainMenu, inGame2);
         }
         else
         {
-            //PlayBackgroundMusic(mainMenu);
+            PlayBackgroundMusic(mainMenu);
         }
     }
 
@@ -217,13 +217,13 @@ public class AudioInfo : MonoBehaviour
         //Play InGame1 on the first level (first level is played from main menu)
         if (GameInfo.instance.Level == 1)
         {
-            //PlayBackgroundMusic(inGame1, mainMenu);
+            PlayBackgroundMusic(inGame1, mainMenu);
         }
 
         //Play InGame2 after half of the levels are finished
         else if (GameInfo.instance.Level == GameInfo.instance.TotalLevels / 2)
         {
-            //PlayBackgroundMusic(inGame2, inGame1);
+            PlayBackgroundMusic(inGame2, inGame1);
         }
     }
 
