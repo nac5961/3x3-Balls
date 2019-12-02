@@ -7,17 +7,18 @@ public class FreeRoam : MonoBehaviour
     private float speed = 20.0f;
     private float rotSpeed = 60.0f;
     private bool enteredFreeRoam = false;
+    private GameObject inGameCanvas;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        inGameCanvas = GameObject.Find("In-Game Canvas");
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKey(KeyCode.LeftAlt) && Input.GetKeyDown(KeyCode.V))
         {
             enteredFreeRoam = !enteredFreeRoam;
 
@@ -26,12 +27,14 @@ public class FreeRoam : MonoBehaviour
                 Camera.main.GetComponent<ThirdPersonCamera>().enabled = false;
                 SceneInfo.instance.ActiveBall.GetComponent<PreviewLine>().enabled = false;
                 SceneInfo.instance.Cue.SetActive(false);
+                inGameCanvas.SetActive(false);
             }
             else
             {
                 Camera.main.GetComponent<ThirdPersonCamera>().enabled = true;
                 SceneInfo.instance.ActiveBall.GetComponent<PreviewLine>().enabled = true;
                 SceneInfo.instance.Cue.SetActive(true);
+                inGameCanvas.SetActive(true);
             }
         }
 
