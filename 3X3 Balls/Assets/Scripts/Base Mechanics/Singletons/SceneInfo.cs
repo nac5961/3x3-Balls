@@ -160,7 +160,7 @@ public class SceneInfo : MonoBehaviour
             {
                 if (Input.GetButtonDown("Pause"))
                 {
-                    TogglePause();
+                    //TogglePause();
                 }
             }
 

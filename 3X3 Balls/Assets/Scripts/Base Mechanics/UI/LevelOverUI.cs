@@ -6,13 +6,15 @@ using TMPro;
 
 public class LevelOverUI : MonoBehaviour
 {
+    public float spacing;
+    public GameObject holePrefab;
+    public GameObject totalPrefab;
+    public GameObject playerNamePrefab;
+
+    public RectTransform startingPos;
+
     public Button nextLevelButton;
     public Button mainMenuButton;
-
-    public GameObject p1Score;
-    public GameObject p2Score;
-    public GameObject p3Score;
-    public GameObject p4Score;
 
     // Start is called before the first frame update
     void Start()
@@ -27,14 +29,17 @@ public class LevelOverUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Configures the buttons based on the level.
+    /// Hides the next level button on the last level.
     /// </summary>
     private void SetupButtons()
     {
+        //At the last level
         if (GameInfo.instance.Level == GameInfo.instance.TotalLevels)
         {
+            //Hide the next level button
             nextLevelButton.gameObject.SetActive(false);
 
+            //Center the main menu button
             RectTransform mmButonRect = mainMenuButton.GetComponent<RectTransform>();
             mmButonRect.anchoredPosition = new Vector2(0.0f, mmButonRect.anchoredPosition.y);
         }
@@ -58,49 +63,110 @@ public class LevelOverUI : MonoBehaviour
     }
 
     /// <summary>
-    /// REDO
-    /// Sets the scores shown at the end of each level.
+    /// Spawns the UI for the correct number of players and for the
+    /// correct number of holes.
     /// </summary>
-    public void SetupScores()
+    public void SetupUI()
     {
-        List<KeyValuePair<string, string>> players = new List<KeyValuePair<string, string>>(); //key = all individual scores; value = total score
+        float holeUIWidth = holePrefab.GetComponent<RectTransform>().rect.width;
+        Vector2 holeUIPos = new Vector2(startingPos.anchoredPosition.x + startingPos.rect.width / 2.0f, startingPos.anchoredPosition.y);
 
-        //Store scores
+        //Holes
+        for (int i = 0; i < GameInfo.instance.TotalLevels; i++)
+        {
+            holeUIPos = new Vector2(holeUIPos.x + holeUIWidth + spacing, holeUIPos.y);
+
+            //Spawn hole UI
+            GameObject holeUI = Instantiate(holePrefab, Vector3.zero, Quaternion.identity);
+            holeUI.transform.SetParent(transform, false);
+            holeUI.GetComponent<RectTransform>().anchoredPosition = holeUIPos;
+
+            //Set hole number
+            int number = i + 1;
+            holeUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = number.ToString();
+        }
+
+        float totalUIWidth = totalPrefab.GetComponent<RectTransform>().rect.width;
+        Vector2 totalUIPos = new Vector2(holeUIPos.x + totalUIWidth + spacing, holeUIPos.y);
+
+        //Spawn total UI (for the label "Total")
+        GameObject totalUI = Instantiate(totalPrefab, Vector3.zero, Quaternion.identity);
+        totalUI.transform.SetParent(transform, false);
+        totalUI.GetComponent<RectTransform>().anchoredPosition = totalUIPos;
+        totalUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Total";
+
+        //Save Scores (for current level)
         for (int i = 0; i < SceneInfo.instance.Scores.Count; i++)
         {
             GameInfo.instance.PlayerScores[i][GameInfo.instance.Level - 1] = SceneInfo.instance.Scores[i];
         }
 
-        //Get score info
-        for (int i = 0; i < GameInfo.instance.PlayerScores.Count; i++)
-        {
-            int total = 0;
-            string info = "Player " + (i + 1) + ": ";
+        float xOffset = 25.0f; //This offset is needed in order to align the player name with the "Hole" label
+        float playerNameUIWidth = playerNamePrefab.GetComponent<RectTransform>().rect.width;
+        float playerNameUIHeight = playerNamePrefab.GetComponent<RectTransform>().rect.height;
+        Vector2 playerNameUIPos = new Vector2(startingPos.anchoredPosition.x - xOffset, startingPos.anchoredPosition.y - startingPos.rect.height / 2.0f);
 
-            for (int j = 0; j < GameInfo.instance.PlayerScores[i].Count; j++)
+        //Players
+        for (int i = 0; i < GameInfo.instance.Players; i++)
+        {
+            playerNameUIPos = new Vector2(playerNameUIPos.x, playerNameUIPos.y - playerNameUIHeight - spacing);
+            holeUIPos = new Vector2(playerNameUIPos.x + playerNameUIWidth / 2.0f, playerNameUIPos.y);
+
+            //Spawn player name UI
+            GameObject playerNameUI = Instantiate(playerNamePrefab, Vector3.zero, Quaternion.identity);
+            playerNameUI.transform.SetParent(transform, false);
+            playerNameUI.GetComponent<RectTransform>().anchoredPosition = playerNameUIPos;
+
+            //Set player number
+            int number = i + 1;
+            playerNameUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = "Player " + number;
+
+            int total = 0;
+
+            //Player Scores
+            for (int j = 0; j < GameInfo.instance.TotalLevels; j++)
             {
-                total += GameInfo.instance.PlayerScores[i][j];
-                info += GameInfo.instance.PlayerScores[i][j] + " ";
+                holeUIPos = new Vector2(holeUIPos.x + holeUIWidth + spacing, holeUIPos.y);
+
+                //Spawn hole UI
+                GameObject holeUI = Instantiate(holePrefab, Vector3.zero, Quaternion.identity);
+                holeUI.transform.SetParent(transform, false);
+                holeUI.GetComponent<RectTransform>().anchoredPosition = holeUIPos;
+
+                //Set player score for hole
+                int score = GameInfo.instance.PlayerScores[i][j];
+
+                //Limit the score for display purposes
+                if (score >= 100)
+                {
+                    string displayedScore = "99+";
+                    holeUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = displayedScore;
+                }
+                else
+                {
+                    holeUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = score.ToString();
+                }
+
+                total += score;
             }
 
-            players.Add(new KeyValuePair<string, string>(info, "Total: " + total.ToString()));
-        }
+            totalUIPos = new Vector2(holeUIPos.x + totalUIWidth + spacing, holeUIPos.y);
 
-        //Display score info
-        for (int i = 0; i < players.Count; i++)
-        {
-            //Player 1
-            if (i == 0)
-                p1Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
-            //Player 2
-            else if (i == 1)
-                p2Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
-            //Player 3
-            else if (i == 2)
-                p3Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
-            //Player 4
-            else if (i == 3)
-                p4Score.GetComponent<TextMeshProUGUI>().text = players[i].Key + players[i].Value;
+            //Spawn total UI (for player)
+            GameObject playerTotalUI = Instantiate(totalPrefab, Vector3.zero, Quaternion.identity);
+            playerTotalUI.transform.SetParent(transform, false);
+            playerTotalUI.GetComponent<RectTransform>().anchoredPosition = totalUIPos;
+
+            //Limit the total for display purposes
+            if (total >= 1000)
+            {
+                string displayedTotal = "999+";
+                playerTotalUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = displayedTotal;
+            }
+            else
+            {
+                playerTotalUI.transform.GetChild(0).GetComponent<TextMeshProUGUI>().text = total.ToString();
+            }
         }
     }
 }

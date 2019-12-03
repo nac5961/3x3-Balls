@@ -162,7 +162,7 @@ public class UIGameInfo : MonoBehaviour
     /// </summary>
     public void DisplayLevelOverUI()
     {
-        levelOverUI.GetComponent<LevelOverUI>().SetupScores();
+        levelOverUI.GetComponent<LevelOverUI>().SetupUI();
 
         HideAllUI();
         HideUI(generalUI);
