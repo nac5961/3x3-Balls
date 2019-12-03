@@ -139,8 +139,8 @@ public class Ball : MonoBehaviour
         }
 
         playedHitSound = false;
-        minVolume = 0.1f;
-        maxVolume = 0.5f;
+        minVolume = 0.2f;
+        maxVolume = 0.6f;
 
         GetComponent<Rigidbody>().maxAngularVelocity = 100.0f; //used for spinning the ball (back spin, front spin, etc)
     }

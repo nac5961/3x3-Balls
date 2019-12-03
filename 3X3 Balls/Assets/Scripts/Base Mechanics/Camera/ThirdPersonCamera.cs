@@ -90,7 +90,7 @@ public class ThirdPersonCamera : MonoBehaviour
         //Views
         locked = false;
         autoSwitch = false;
-        playerOverhead = new Vector3(0.0f, 16.87f, 0.0f);
+        playerOverhead = new Vector3(0.0f, 24.87f, 0.0f);
         playerOverheadRotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
     }
 

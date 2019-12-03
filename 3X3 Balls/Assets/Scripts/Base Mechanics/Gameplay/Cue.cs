@@ -63,7 +63,7 @@ public class Cue : MonoBehaviour
 
         //Sound
         playedHitSound = false;
-        minVolume = 0.2f;
+        minVolume = 0.25f;
         maxVolume = 0.5f;
     }
 
