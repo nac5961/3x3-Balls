@@ -23,9 +23,9 @@ public class AudioInfo : MonoBehaviour
     private string score = "SFX_Score";
     private string cueHit = "SFX_CueHit";
     private string fade = "SFX_Fade";
-    private string ballHit = "SFX_BallHit";
-    private string wallHit = "SFX_WallHit";
-    private string bumperHit = "SFX_BumperHit";
+    private string ballHit = "SFX_BallHit"; //used in Ball script
+    private string wallHit = "SFX_WallHit"; //used in Ball script
+    private string bumperHit = "SFX_BumperHit"; //used in Ball script
 
     //Sound Effect files names (UI)
     private string uiHover = "SFX_UIHover";
@@ -79,20 +79,29 @@ public class AudioInfo : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Turns all of the audio clips into audio sources.
+    /// </summary>
     private void SetupSound()
     {
         for (int i = 0; i < sounds.Length; i++)
         {
+            //Add audio source to this gameobject
             AudioSource audio = gameObject.AddComponent<AudioSource>();
 
+            //Set audio properties
             audio.clip = sounds[i];
             audio.playOnAwake = false;
             audio.loop = audio.clip.name.Contains("BG") ? true : false;
 
+            //Store reference
             audioSources.Add(audio);
         }
     }
 
+    /// <summary>
+    /// Removes the sound effect instances created to play a sound effect.
+    /// </summary>
     private void RemoveSoundEffectInstances()
     {
         List<AudioSource> finishedSoundEffects = soundEffectInstances.FindAll(i => i.isPlaying == false);
@@ -106,11 +115,21 @@ public class AudioInfo : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets an Audio Source based on the clip name.
+    /// </summary>
+    /// <param name="name">clip name</param>
+    /// <returns>Audio Source associated with the clip name</returns>
     private AudioSource FindAudio(string name)
     { 
         return audioSources.Find(i => i.clip.name == name);
     }
 
+    /// <summary>
+    /// Plays a sound effect.
+    /// </summary>
+    /// <param name="name">clip name</param>
+    /// <param name="volume">volume to play</param>
     private void PlaySoundEffect(string name, float volume = 1.0f)
     {
         AudioSource soundEffect = FindAudio(name);
@@ -118,6 +137,11 @@ public class AudioInfo : MonoBehaviour
         soundEffect.Play();
     }
 
+    /// <summary>
+    /// Creates an instance of a sound effect, then plays it.
+    /// </summary>
+    /// <param name="name">clip name</param>
+    /// <param name="volume">volume to play</param>
     private void PlayInstancedSoundEffect(string name, float volume = 1.0f)
     {
         AudioSource soundEffect = FindAudio(name);
@@ -171,6 +195,11 @@ public class AudioInfo : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Fades in the next track and fades out the previous track.
+    /// </summary>
+    /// <param name="next">name of next track to play</param>
+    /// <param name="prev">name of track currently playing</param>
     private void PlayBackgroundMusic(string next, string prev = null)
     {
         AudioSource nextAudio = FindAudio(next);
@@ -189,6 +218,9 @@ public class AudioInfo : MonoBehaviour
         StartCoroutine(FadeIn(nextAudio));
     }
 
+    /// <summary>
+    /// Plays music for the main menu.
+    /// </summary>
     public void PlayMainMenuMusic()
     {
         AudioSource game1 = FindAudio(inGame1);
@@ -208,6 +240,9 @@ public class AudioInfo : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Plays music during the levels.
+    /// </summary>
     public void PlayInGameMusic()
     {
         AudioSource menu = FindAudio(mainMenu);
