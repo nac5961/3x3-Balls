@@ -355,7 +355,7 @@ public class Ball : MonoBehaviour
             playedHitSound = true;
 
             //Change volume based on the speed of the ball
-            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 80.0f, minVolume - 0.1f, maxVolume + 0.3f);
             ballHitSound.volume = volume;
             ballHitSound.Play();
         }
@@ -364,7 +364,7 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             //Change volume based on the speed of the ball
-            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume - 0.1f, maxVolume - 0.3f);
             wallHitSound.volume = volume;
             wallHitSound.Play();
         }
@@ -373,7 +373,7 @@ public class Ball : MonoBehaviour
         if (collision.gameObject.CompareTag("Bumper"))
         {
             //Change volume based on the speed of the ball
-            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume, maxVolume);
+            float volume = Mathf.Clamp(prevVelocity.magnitude / 100.0f, minVolume - 0.1f, maxVolume - 0.1f);
             bumperHitSound.volume = volume;
             bumperHitSound.Play();
         }
