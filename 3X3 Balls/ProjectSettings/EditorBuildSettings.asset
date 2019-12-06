@@ -41,13 +41,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Forest 7.unity
     guid: d36c0aa78db21934d812440baab76d28
-  - enabled: 1
-    path: Assets/Scenes/Forest 8.unity
-    guid: c4fd01e586e77c14797e269c015caa87
   - enabled: 0
-    path: Assets/Scenes/Main Menu2.unity
-    guid: d7c66273b61491c42ae751354f4ec58d
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 0
-    path: Assets/Scenes/Forest Extra 1.unity
-    guid: f5cd5b1f7feb67143a09e6bf3c5e06db
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}
