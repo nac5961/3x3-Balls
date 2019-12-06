@@ -12,6 +12,8 @@ public class CourseSetup : MonoBehaviour
     public GameObject cuePrefab;
     public GameObject cueBallPrefab;
 
+    public Material[] cueBallMaterials;
+
     public GameObject[] targetBalls;
     public GameObject[] otherBalls;
 
@@ -54,6 +56,9 @@ public class CourseSetup : MonoBehaviour
             GameObject playerBall = Instantiate(cueBallPrefab, playerSpawn.transform.position, Quaternion.identity);
             MoveAboveSurface(playerBall, playerBall.GetComponent<Collider>());
             playerBall.GetComponent<Ball>().TargetBallSpawn = targetBalls[0].transform.position;
+
+            //Set appropriate material
+            playerBall.GetComponent<MeshRenderer>().material = cueBallMaterials[i];
 
             //Prevent collisions until first hit so balls can spawn inside each other
             playerBall.GetComponent<Collider>().isTrigger = true;

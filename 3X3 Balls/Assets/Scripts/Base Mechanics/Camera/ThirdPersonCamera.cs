@@ -165,8 +165,21 @@ public class ThirdPersonCamera : MonoBehaviour
     /// </summary>
     private void ManuallySwitchView()
     {
+        //Show the player overview
+        if (Input.GetButton("CameraViewOverhead") && Input.GetButton("CameraViewLevel"))
+        {
+            if (!locked)
+            {
+                UIGameInfo.instance.DisplayCamViewUI();
+            }
+
+            locked = true;
+            Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + playerOverhead;
+            Camera.main.transform.rotation = playerOverheadRotation;
+        }
+
         //Show the level overview
-        if (Input.GetButton("CameraViewLevel"))
+        else if (Input.GetButton("CameraViewLevel"))
         {
             if (!locked)
             {
@@ -177,19 +190,6 @@ public class ThirdPersonCamera : MonoBehaviour
             locked = true;
             Camera.main.transform.position = levelOverview.transform.position;
             Camera.main.transform.rotation = levelOverview.transform.rotation;
-        }
-
-        //Show the player overview
-        else if (Input.GetButton("CameraViewOverhead"))
-        {
-            if (!locked)
-            {
-                UIGameInfo.instance.DisplayCamViewUI();
-            }
-
-            locked = true;
-            Camera.main.transform.position = SceneInfo.instance.ActiveBall.transform.position + playerOverhead;
-            Camera.main.transform.rotation = playerOverheadRotation;
         }
 
         //Stop the manual switch
